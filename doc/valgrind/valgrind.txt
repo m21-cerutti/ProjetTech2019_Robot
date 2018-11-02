@@ -1,0 +1,26 @@
+#chmod +x
+
+#Pour enlever les erreurs de la biblothèque il faut creer un fichier.sup à partir 
+#d'un éxécutable minimal (sans erreur mémoire apparente), cela peut se faire soit manuellement
+#avec :
+
+#valgrind -v  --leak-check=full --error-exitcode=2 --gen-suppressions=yes ./3DRV
+
+#ou automatiquement: 
+
+valgrind --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all --log-file=3DRVraw.log ./3DRV
+
+#Faire ensuite la commande :
+
+cat ./3DRVraw.log | ./parse_valgrind_suppressions.sh > 3DRV.supp
+
+#Et enfin utiliser ce fichier pour la commande dans qt (add supressions, c'est plus visible que le
+#terminal):
+
+#manuellement:
+#valgrind -v --leak-check=full --show-reachable=yes --error-limit=no --suppressions=./3DRV.supp --gen-#suppressions=all --log-file=3DRV.log ./3DRV
+
+
+#https://wiki.wxwidgets.org/Valgrind_Suppression_File_Howto
+
+
