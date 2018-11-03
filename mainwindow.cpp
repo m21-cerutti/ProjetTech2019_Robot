@@ -19,21 +19,10 @@ MainWindow::~MainWindow()
     cv::destroyAllWindows();
 }
 
-void MainWindow::showMatrice(cv::Mat mat)
-{
-    if(mat.empty())
-    {
-        return;
-    }
-
-    namedWindow("Matrice", cv::WINDOW_NORMAL);
-    cv::imshow("Matrice", mat);
-}
-
 void MainWindow::chooseImage(){
 
     //get filename of image
-    QString filename = QFileDialog::getOpenFileName(this, "Open Image", "~/", tr("Image Files (*.png *.jpg *.bmp *.jpeg)"),0, QFileDialog::DontUseNativeDialog);
+    QString filename = QFileDialog::getOpenFileName(this, "Open Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"),0, QFileDialog::DontUseNativeDialog);
 
     // open image
     if(image_src.load(filename)){
@@ -64,6 +53,18 @@ void MainWindow::refreshImages()
     }
 }
 
+void MainWindow::resetBeforeOperationCheck()
+{
+    if (ui->cbResetBefore->checkState() == Qt::Checked){
+        on_btnOrigin_clicked();
+    }
+}
+
+void MainWindow::showEfficiency(QString nameFunct, double time_ms)
+{
+    ui->statusbar->showMessage(nameFunct+" time(ms): "+QString::number(time_ms), 0);
+}
+
 /***********************************************************************************/
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -86,42 +87,6 @@ void MainWindow::on_actionQuit_triggered()
     QApplication::quit();
 }
 
-void MainWindow::on_btnOrigin_clicked()
-{
-    if (image_src.isNull())
-    {
-        return;
-    }
-
-    //Try for Convertion in mat
-    image_mat = ImageAnalyser::toMatCV(image_src);
-
-    refreshImages();
-}
-
-void MainWindow::on_btnShowMatrice_clicked()
-{
-    showMatrice(image_mat);
-}
-
-
-void MainWindow::on_btnLaplacian_clicked()
-{
-    if (image_src.isNull())
-    {
-        return;
-    }
-    else if (image_mat.empty())
-    {
-        image_mat = ImageAnalyser::toMatCV(image_src);
-    }
-
-    //Laplacian
-    image_mat = ImageAnalyser::computeLaplacian(image_mat);
-
-    refreshImages();
-
-}
 
 void MainWindow::on_cbDestination_stateChanged(int arg1)
 {
@@ -133,36 +98,69 @@ void MainWindow::on_cbDestination_stateChanged(int arg1)
     }
 }
 
-void MainWindow::on_btnTest_clicked()
-{
-    cv::Mat matL;
-    cv::Mat matR;
-
-    ImageAnalyser::separateImage(image_mat, matL, matR);
-
-    MainWindow::showMatrice(matR);
-}
-
-void MainWindow::on_btnDisparity_clicked()
+void MainWindow::on_btnOrigin_clicked()
 {
     if (image_src.isNull())
     {
         return;
     }
-    DephtMapParamDialog dial(image_src);
-    dial.exec();
-    image_mat = dial.getMatResult().clone();
+
+    //Convert
+    image_mat = ImageAnalyser::toMatCV(image_src);
+
     refreshImages();
 }
 
-void MainWindow::on_btnDisparitySimple_clicked()
+void MainWindow::on_btnLaplacian_clicked()
 {
+    resetBeforeOperationCheck();
     if (image_src.isNull())
     {
         return;
     }
-    image_mat = ImageAnalyser::computeDepthMap(image_mat);
+
+    //Laplacian
+    double time;
+    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeLaplacian, image_mat);
+
     refreshImages();
+    showEfficiency("Laplacian", time);
+}
+
+void MainWindow::on_btnSGBMDisparity_clicked()
+{
+    resetBeforeOperationCheck();
+    if (image_src.isNull())
+    {
+        return;
+    }
+    QImage img = ImageAnalyser::toQImage(image_mat);
+    SGBMParamDialog dial(img);
+    if(dial.exec() != QDialog::Rejected)
+    {
+        image_mat = dial.getMatResult().clone();
+        double time = dial.getTimeResult();
+        refreshImages();
+        showEfficiency("SGBMDisparity", time);
+    }
+}
+
+void MainWindow::on_btnBMDisparity_clicked()
+{
+    resetBeforeOperationCheck();
+    if (image_src.isNull())
+    {
+        return;
+    }
+    QImage img = ImageAnalyser::toQImage(image_mat);
+    BMParamDialog dial(img);
+    if(dial.exec() != QDialog::Rejected)
+    {
+        image_mat = dial.getMatResult().clone();
+        double time = dial.getTimeResult();
+        refreshImages();
+        showEfficiency("BMDisparity", time);
+    }
 }
 
 void MainWindow::on_actionLaplacian_triggered()
@@ -172,20 +170,16 @@ void MainWindow::on_actionLaplacian_triggered()
 
 void MainWindow::on_actionSimple_triggered()
 {
-    on_btnDisparitySimple_clicked();
+    on_btnBMDisparity_clicked();
 }
 
 void MainWindow::on_actionAdvanced_triggered()
 {
-    on_btnDisparity_clicked();
-}
-
-void MainWindow::on_actionShow_mat_triggered()
-{
-    on_btnShowMatrice_clicked();
+    on_btnSGBMDisparity_clicked();
 }
 
 void MainWindow::on_actionOrigin_triggered()
 {
     on_btnOrigin_clicked();
 }
+

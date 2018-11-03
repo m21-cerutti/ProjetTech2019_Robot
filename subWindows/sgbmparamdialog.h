@@ -1,23 +1,25 @@
-#ifndef DISPARITYPARAMDIALOG_H
-#define DISPARITYPARAMDIALOG_H
+#ifndef SGBMPARAMDIALOG_H
+#define SGBMPARAMDIALOG_H
 
 #include <QDialog>
 #include "tools/imageanalyser.h"
 
 namespace Ui {
-class DephtMapParamDialog;
+class SGBMParamDialog;
 }
 
-class DephtMapParamDialog : public QDialog
+class SGBMParamDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DephtMapParamDialog(QImage &src, QWidget *parent = 0);
+    explicit SGBMParamDialog(QImage &src, QWidget *parent = 0);
 
-    ~DephtMapParamDialog();
+    ~SGBMParamDialog();
 
     cv::Mat getMatResult() const;
+
+    double getTimeResult() const;
 
 private:
 
@@ -76,8 +78,10 @@ private:
     QImage img_dst;
     cv::Mat mat_dst;
 
-    Ui::DephtMapParamDialog *ui;
+    double time;
+
+    Ui::SGBMParamDialog *ui;
 
 };
 
-#endif // DISPARITYPARAMDIALOG_H
+#endif // SGBMPARAMDIALOG_H

@@ -1,20 +1,15 @@
 #include "imageanalyser.h"
 
 
-void ImageAnalyser::separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &matR)
+void ImageAnalyser::showMatrice(std::string name, cv::Mat mat)
 {
-    // variables
-    int offset = 0;
-    // assertions
     if(mat.empty())
     {
         return;
     }
-    // left img from otigin to src's middle
-    matL = mat.colRange(0, mat.cols/2);
-    // verify odd size
-    offset = mat.cols % 2;
-    matR = mat.colRange((mat.cols/2) + offset, mat.cols);
+
+    namedWindow(name, cv::WINDOW_NORMAL);
+    cv::imshow(name, mat);
 }
 
 QImage ImageAnalyser::toQImage(const cv::Mat mat)
@@ -47,6 +42,22 @@ cv::Mat ImageAnalyser::toMatCV(const QImage img)
     return result.clone();
 }
 
+void ImageAnalyser::separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &matR)
+{
+    // variables
+    int offset = 0;
+    // assertions
+    if(mat.empty())
+    {
+        return;
+    }
+    // left img from otigin to src's middle
+    matL = mat.colRange(0, mat.cols/2);
+    // verify odd size
+    offset = mat.cols % 2;
+    matR = mat.colRange((mat.cols/2) + offset, mat.cols);
+}
+
 cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat sourceMat)
 {
     cv::Mat gray, dest;
@@ -63,10 +74,9 @@ cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat sourceMat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeDepthMap(const cv::Mat sourceMat)
+cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat sourceMat, cv::StereoBM bmState)
 {
     cv::Mat lMat, rMat, disparity;
-    cv::StereoBM bmState(CV_STEREO_BM_BASIC);
 
     // get img and separate in two parts
     ImageAnalyser::separateImage(sourceMat, lMat, rMat);
@@ -75,7 +85,7 @@ cv::Mat ImageAnalyser::computeDepthMap(const cv::Mat sourceMat)
     cv::cvtColor(rMat, rMat, CV_BGRA2GRAY);
 
     // get disparity map
-    bmState.operator()(lMat, rMat, disparity);
+    bmState(lMat, rMat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
 
     // convert
@@ -83,9 +93,10 @@ cv::Mat ImageAnalyser::computeDepthMap(const cv::Mat sourceMat)
     return disparity;
 }
 
-cv::Mat ImageAnalyser::computeAdvancedDepthMap(const cv::Mat sourceMat, cv::StereoSGBM bmState)
+cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat sourceMat, cv::StereoSGBM sgbmState)
 {
-    cv::Mat lMat, rMat, depthMap;
+
+    cv::Mat lMat, rMat, disparity;
 
     // get img and separate in two parts
     ImageAnalyser::separateImage(sourceMat, lMat, rMat);
@@ -93,10 +104,9 @@ cv::Mat ImageAnalyser::computeAdvancedDepthMap(const cv::Mat sourceMat, cv::Ster
     cv::cvtColor(lMat, lMat, CV_BGRA2GRAY);
     cv::cvtColor(rMat, rMat, CV_BGRA2GRAY);
     // get disparity map
-    bmState(lMat, rMat, depthMap);
-    cv::normalize(depthMap, depthMap, 0, 255, CV_MINMAX, CV_8U);
-    cv::cvtColor(depthMap, depthMap, CV_GRAY2BGRA);
+    sgbmState(lMat, rMat, disparity);
+    cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
+    cv::cvtColor(disparity, disparity, CV_GRAY2BGRA);
 
-    return depthMap;
+    return disparity;
 }
-

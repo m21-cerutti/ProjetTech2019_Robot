@@ -1,34 +1,36 @@
-#include "dephtmapparamdialog.h"
-#include "ui_dephtmapparamdialog.h"
+#include "sgbmparamdialog.h"
+#include "ui_sgbmparamdialog.h"
 
-DephtMapParamDialog::DephtMapParamDialog(QImage& src, QWidget *parent) :
+SGBMParamDialog::SGBMParamDialog(QImage& src, QWidget *parent) :
     QDialog(parent),
     img_src(src),
     img_dst(src),
-    ui(new Ui::DephtMapParamDialog)
+    time(0),
+    ui(new Ui::SGBMParamDialog)
 
 
 {
     ui->setupUi(this);
-    setWindowTitle("Parameters of Depth Map");
+    setWindowTitle("Parameters of SGBM Disparity Map");
     refreshImages();
 
 }
 
-DephtMapParamDialog::~DephtMapParamDialog()
+SGBMParamDialog::~SGBMParamDialog()
 {
     delete ui;
 }
 
-void DephtMapParamDialog::refreshImages()
+void SGBMParamDialog::refreshImages()
 {
     //refresh
     ui->imgView->setPixmap(QPixmap::fromImage(img_dst.scaled(ui->boxImg->width()*0.9,
                                                              ui->boxImg->height()*0.9,
                                                              Qt::AspectRatioMode::KeepAspectRatio)));
+    ui->labelTime->setText("Time(ms: "+ QString::number((time)));
 }
 
-void DephtMapParamDialog::refreshModifs()
+void SGBMParamDialog::refreshModifs()
 {
     //check realtime
     if (ui->cbRealTime->checkState() == Qt::Checked){
@@ -37,7 +39,7 @@ void DephtMapParamDialog::refreshModifs()
     refreshImages();
 }
 
-void DephtMapParamDialog::applyDisparity()
+void SGBMParamDialog::applyDisparity()
 {
     //bgm parameters
     cv::StereoSGBM bmState;
@@ -56,57 +58,67 @@ void DephtMapParamDialog::applyDisparity()
 
     //Conversion and application of Disparity
     mat_dst = ImageAnalyser::toMatCV(img_src);
-    mat_dst = ImageAnalyser::computeAdvancedDepthMap(mat_dst, bmState);
 
-    //View of the result
+    mat_dst = ImageAnalyser::computeEfficiency(this->time, ImageAnalyser::computeSGBMDisparity, mat_dst, bmState);
+
+    //View the result
     img_dst = ImageAnalyser::toQImage(mat_dst);
 
 }
 
-void DephtMapParamDialog::resizeEvent(QResizeEvent *event)
+void SGBMParamDialog::resizeEvent(QResizeEvent *event)
 {
-    refreshModifs();
+    refreshImages();
 }
 
-void DephtMapParamDialog::on_btnShow_clicked()
+void SGBMParamDialog::on_btnShow_clicked()
 {
     //Apply disparity even if not in real time
     applyDisparity();
     refreshImages();
 }
 
-void DephtMapParamDialog::on_btnReset_clicked()
+void SGBMParamDialog::on_btnReset_clicked()
 {
     img_dst = img_src;
     refreshImages();
 }
 
-cv::Mat DephtMapParamDialog::getMatResult() const
+cv::Mat SGBMParamDialog::getMatResult() const
 {
     return mat_dst;
 }
 
-void DephtMapParamDialog::on_minDisparity_slider_valueChanged(int value)
+double SGBMParamDialog::getTimeResult() const
+{
+    return time;
+}
+
+void SGBMParamDialog::on_minDisparity_slider_valueChanged(int value)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_numDisparities_slider_valueChanged(int value)
+void SGBMParamDialog::on_numDisparities_slider_valueChanged(int value)
 {
     // need to be divisible by 16
-    if ((value % 16) != 0) {
-        value -= (value % 16);
-    }
+    value -= (value % 16);
+
     ui->numDisparities_slider->setValue(value);
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_SADwindowSize_slider_valueChanged(int value)
+void SGBMParamDialog::on_SADwindowSize_slider_valueChanged(int value)
 {
+    // need to be not divisible by 2
+    if ((value % 2) != 1) {
+        value -= 1;
+    }
+    ui->SADwindowSize_slider->setValue(value);
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_P1_slider_valueChanged(int value)
+void SGBMParamDialog::on_P1_slider_valueChanged(int value)
 {
     if(ui->P2_slider->value() < value)
         ui->P2_slider->setValue(value+1);
@@ -114,44 +126,44 @@ void DephtMapParamDialog::on_P1_slider_valueChanged(int value)
 }
 
 
-void DephtMapParamDialog::on_P2_slider_valueChanged(int value)
+void SGBMParamDialog::on_P2_slider_valueChanged(int value)
 {
     if(ui->P1_slider->value() >= value)
         ui->P2_slider->setValue(ui->P1_slider->value()+1);
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_disp12_slider_valueChanged(int value)
+void SGBMParamDialog::on_disp12_slider_valueChanged(int value)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_preFilterCap_slider_valueChanged(int value)
+void SGBMParamDialog::on_preFilterCap_slider_valueChanged(int value)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_uniquenessRatio_slider_valueChanged(int value)
+void SGBMParamDialog::on_uniquenessRatio_slider_valueChanged(int value)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_speckleWindowsSize_slider_valueChanged(int value)
+void SGBMParamDialog::on_speckleWindowsSize_slider_valueChanged(int value)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_speckleRange_slider_valueChanged(int value)
+void SGBMParamDialog::on_speckleRange_slider_valueChanged(int value)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_FullDP_cb_toggled(bool checked)
+void SGBMParamDialog::on_FullDP_cb_toggled(bool checked)
 {
     refreshModifs();
 }
 
-void DephtMapParamDialog::on_cbRealTime_toggled(bool checked)
+void SGBMParamDialog::on_cbRealTime_toggled(bool checked)
 {
     refreshModifs();
 }

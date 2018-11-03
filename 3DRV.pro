@@ -35,12 +35,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     tools/imageanalyser.cpp \
-    subWindows/dephtmapparamdialog.cpp
+    subWindows/sgbmparamdialog.cpp \
+    subWindows/bmparamdialog.cpp
 
 HEADERS += \
         mainwindow.h \
     tools/imageanalyser.h \
-    subWindows/dephtmapparamdialog.h
+    subWindows/sgbmparamdialog.h \
+    subWindows/bmparamdialog.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -49,6 +51,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 FORMS += \
     mainwindow.ui \
-    subWindows/dephtmapparamdialog.ui
+    subWindows/sgbmparamdialog.ui \
+    subWindows/bmparamdialog.ui
 
 DISTFILES +=

@@ -11,7 +11,8 @@
 #include <QDebug>
 
 #include "tools/imageanalyser.h"
-#include "subWindows/dephtmapparamdialog.h"
+#include "subWindows/sgbmparamdialog.h"
+#include "subWindows/bmparamdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,14 +26,15 @@ public:
     explicit MainWindow();
     ~MainWindow();
 
-    ///Verify the matrice with OpenCV window
-    static void showMatrice(cv::Mat mat);
-
 private:
 
     void chooseImage();
 
     void refreshImages();
+
+    void resetBeforeOperationCheck();
+
+    void showEfficiency(QString nameFunct, double time_ms);
 
 private slots:
 
@@ -47,21 +49,15 @@ private slots:
 
     void on_btnOrigin_clicked();
 
-    void on_btnShowMatrice_clicked();
-
     void on_btnLaplacian_clicked();
 
     void on_cbDestination_stateChanged(int arg1);
 
-    void on_btnTest_clicked();
+    void on_btnSGBMDisparity_clicked();
 
-    void on_btnDisparity_clicked();
-
-    void on_btnDisparitySimple_clicked();
+    void on_btnBMDisparity_clicked();
 
     void on_actionOrigin_triggered();
-
-    void on_actionShow_mat_triggered();
 
     void on_actionAdvanced_triggered();
 
@@ -70,6 +66,8 @@ private slots:
     void on_actionLaplacian_triggered();
 
 private:
+
+    double efficiencyFunction;
 
     QImage image_src;
 

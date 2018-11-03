@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QDebug>
 
 #include <QImage>
 #include <QPixmap>
@@ -17,9 +18,15 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/core/affine.hpp>
 
+#include <time.h>
 
 class ImageAnalyser
 {
+
+private:
+
+    static void showMatrice(std::string name, cv::Mat mat);
+
 public:
 
 
@@ -52,19 +59,75 @@ public:
     */
     static cv::Mat computeLaplacian(const cv::Mat sourceMat);
 
-    /**
-    * @brief Make simple depth map without parameters
-    * @param mat the matrice to compute with left and right image
-    * @return the result matrice
-    */
-    static cv::Mat computeDepthMap(const cv::Mat sourceMat);
 
     /**
-    * @brief Make advanced depth map
-    * @param mat the matrice to compute with left and right image
-    * @return the result matrice
-    */
-    static cv::Mat computeAdvancedDepthMap(const cv::Mat sourceMat, cv::StereoSGBM bmState);
+     * @brief Make disparity map with BM algorithm
+     * @param sourceMat the matrice to compute with left and right image
+     * @param bmState he parameters initialised for computing
+     *     PRESET
+     *     nbdisparities
+     *     SADWindowsSize
+     * @return the disparity matrice
+     */
+    static cv::Mat computeBMDisparity(const cv::Mat sourceMat,  cv::StereoBM bmState);
+
+    /**
+     * @brief Make disparity map with SGBM algorithm
+     * @param sourceMat the matrice to compute with left and right image
+     * @param sgbmState the parameters initialised for computing
+     *     preFilterCap
+     *     fullDP
+     *     P1
+     *     P2
+     *     minDisparity
+     *     numberOfDisparities
+     *     uniquenessRatio
+     *     speckleWindowSize
+     *     speckleRange
+     *     disp12MaxDiff
+     *     SADWindowSize
+     * @return the disparity matrice
+     */
+    static cv::Mat computeSGBMDisparity(const cv::Mat sourceMat, cv::StereoSGBM sgbmState);
+
+    /**
+     * @brief Compute the approximate efficiency of a function in ms.
+     * @param timeElapsed
+     * @param func template for a function who return a cv::Mat and take a cv::Mat for parameter
+     * @param sourceMat argument for the fonction
+     * @param argstereo optionnal argument for the fonction (especially stereo functions)
+     * @return the cv::Mat of the fonction
+     */
+    template<typename T>
+    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat sourceMat)
+    {
+        double elapsedTime;
+        clock_t stopTime;
+        clock_t startTime = clock();
+
+        cv::Mat result = func(sourceMat);
+
+        stopTime = clock();
+        elapsedTime = (stopTime - startTime) / (CLOCKS_PER_SEC / (double) 1000.0);
+        time = elapsedTime;
+
+        return result;
+    }
+    template<typename T, typename U>
+    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat sourceMat, U argstereo)
+    {
+        double elapsedTime;
+        clock_t stopTime;
+        clock_t startTime = clock();
+
+        cv::Mat result = func(sourceMat, argstereo);
+
+        stopTime = clock();
+        elapsedTime = (stopTime - startTime) / (CLOCKS_PER_SEC / (double) 1000.0);
+        time = elapsedTime;
+
+        return result;
+    }
 
 };
 
