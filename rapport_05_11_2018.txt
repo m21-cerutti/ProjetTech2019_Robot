@@ -1,16 +1,28 @@
 Rapport du groupe CERUTTI
 Le 05 novembre 2018
 
-Réaménagement de l'interface graphique:
+Interface graphique:
+	-Rajout d'une check box pour remettre à l'image d'origine automatiquement dans la fenetre principal et des fonctions
+		apropriees.
+	-Rajout de l'affichage de l'efficacite des fonctions utilise et des fonctions apropries.
+	-Mise a jour du code des boutons, des menus, et des fenetres pour implementer ces nouvelles mecaniques.
+	-Rajout d'une fenetre pour les parametres de StereoBM.
+	-Rajout des boutons de Sobel et Flou gaussien.
 	
-	- Redimensionner l'image par rapport à la fenêtre
-	- Boutons sur le côté permettant de tester nos différentes fonctions de traitements d'images
-	- La fenêtre affiche les 2 images, l'image de base (source) et l'image après traitement (destination)
-	- Un bouton permettant de convertir l'image de destination (QImage) en image opencv (Mat) et d'afficher ce dernier grâce à Imshow
+Analyse d'images:
+	-Amélioration des algorithmes pour prendre en charge les images en GrayScale, permet d'enlever les conversions
+		redondantes, et l'utisation des fonctions de maniere successives faccilité.
+	-Rajout de showMatrice(cv::Mat mat) dans ImageAnalyser pour le débuguage.
+	-Rajout de computeEfficiency(double time, func, args) pour avoir une aproximation de l'éfficacité des algorithmes.
+	-Rajout des fonctions Sobel et Flou gaussien.
 
+Mise en place d'un exécutable pour les tests d'analyse d'images.
 
-Nouvelles Fonctions:
-	
-	- seperateImage() qui sépare une image (Mat) verticalement en 2 images (Mat) de tailles égales
-	- Laplacian() qui prend une image (Mat) et qui la rend en mode Laplacian
-	- Disparity() - recherche et expérimentation avec cv::StereoBM
+Pistes d'améliorations:
+	-Implémentation des tests
+	-Factorisation du code pour les fenetres BM et SGBM
+	-Recherche sur la possible utilisation de threads
+	-SteroVar documentation openCv
+	-Recherche analyse de flux vidéo
+	-Recherche object tracking et template
+
