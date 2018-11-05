@@ -2,29 +2,28 @@ Rapport du groupe CERUTTI
 Le 05 novembre 2018
 
 Interface graphique:
-	-Rajout d'une check box pour remettre à l'image d'origine automatiquement dans la fenetre principal et des fonctions
-		apropriees.
-	-Rajout de l'affichage de l'efficacite des fonctions utilise et des fonctions apropries.
-	-Mise a jour du code des boutons, des menus, et des fenetres pour implementer ces nouvelles mecaniques.
-	-Rajout d'une fenetre pour les parametres de StereoBM.
+	-Rajout d'une check box pour remettre à l'image d'origine automatiquement dans la fenêtre principal.
+	-Rajout de l'affichage de l'approximation de l'efficacité des fonctions.
+	-Mise a jour du code des boutons, des menus, et des fenêtres pour implémenter ces nouvelles mécaniques.
+	-Rajout d'une fenêtre pour les paramètres de StereoBM.
 	-Rajout des boutons de Sobel et Flou gaussien.
 	
 Analyse d'images:
 	-Amélioration des algorithmes pour prendre en charge les images en GrayScale, permet d'enlever les conversions
-		redondantes, et l'utisation des fonctions de maniere successives faccilité.
+		redondantes, et l'utilisation des fonctions de manière successives facilité.
 	-Rajout de showMatrice(cv::Mat mat) dans ImageAnalyser pour le débuguage.
-	-Rajout de computeEfficiency(double time, func, args) pour avoir une aproximation de l'éfficacité des algorithmes.
+	-Rajout de computeEfficiency(double time, func, args) pour avoir une approximation de l'efficacité des algorithmes.
 	-Rajout des fonctions Sobel et Flou gaussien.
 
 Mise en place d'un exécutable pour les tests d'analyse d'images.
 
 Pistes d'améliorations:
 	-Implémentation des tests
-	-Recherche des meilleurs parametres pour algos stereo
-	-Factorisation du code pour les fenetres BM et SGBM
+	-Recherche des meilleurs paramètres pour algorithmes stereo
+	-Factorisation du code pour les fenêtres BM et SGBM
 	-Recherche sur la possible utilisation de threads
-	-Recherche object tracking et template
-	-SteroVar non essaye openCv
+	-SteroVar non essayé openCv
 	-Recherche analyse de flux vidéo
+	-Recherche object tracking et template
 
 
