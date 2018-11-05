@@ -112,6 +112,20 @@ void MainWindow::on_btnOrigin_clicked()
     refreshImages();
 }
 
+void MainWindow::on_btnGray_clicked()
+{
+    resetBeforeOperationCheck();
+    if (image_src.isNull())
+    {
+        return;
+    }
+
+    double time;
+    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGreyScale, image_mat);
+
+    refreshImages();
+    showEfficiency("Gray", time);
+}
 
 void MainWindow::on_btnGauss_clicked()
 {
@@ -121,7 +135,6 @@ void MainWindow::on_btnGauss_clicked()
         return;
     }
 
-    //Laplacian
     double time;
     image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGaussianBlur, image_mat);
 

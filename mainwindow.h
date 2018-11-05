@@ -49,6 +49,8 @@ private slots:
 
     void on_btnOrigin_clicked();
 
+    void on_btnGray_clicked();
+
     void on_btnGauss_clicked();
 
     void on_btnSobel_clicked();
