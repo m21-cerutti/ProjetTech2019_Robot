@@ -336,9 +336,9 @@
     <property name="title">
      <string>Optio&amp;ns</string>
     </property>
-    <widget class="QMenu" name="menuDepht_Map">
+    <widget class="QMenu" name="menuDisparity_Map">
      <property name="title">
-      <string>&amp;Depht Map</string>
+      <string>Disparity Map</string>
      </property>
      <addaction name="actionSimple"/>
      <addaction name="actionAdvanced"/>
@@ -348,10 +348,11 @@
     <addaction name="actionOrigin"/>
     <addaction name="actionShow_mat"/>
     <addaction name="separator"/>
+    <addaction name="actionGray"/>
     <addaction name="actionGaussian"/>
     <addaction name="actionSobel"/>
     <addaction name="actionLaplacian"/>
-    <addaction name="menuDepht_Map"/>
+    <addaction name="menuDisparity_Map"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -405,6 +406,11 @@
   <action name="actionSobel">
    <property name="text">
     <string>So&amp;bel</string>
+   </property>
+  </action>
+  <action name="actionGray">
+   <property name="text">
+    <string>Gray</string>
    </property>
   </action>
  </widget>

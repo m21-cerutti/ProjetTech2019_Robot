@@ -71,7 +71,7 @@ public:
      * @param mat the source matrice
      * @return grey matrice.
      */
-    static cv::Mat computeGreyScale(const cv::Mat mat);
+    static cv::Mat computeGrayScale(const cv::Mat mat);
 
     /**
      * @brief Apply a gaussian filter

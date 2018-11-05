@@ -75,6 +75,8 @@ private slots:
 
     void on_actionSobel_triggered();
 
+    void on_actionGray_triggered();
+
 private:
 
     double efficiencyFunction;

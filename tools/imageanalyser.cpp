@@ -16,7 +16,7 @@ cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat mat)
 {
     if(mat.type() != CV_8UC1)
     {
-        return computeGreyScale(mat);
+        return computeGrayScale(mat);
     }
     return mat;
 }
@@ -78,7 +78,7 @@ void ImageAnalyser::separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &mat
     matR = mat.colRange((mat.cols/2) + offset, mat.cols);
 }
 
-cv::Mat ImageAnalyser::computeGreyScale(const cv::Mat mat)
+cv::Mat ImageAnalyser::computeGrayScale(const cv::Mat mat)
 {
     cv::Mat gray;
     cv::cvtColor(mat, gray, CV_BGRA2GRAY);

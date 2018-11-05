@@ -121,7 +121,7 @@ void MainWindow::on_btnGray_clicked()
     }
 
     double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGreyScale, image_mat);
+    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGrayScale, image_mat);
 
     refreshImages();
     showEfficiency("Gray", time);
@@ -241,3 +241,8 @@ void MainWindow::on_actionOrigin_triggered()
     on_btnOrigin_clicked();
 }
 
+
+void MainWindow::on_actionGray_triggered()
+{
+    on_btnGray_clicked();
+}
