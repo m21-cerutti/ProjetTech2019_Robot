@@ -12,101 +12,172 @@ void ImageAnalyser::showMatrice(std::string name, cv::Mat mat)
     cv::imshow(name, mat);
 }
 
-QImage ImageAnalyser::toQImage(const cv::Mat mat)
+cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat mat)
 {
-    if(mat.empty())
+    if(mat.type() != CV_8UC1)
     {
-        return QImage();
+        return computeGreyScale(mat);
     }
-
-    // convert to rgb format
-    cv::Mat tmp;
-    cv::cvtColor(mat, tmp, CV_BGRA2RGBA);
-    // make QImage
-    QImage dest((const uchar *) tmp.data, tmp.cols, tmp.rows, tmp.step, QImage::Format_RGBA8888_Premultiplied);
-    dest.bits(); // copy to avoid memory share on same array
-    return dest;
+    return mat;
 }
 
-cv::Mat ImageAnalyser::toMatCV(const QImage img)
+void ImageAnalyser::toQImage(const cv::Mat in, QImage& out)
+{
+    if(in.empty())
+    {
+        out = QImage();
+    }
+
+    switch(in.type())
+    {
+    ///GreyScale case
+    case CV_8UC1:
+    {
+        cv::Mat tmp;
+        cv::cvtColor(in, tmp, CV_GRAY2BGRA);
+        QImage dest((const uchar *) tmp.data, tmp.cols, tmp.rows, tmp.step, QImage::Format_RGBA8888_Premultiplied);
+        out = dest.copy();
+        break;
+    }
+    default:
+    {
+        cv::Mat tmp;
+        cv::cvtColor(in, tmp, CV_BGRA2RGBA);
+        // make QImage
+        QImage dest((const uchar *) tmp.data, tmp.cols, tmp.rows, tmp.step, QImage::Format_RGBA8888_Premultiplied);
+        out = dest.copy();
+        break;
+    }
+    }
+}
+
+void ImageAnalyser::toMatCV(const QImage in, cv::Mat& out)
 {
     cv::Mat result;
-    if(img.isNull())
+    if(!in.isNull())
     {
-        return result;
+        QImage conv = in.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
+        cv::Mat tmp(conv.height(),conv.width(),CV_8UC4,(void *)conv.constBits(), conv.bytesPerLine());
+        cv::cvtColor(tmp, result, cv::COLOR_RGBA2BGRA);
     }
-    QImage conv = img.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
-    cv::Mat tmp(conv.height(),conv.width(),CV_8UC4,(void *)conv.constBits(), conv.bytesPerLine());
-    cv::cvtColor(tmp, result, cv::COLOR_RGBA2BGRA);
-
-    return result.clone();
+    result.copyTo(out);
 }
 
 void ImageAnalyser::separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &matR)
 {
-    // variables
+    /// Parity of the image
     int offset = 0;
-    // assertions
     if(mat.empty())
     {
         return;
     }
-    // left img from otigin to src's middle
+    /// left img from otigin to src's middle
     matL = mat.colRange(0, mat.cols/2);
-    // verify odd size
+    /// Verify odd size
     offset = mat.cols % 2;
     matR = mat.colRange((mat.cols/2) + offset, mat.cols);
 }
 
-cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat sourceMat)
+cv::Mat ImageAnalyser::computeGreyScale(const cv::Mat mat)
 {
-    cv::Mat gray, dest;
-    ///Transform to Gray and smooth
-    cv::GaussianBlur( sourceMat, sourceMat, cv::Size(3,3), 0, 0, cv::BORDER_DEFAULT );
-    cv::cvtColor( sourceMat, gray, CV_BGRA2GRAY );
+    cv::Mat gray;
+    cv::cvtColor(mat, gray, CV_BGRA2GRAY);
+    return gray;
+}
 
-    /// Apply Laplace function
-    cv::Laplacian( gray, dest, CV_16S, 3, 1, 0, cv::BORDER_DEFAULT );
-    convertScaleAbs( dest, dest );
-
-    ///Conversion gor QImage
-    cv::cvtColor( dest, dest, CV_GRAY2BGRA );
+cv::Mat ImageAnalyser::computeGaussianBlur(const cv::Mat mat)
+{
+    cv::Mat dest;
+    double sigmaX = 0, sigmaY = 0;
+    cv::Size size(3,3);
+    cv::GaussianBlur( mat, dest, size, sigmaX, sigmaY, cv::BORDER_DEFAULT );
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat sourceMat, cv::StereoBM bmState)
+cv::Mat ImageAnalyser::computeSobel(const cv::Mat mat)
+{
+    cv::Mat gray, dest;
+
+    ///Parameters default
+    int dx = 2;
+    int dy = 2;
+    int ksize = 3;
+    double scale = 1;
+    double delta = 0;
+    int borderType= cv::BORDER_DEFAULT;
+
+    gray = applyGreyScaleCondition(mat);
+
+    cv::Sobel(gray, dest, CV_16S, dx, dy, ksize, scale, delta, borderType);
+    convertScaleAbs( dest, dest );
+
+    return dest;
+}
+
+cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat mat)
+{
+    cv::Mat tmp, dest;
+
+    ///Transform to Gray and smooth
+    tmp = applyGreyScaleCondition(mat);
+    tmp = computeGaussianBlur(tmp);
+
+    /// Apply Laplace function
+    cv::Laplacian( tmp, dest, CV_16S, 3, 1, 0, cv::BORDER_DEFAULT );
+    convertScaleAbs( dest, dest );
+
+    return dest;
+}
+
+cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat mat, cv::StereoBM bmState)
 {
     cv::Mat lMat, rMat, disparity;
 
-    // get img and separate in two parts
-    ImageAnalyser::separateImage(sourceMat, lMat, rMat);
-    // get grey img
-    cv::cvtColor(lMat, lMat, CV_BGRA2GRAY);
-    cv::cvtColor(rMat, rMat, CV_BGRA2GRAY);
+    ///Separate
+    ImageAnalyser::separateImage(mat, lMat, rMat);
 
-    // get disparity map
+    ///Gray
+    lMat = applyGreyScaleCondition(lMat);
+    rMat = applyGreyScaleCondition(rMat);
+
+    ///Disparity map
     bmState(lMat, rMat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
 
-    // convert
-    cv::cvtColor(disparity, disparity, CV_GRAY2BGRA);
     return disparity;
 }
 
-cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat sourceMat, cv::StereoSGBM sgbmState)
+cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat mat, cv::StereoSGBM sgbmState)
 {
 
     cv::Mat lMat, rMat, disparity;
 
-    // get img and separate in two parts
-    ImageAnalyser::separateImage(sourceMat, lMat, rMat);
-    // get grey img
-    cv::cvtColor(lMat, lMat, CV_BGRA2GRAY);
-    cv::cvtColor(rMat, rMat, CV_BGRA2GRAY);
-    // get disparity map
+    ///Separate
+    ImageAnalyser::separateImage(mat, lMat, rMat);
+
+    ///Gray
+    lMat = applyGreyScaleCondition(lMat);
+    rMat = applyGreyScaleCondition(rMat);
+
+    ///Disparity map
     sgbmState(lMat, rMat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
-    cv::cvtColor(disparity, disparity, CV_GRAY2BGRA);
 
     return disparity;
+}
+
+cv::Mat ImageAnalyser::computeEfficiency(double &time, ImageAnalyser::filter_func func, const cv::Mat mat)
+{
+    double elapsedTime;
+    clock_t stopTime;
+    clock_t startTime = clock();
+
+    cv::Mat result = func(mat);
+
+    stopTime = clock();
+    elapsedTime = (stopTime - startTime) / (CLOCKS_PER_SEC / (double) 1000.0);
+    time = elapsedTime;
+
+    return result;
+
 }

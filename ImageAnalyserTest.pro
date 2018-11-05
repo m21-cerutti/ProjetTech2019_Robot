@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = 3DRV
+TARGET = TestsImageAnalizer
 TEMPLATE = app
 
 # Import OpenCV
@@ -32,17 +32,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
     tools/imageanalyser.cpp \
-    subWindows/sgbmparamdialog.cpp \
-    subWindows/bmparamdialog.cpp \
+    tools/imageanalysertests.cpp \
+    maintests.cpp
 
 HEADERS += \
-        mainwindow.h \
     tools/imageanalyser.h \
-    subWindows/sgbmparamdialog.h \
-    subWindows/bmparamdialog.h \
+    tools/imageanalysertests.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

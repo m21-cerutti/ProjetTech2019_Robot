@@ -49,6 +49,10 @@ private slots:
 
     void on_btnOrigin_clicked();
 
+    void on_btnGauss_clicked();
+
+    void on_btnSobel_clicked();
+
     void on_btnLaplacian_clicked();
 
     void on_cbDestination_stateChanged(int arg1);
@@ -64,6 +68,10 @@ private slots:
     void on_actionSimple_triggered();
 
     void on_actionLaplacian_triggered();
+
+    void on_actionGaussian_triggered();
+
+    void on_actionSobel_triggered();
 
 private:
 

@@ -1,0 +1,16 @@
+Rapport du groupe CERUTTI
+Le 05 novembre 2018
+
+Réaménagement de l'interface graphique:
+	
+	- Redimensionner l'image par rapport à la fenêtre
+	- Boutons sur le côté permettant de tester nos différentes fonctions de traitements d'images
+	- La fenêtre affiche les 2 images, l'image de base (source) et l'image après traitement (destination)
+	- Un bouton permettant de convertir l'image de destination (QImage) en image opencv (Mat) et d'afficher ce dernier grâce à Imshow
+
+
+Nouvelles Fonctions:
+	
+	- seperateImage() qui sépare une image (Mat) verticalement en 2 images (Mat) de tailles égales
+	- Laplacian() qui prend une image (Mat) et qui la rend en mode Laplacian
+	- Disparity() - recherche et expérimentation avec cv::StereoBM

@@ -7,12 +7,13 @@ SGBMParamDialog::SGBMParamDialog(QImage& src, QWidget *parent) :
     img_dst(src),
     time(0),
     ui(new Ui::SGBMParamDialog)
-
-
 {
+    ImageAnalyser::toMatCV(src, mat_dst);
     ui->setupUi(this);
     setWindowTitle("Parameters of SGBM Disparity Map");
     refreshImages();
+
+
 
 }
 
@@ -27,7 +28,7 @@ void SGBMParamDialog::refreshImages()
     ui->imgView->setPixmap(QPixmap::fromImage(img_dst.scaled(ui->boxImg->width()*0.9,
                                                              ui->boxImg->height()*0.9,
                                                              Qt::AspectRatioMode::KeepAspectRatio)));
-    ui->labelTime->setText("Time(ms: "+ QString::number((time)));
+    ui->labelTime->setText("Time(ms): "+ QString::number((time)));
 }
 
 void SGBMParamDialog::refreshModifs()
@@ -57,12 +58,12 @@ void SGBMParamDialog::applyDisparity()
     bmState.SADWindowSize = ui->SADwindowSize_slider->value();
 
     //Conversion and application of Disparity
-    mat_dst = ImageAnalyser::toMatCV(img_src);
+    ImageAnalyser::toMatCV(img_src, mat_dst);
 
     mat_dst = ImageAnalyser::computeEfficiency(this->time, ImageAnalyser::computeSGBMDisparity, mat_dst, bmState);
 
     //View the result
-    img_dst = ImageAnalyser::toQImage(mat_dst);
+    ImageAnalyser::toQImage(mat_dst, img_dst);
 
 }
 

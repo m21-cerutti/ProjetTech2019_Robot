@@ -46,7 +46,8 @@ void MainWindow::refreshImages()
                                                                          Qt::AspectRatioMode::KeepAspectRatio)));
 
         //Refresh destination
-        QImage img = ImageAnalyser::toQImage(image_mat);
+        QImage img;
+        ImageAnalyser::toQImage(image_mat, img);
         ui->imageLabelDst->setPixmap(QPixmap::fromImage(img.scaled(ui->boxDest->width()*0.9,
                                                                    ui->boxDest->height()*0.9,
                                                                    Qt::AspectRatioMode::KeepAspectRatio)));
@@ -106,10 +107,43 @@ void MainWindow::on_btnOrigin_clicked()
     }
 
     //Convert
-    image_mat = ImageAnalyser::toMatCV(image_src);
+    ImageAnalyser::toMatCV(image_src, image_mat);
 
     refreshImages();
 }
+
+
+void MainWindow::on_btnGauss_clicked()
+{
+    resetBeforeOperationCheck();
+    if (image_src.isNull())
+    {
+        return;
+    }
+
+    //Laplacian
+    double time;
+    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGaussianBlur, image_mat);
+
+    refreshImages();
+    showEfficiency("GaussianBlur", time);
+}
+
+void MainWindow::on_btnSobel_clicked()
+{
+    resetBeforeOperationCheck();
+    if (image_src.isNull())
+    {
+        return;
+    }
+
+    double time;
+    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeSobel, image_mat);
+
+    refreshImages();
+    showEfficiency("Sobel", time);
+}
+
 
 void MainWindow::on_btnLaplacian_clicked()
 {
@@ -119,7 +153,6 @@ void MainWindow::on_btnLaplacian_clicked()
         return;
     }
 
-    //Laplacian
     double time;
     image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeLaplacian, image_mat);
 
@@ -134,7 +167,8 @@ void MainWindow::on_btnSGBMDisparity_clicked()
     {
         return;
     }
-    QImage img = ImageAnalyser::toQImage(image_mat);
+    QImage img;
+    ImageAnalyser::toQImage(image_mat, img);
     SGBMParamDialog dial(img);
     if(dial.exec() != QDialog::Rejected)
     {
@@ -152,7 +186,8 @@ void MainWindow::on_btnBMDisparity_clicked()
     {
         return;
     }
-    QImage img = ImageAnalyser::toQImage(image_mat);
+    QImage img;
+    ImageAnalyser::toQImage(image_mat, img);
     BMParamDialog dial(img);
     if(dial.exec() != QDialog::Rejected)
     {
@@ -166,6 +201,16 @@ void MainWindow::on_btnBMDisparity_clicked()
 void MainWindow::on_actionLaplacian_triggered()
 {
     on_btnLaplacian_clicked();
+}
+
+void MainWindow::on_actionGaussian_triggered()
+{
+    on_btnGauss_clicked();
+}
+
+void MainWindow::on_actionSobel_triggered()
+{
+    on_btnSobel_clicked();
 }
 
 void MainWindow::on_actionSimple_triggered()
