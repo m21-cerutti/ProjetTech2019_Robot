@@ -20,9 +20,11 @@ Mise en place d'un exécutable pour les tests d'analyse d'images.
 
 Pistes d'améliorations:
 	-Implémentation des tests
+	-Recherche des meilleurs parametres pour algos stereo
 	-Factorisation du code pour les fenetres BM et SGBM
 	-Recherche sur la possible utilisation de threads
-	-SteroVar documentation openCv
-	-Recherche analyse de flux vidéo
 	-Recherche object tracking et template
+	-SteroVar non essaye openCv
+	-Recherche analyse de flux vidéo
+
 
