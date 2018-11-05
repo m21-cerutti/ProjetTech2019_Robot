@@ -99,8 +99,8 @@ cv::Mat ImageAnalyser::computeSobel(const cv::Mat mat)
     cv::Mat gray, dest;
 
     ///Parameters default
-    int dx = 2;
-    int dy = 2;
+    int dx = 1;
+    int dy = 0;
     int ksize = 3;
     double scale = 1;
     double delta = 0;

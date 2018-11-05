@@ -75,7 +75,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(this, "About", "Project by : <ul><li>BANDET Alexis</li><li>CERUTTI Marc</li><li>VISTE Isak</li>");
+    QMessageBox::about(this, "About", "Project by CERUTTI Marc");
 }
 
 void MainWindow::on_actionOpen_triggered()

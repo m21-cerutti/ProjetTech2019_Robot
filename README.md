@@ -4,6 +4,5 @@
 
 Project technologique of L3
 
-Bandet Alexis
 Cerutti Marc
-Viste Isak
+
