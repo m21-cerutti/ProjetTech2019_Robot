@@ -42,6 +42,7 @@ private:
 
 private:
 
+    std::string prefix_images= "./STEREO/";
     std::string images_tests_dir = "./STEREO/images_tests.txt";
 
     std::vector<cv::Mat> images;

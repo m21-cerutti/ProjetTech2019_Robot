@@ -34,11 +34,11 @@ CONFIG += c++11
 SOURCES += \
     tools/imageanalyser.cpp \
     tools/imageanalysertests.cpp \
-    maintests.cpp
+    maintests.cpp \
 
 HEADERS += \
     tools/imageanalyser.h \
-    tools/imageanalysertests.h
+    tools/imageanalysertests.h \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -48,6 +48,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 FORMS += \
     mainwindow.ui \
     subWindows/sgbmparamdialog.ui \
-    subWindows/bmparamdialog.ui
+    subWindows/bmparamdialog.ui \
 
 DISTFILES +=

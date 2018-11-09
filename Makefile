@@ -50,10 +50,20 @@ OBJECTS_DIR   = ./
 
 SOURCES       = tools/imageanalyser.cpp \
 		tools/imageanalysertests.cpp \
+<<<<<<< Updated upstream
 		maintests.cpp 
 OBJECTS       = imageanalyser.o \
 		imageanalysertests.o \
 		maintests.o
+=======
+		maintests.cpp \
+		tools/fastimageview.cpp moc_fastimageview.cpp
+OBJECTS       = imageanalyser.o \
+		imageanalysertests.o \
+		maintests.o \
+		fastimageview.o \
+		moc_fastimageview.o
+>>>>>>> Stashed changes
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -188,9 +198,17 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		ImageAnalyserTest.pro tools/imageanalyser.h \
+<<<<<<< Updated upstream
 		tools/imageanalysertests.h tools/imageanalyser.cpp \
 		tools/imageanalysertests.cpp \
 		maintests.cpp
+=======
+		tools/imageanalysertests.h \
+		tools/fastimageview.h tools/imageanalyser.cpp \
+		tools/imageanalysertests.cpp \
+		maintests.cpp \
+		tools/fastimageview.cpp
+>>>>>>> Stashed changes
 QMAKE_TARGET  = TestsImageAnalizer
 DESTDIR       = 
 TARGET        = TestsImageAnalizer
@@ -199,7 +217,11 @@ TARGET        = TestsImageAnalizer
 first: all
 ####### Build rules
 
+<<<<<<< Updated upstream
 $(TARGET): ui_mainwindow.h ui_sgbmparamdialog.h ui_bmparamdialog.h $(OBJECTS)  
+=======
+$(TARGET): ui_mainwindow.h ui_sgbmparamdialog.h ui_bmparamdialog.h ui_fastimageview.h $(OBJECTS)  
+>>>>>>> Stashed changes
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ImageAnalyserTest.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -491,9 +513,15 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+<<<<<<< Updated upstream
 	$(COPY_FILE) --parents tools/imageanalyser.h tools/imageanalysertests.h $(DISTDIR)/
 	$(COPY_FILE) --parents tools/imageanalyser.cpp tools/imageanalysertests.cpp maintests.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui subWindows/sgbmparamdialog.ui subWindows/bmparamdialog.ui $(DISTDIR)/
+=======
+	$(COPY_FILE) --parents tools/imageanalyser.h tools/imageanalysertests.h tools/fastimageview.h $(DISTDIR)/
+	$(COPY_FILE) --parents tools/imageanalyser.cpp tools/imageanalysertests.cpp maintests.cpp tools/fastimageview.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.ui subWindows/sgbmparamdialog.ui subWindows/bmparamdialog.ui tools/fastimageview.ui $(DISTDIR)/
+>>>>>>> Stashed changes
 
 
 clean: compiler_clean 
@@ -519,6 +547,7 @@ benchmark: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
+<<<<<<< Updated upstream
 compiler_moc_header_make_all:
 compiler_moc_header_clean:
 compiler_moc_source_make_all:
@@ -526,17 +555,44 @@ compiler_moc_source_clean:
 compiler_uic_make_all: ui_mainwindow.h ui_sgbmparamdialog.h ui_bmparamdialog.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_mainwindow.h ui_sgbmparamdialog.h ui_bmparamdialog.h
+=======
+compiler_moc_header_make_all: moc_fastimageview.cpp
+compiler_moc_header_clean:
+	-$(DEL_FILE) moc_fastimageview.cpp
+moc_fastimageview.cpp: tools/fastimageview.h \
+		/usr/lib/x86_64-linux-gnu/qt5/bin/moc
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I'/autofs/unityaccount/cremi/mcerutti/Projet tech 3D/l3-rvc' -I/usr/include/opencv -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include tools/fastimageview.h -o moc_fastimageview.cpp
+
+compiler_moc_source_make_all:
+compiler_moc_source_clean:
+compiler_uic_make_all: ui_mainwindow.h ui_sgbmparamdialog.h ui_bmparamdialog.h ui_fastimageview.h
+compiler_uic_clean:
+	-$(DEL_FILE) ui_mainwindow.h ui_sgbmparamdialog.h ui_bmparamdialog.h ui_fastimageview.h
+>>>>>>> Stashed changes
 ui_mainwindow.h: mainwindow.ui \
 		/usr/lib/x86_64-linux-gnu/qt5/bin/uic
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic mainwindow.ui -o ui_mainwindow.h
 
 ui_sgbmparamdialog.h: subWindows/sgbmparamdialog.ui \
+<<<<<<< Updated upstream
 		/usr/lib/x86_64-linux-gnu/qt5/bin/uic
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic subWindows/sgbmparamdialog.ui -o ui_sgbmparamdialog.h
 
 ui_bmparamdialog.h: subWindows/bmparamdialog.ui \
 		/usr/lib/x86_64-linux-gnu/qt5/bin/uic
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic subWindows/bmparamdialog.ui -o ui_bmparamdialog.h
+=======
+		/usr/lib/x86_64-linux-gnu/qt5/bin/uic
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic subWindows/sgbmparamdialog.ui -o ui_sgbmparamdialog.h
+
+ui_bmparamdialog.h: subWindows/bmparamdialog.ui \
+		/usr/lib/x86_64-linux-gnu/qt5/bin/uic
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic subWindows/bmparamdialog.ui -o ui_bmparamdialog.h
+
+ui_fastimageview.h: tools/fastimageview.ui \
+		/usr/lib/x86_64-linux-gnu/qt5/bin/uic
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic tools/fastimageview.ui -o ui_fastimageview.h
+>>>>>>> Stashed changes
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -554,10 +610,24 @@ imageanalyser.o: tools/imageanalyser.cpp tools/imageanalyser.h
 imageanalysertests.o: tools/imageanalysertests.cpp tools/imageanalysertests.h \
 		tools/imageanalyser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o imageanalysertests.o tools/imageanalysertests.cpp
+<<<<<<< Updated upstream
 
 maintests.o: maintests.cpp tools/imageanalysertests.h \
 		tools/imageanalyser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o maintests.o maintests.cpp
+=======
+
+maintests.o: maintests.cpp tools/imageanalysertests.h \
+		tools/imageanalyser.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o maintests.o maintests.cpp
+
+fastimageview.o: tools/fastimageview.cpp tools/fastimageview.h \
+		ui_fastimageview.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o fastimageview.o tools/fastimageview.cpp
+
+moc_fastimageview.o: moc_fastimageview.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_fastimageview.o moc_fastimageview.cpp
+>>>>>>> Stashed changes
 
 ####### Install
 

@@ -28,7 +28,8 @@ Pistes d'améliorations:
 
 
 
-//
+////
+
 Pas d'image dans git
 Signaler fuites mémoire, meme biblotheque
 Sobel n'est pas juste la fonction, voire voca, faire un gradient
@@ -39,3 +40,21 @@ Trop de découpage
 On voit pas grayscale
 Laisser le code cvtColor ne faccilite pas le code
 Mettre plus de références
+
+PROCHAINE SEANCE
+Simplifier le code
+Rennomer les variables avec convention (code et fichiers) et commenter le code
+Voire carte disparité probleme
+
+
+AMELIORATIONS
+Prévoir quoi faire avec le matériel
+
+RENDU FINAL
+Parametres
+Carte de disparité
+Carte de profondeur
+Rapport
+Avec graphiques performances
+Tests
+Soutenance

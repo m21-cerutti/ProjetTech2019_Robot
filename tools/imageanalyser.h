@@ -1,12 +1,7 @@
 #ifndef IMAGEANALYSER_H
 #define IMAGEANALYSER_H
 
-#include <QObject>
-#include <QWidget>
-#include <QDebug>
-
 #include <QImage>
-#include <QPixmap>
 
 #include <opencv2/core/core.hpp>
 #include <opencv/cvwimage.h>
@@ -26,13 +21,6 @@ class ImageAnalyser
 private:
 
     /**
-     * @brief show the matrice, without Qt
-     * @param name the name of the windows cv
-     * @param mat the matrice to display
-     */
-    static void showMatrice(std::string name, cv::Mat &sourcemat);
-
-    /**
      * @brief Transform into greyscale matrice if it's not one yet.
      * @param mat the matrice to transform
      * @return the gray matrice (or itself)
@@ -40,6 +28,14 @@ private:
     static cv::Mat applyGreyScaleCondition(const cv::Mat &mat);
 
 public:
+
+    /**
+     * @brief show the matrice, without Qt
+     * @param name the name of the windows cv
+     * @param mat the matrice to display
+     */
+    static void showMatrice(std::string name, cv::Mat& mat, int mode=0);
+
 
     ///Function pointer for efficiency calculation
     typedef cv::Mat (*filter_func) (const cv::Mat&);

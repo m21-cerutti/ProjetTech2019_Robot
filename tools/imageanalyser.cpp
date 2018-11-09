@@ -1,15 +1,27 @@
 #include "imageanalyser.h"
 
 
-void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat)
+
+void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat, int mode)
 {
     if(mat.empty())
     {
+        std::cerr << "Matrice empty.\n";
         return;
     }
-
-    namedWindow(name, cv::WINDOW_NORMAL);
-    cv::imshow(name, mat);
+    /*
+    if(mode ==0)
+    {
+        QImage img;
+        toQImage(mat, img);
+        FastImageView view (img);
+        view.exec();
+    }
+    else
+    {*/
+        namedWindow(name, cv::WINDOW_NORMAL);
+        cv::imshow(name, mat);
+    //}
 }
 
 cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat& mat)
