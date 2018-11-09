@@ -75,7 +75,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(this, "About", "Project by CERUTTI Marc");
+    QMessageBox::about(this, "About", "Project by CERUTTI Marc"\
+                                      "\nInterface de tests pour les fonctions d'analyse d'images.");
 }
 
 void MainWindow::on_actionOpen_triggered()
