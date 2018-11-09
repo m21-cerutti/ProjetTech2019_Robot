@@ -113,21 +113,6 @@ void MainWindow::on_btnOrigin_clicked()
     refreshImages();
 }
 
-void MainWindow::on_btnGray_clicked()
-{
-    resetBeforeOperationCheck();
-    if (image_src.isNull())
-    {
-        return;
-    }
-
-    double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGrayScale, image_mat);
-
-    refreshImages();
-    showEfficiency("Gray", time);
-}
-
 void MainWindow::on_btnGauss_clicked()
 {
     resetBeforeOperationCheck();
@@ -240,10 +225,4 @@ void MainWindow::on_actionAdvanced_triggered()
 void MainWindow::on_actionOrigin_triggered()
 {
     on_btnOrigin_clicked();
-}
-
-
-void MainWindow::on_actionGray_triggered()
-{
-    on_btnGray_clicked();
 }

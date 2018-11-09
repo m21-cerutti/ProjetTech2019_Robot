@@ -30,33 +30,33 @@ private:
      * @param name the name of the windows cv
      * @param mat the matrice to display
      */
-    static void showMatrice(std::string name, cv::Mat mat);
+    static void showMatrice(std::string name, cv::Mat &sourcemat);
 
     /**
      * @brief Transform into greyscale matrice if it's not one yet.
      * @param mat the matrice to transform
      * @return the gray matrice (or itself)
      */
-    static cv::Mat applyGreyScaleCondition(const cv::Mat mat);
+    static cv::Mat applyGreyScaleCondition(const cv::Mat &mat);
 
 public:
 
     ///Function pointer for efficiency calculation
-    typedef cv::Mat (*filter_func) (cv::Mat);
+    typedef cv::Mat (*filter_func) (const cv::Mat&);
 
     /**
     * @brief convert cv::Mat img to QImage img
     * @param in cv::Mat to convert
     * @param out QImage the output
     */
-    static void toQImage(const cv::Mat in, QImage &out);
+    static void toQImage(const cv::Mat& in, QImage &out);
 
     /**
     * @brief convert Qimage in cv::Mat img
     * @param in QImage to convert
     * @param out cv::Mat the output
     */
-    static void toMatCV(const QImage in, cv::Mat& out);
+    static void toMatCV(const QImage& in, cv::Mat& out);
 
     /**
     * @brief Seperate the image in 2 equal parts: left & right)
@@ -64,35 +64,28 @@ public:
     * @param matL Left result
     * @param matR Right result
     */
-    static void separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &matR);
-
-    /**
-     * @brief Transform into greyscale matrice.
-     * @param mat the source matrice
-     * @return grey matrice.
-     */
-    static cv::Mat computeGrayScale(const cv::Mat mat);
+    static void separateImage(const cv::Mat& mat, cv::Mat &matL, cv::Mat &matR);
 
     /**
      * @brief Apply a gaussian filter
      * @param mat the source matrice
      * @return the result
      */
-    static cv::Mat computeGaussianBlur(const cv::Mat mat);
+    static cv::Mat computeGaussianBlur(const cv::Mat& mat);
 
     /**
      * @brief Apply a sobel filter
      * @param mat the source matrice
      * @return the result
      */
-    static cv::Mat computeSobel(const cv::Mat mat);
+    static cv::Mat computeSobel(const cv::Mat& mat);
 
     /**
     * @brief Transform into greyscale if needed and apply the laplacian.
     * @param mat the source matrice
     * @return the result matrice
     */
-    static cv::Mat computeLaplacian(const cv::Mat mat);
+    static cv::Mat computeLaplacian(const cv::Mat& mat);
 
 
     /**
@@ -104,7 +97,7 @@ public:
      *     SADWindowsSize
      * @return the disparity matrice
      */
-    static cv::Mat computeBMDisparity(const cv::Mat mat,  cv::StereoBM bmState);
+    static cv::Mat computeBMDisparity(const cv::Mat& mat,  cv::StereoBM bmState);
 
     /**
      * @brief Make disparity map with SGBM algorithm
@@ -123,7 +116,7 @@ public:
      *     SADWindowSize
      * @return the disparity matrice
      */
-    static cv::Mat computeSGBMDisparity(const cv::Mat mat, cv::StereoSGBM sgbmState);
+    static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::StereoSGBM sgbmState);
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.
@@ -133,11 +126,11 @@ public:
      * @param argstereo optionnal argument for the fonction (especially stereo functions)
      * @return the resulting cv::Mat of the fonction
      */
-    static cv::Mat computeEfficiency(double& time, filter_func func, const cv::Mat mat);
+    static cv::Mat computeEfficiency(double& time, filter_func func, const cv::Mat& mat);
 
     ///Surchage template
     template<typename T, typename U>
-    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat mat, U argstereo)
+    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat& mat, U& argstereo)
     {
         double elapsedTime;
         clock_t stopTime;

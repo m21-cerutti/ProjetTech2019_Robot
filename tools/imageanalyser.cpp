@@ -1,7 +1,7 @@
 #include "imageanalyser.h"
 
 
-void ImageAnalyser::showMatrice(std::string name, cv::Mat mat)
+void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat)
 {
     if(mat.empty())
     {
@@ -12,16 +12,18 @@ void ImageAnalyser::showMatrice(std::string name, cv::Mat mat)
     cv::imshow(name, mat);
 }
 
-cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat mat)
+cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat& mat)
 {
     if(mat.type() != CV_8UC1)
     {
-        return computeGrayScale(mat);
+        cv::Mat gray;
+        cv::cvtColor(mat, gray, CV_BGRA2GRAY);
+        return gray;
     }
     return mat;
 }
 
-void ImageAnalyser::toQImage(const cv::Mat in, QImage& out)
+void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
 {
     if(in.empty())
     {
@@ -51,7 +53,7 @@ void ImageAnalyser::toQImage(const cv::Mat in, QImage& out)
     }
 }
 
-void ImageAnalyser::toMatCV(const QImage in, cv::Mat& out)
+void ImageAnalyser::toMatCV(const QImage &in, cv::Mat& out)
 {
     cv::Mat result;
     if(!in.isNull())
@@ -63,7 +65,7 @@ void ImageAnalyser::toMatCV(const QImage in, cv::Mat& out)
     result.copyTo(out);
 }
 
-void ImageAnalyser::separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &matR)
+void ImageAnalyser::separateImage(const cv::Mat& mat, cv::Mat &matL, cv::Mat &matR)
 {
     /// Parity of the image
     int offset = 0;
@@ -78,14 +80,7 @@ void ImageAnalyser::separateImage(const cv::Mat mat, cv::Mat &matL, cv::Mat &mat
     matR = mat.colRange((mat.cols/2) + offset, mat.cols);
 }
 
-cv::Mat ImageAnalyser::computeGrayScale(const cv::Mat mat)
-{
-    cv::Mat gray;
-    cv::cvtColor(mat, gray, CV_BGRA2GRAY);
-    return gray;
-}
-
-cv::Mat ImageAnalyser::computeGaussianBlur(const cv::Mat mat)
+cv::Mat ImageAnalyser::computeGaussianBlur(const cv::Mat& mat)
 {
     cv::Mat dest;
     double sigmaX = 0, sigmaY = 0;
@@ -94,13 +89,13 @@ cv::Mat ImageAnalyser::computeGaussianBlur(const cv::Mat mat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeSobel(const cv::Mat mat)
+cv::Mat ImageAnalyser::computeSobel(const cv::Mat& mat)//1D FAUT 2Dprendre x, y et max des deux
 {
     cv::Mat gray, dest;
 
     ///Parameters default
     int dx = 1;
-    int dy = 0;
+    int dy = 0;//A CHANGER
     int ksize = 3;
     double scale = 1;
     double delta = 0;
@@ -114,7 +109,7 @@ cv::Mat ImageAnalyser::computeSobel(const cv::Mat mat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat mat)
+cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat& mat)
 {
     cv::Mat tmp, dest;
 
@@ -129,7 +124,7 @@ cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat mat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat mat, cv::StereoBM bmState)
+cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat, cv::StereoBM bmState)
 {
     cv::Mat lMat, rMat, disparity;
 
@@ -147,7 +142,7 @@ cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat mat, cv::StereoBM bmStat
     return disparity;
 }
 
-cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat mat, cv::StereoSGBM sgbmState)
+cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::StereoSGBM sgbmState)
 {
 
     cv::Mat lMat, rMat, disparity;
@@ -166,7 +161,7 @@ cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat mat, cv::StereoSGBM sg
     return disparity;
 }
 
-cv::Mat ImageAnalyser::computeEfficiency(double &time, ImageAnalyser::filter_func func, const cv::Mat mat)
+cv::Mat ImageAnalyser::computeEfficiency(double &time, ImageAnalyser::filter_func func, const cv::Mat& mat)
 {
     double elapsedTime;
     clock_t stopTime;

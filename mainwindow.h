@@ -49,8 +49,6 @@ private slots:
 
     void on_btnOrigin_clicked();
 
-    void on_btnGray_clicked();
-
     void on_btnGauss_clicked();
 
     void on_btnSobel_clicked();
@@ -74,8 +72,6 @@ private slots:
     void on_actionGaussian_triggered();
 
     void on_actionSobel_triggered();
-
-    void on_actionGray_triggered();
 
 private:
 

@@ -1,7 +1,7 @@
 #include "imageanalysertests.h"
 
 ImageAnalyserTests::ImageAnalyserTests() :
-    images(std::vector())
+    images(std::vector<cv::Mat>())
 {
 
 }

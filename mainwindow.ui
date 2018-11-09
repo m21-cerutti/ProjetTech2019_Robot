@@ -99,13 +99,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnGray">
-          <property name="text">
-           <string>Gray</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="btnGauss">
           <property name="text">
            <string>GaussianBlur</string>

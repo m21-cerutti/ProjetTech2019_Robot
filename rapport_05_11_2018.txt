@@ -27,3 +27,15 @@ Pistes d'améliorations:
 	-Recherche object tracking et template
 
 
+
+//
+Pas d'image dans git
+Signaler fuites mémoire, meme biblotheque
+Sobel n'est pas juste la fonction, voire voca, faire un gradient
+Diparity map, négatif ?
+Voire pour normalisation
+Image inversée ?
+Trop de découpage 
+On voit pas grayscale
+Laisser le code cvtColor ne faccilite pas le code
+Mettre plus de références
