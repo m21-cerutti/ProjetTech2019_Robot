@@ -1,1 +1,10 @@
+*.aux
+*.toc
+*.aux
+*.lof
+*.log
+*.out
+*.synctex.gz
+*.toc
 *.user
+*.stash
