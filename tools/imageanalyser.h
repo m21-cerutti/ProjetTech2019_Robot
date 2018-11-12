@@ -18,7 +18,7 @@
 class ImageAnalyser
 {
 
-public:
+private:
 
     /**
      * @brief Transform into greyscale matrice if it's not one yet.
@@ -27,16 +27,18 @@ public:
      */
     static cv::Mat applyGreyScaleCondition(const cv::Mat &mat);
 
+public:
+
+    ///Function pointer for efficiency calculation
+    typedef cv::Mat (*filter_func) (const cv::Mat&);
+
     /**
      * @brief show the matrice, without Qt
      * @param name the name of the windows cv
      * @param mat the matrice to display
      */
-    static void showMatrice(std::string name, cv::Mat& mat, int mode=0);
+    static void showMatrice(std::string name, cv::Mat& mat);
 
-
-    ///Function pointer for efficiency calculation
-    typedef cv::Mat (*filter_func) (const cv::Mat&);
 
     /**
     * @brief convert cv::Mat img to QImage img

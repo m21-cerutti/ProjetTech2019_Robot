@@ -1,8 +1,8 @@
 #include "imageanalyser.h"
 
 
-
-void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat, int mode)
+//TO CHANGE
+void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat)
 {
     if(mat.empty())
     {
@@ -24,6 +24,7 @@ void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat, int mode)
     //}
 }
 
+//TO CHANGE
 cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat& mat)
 {
     if(mat.type() != CV_8UC1)
@@ -35,6 +36,7 @@ cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat& mat)
     return mat;
 }
 
+//TO CHANGE
 void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
 {
     if(in.empty())
@@ -65,6 +67,7 @@ void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
     }
 }
 
+//TO CHANGE
 void ImageAnalyser::toMatCV(const QImage &in, cv::Mat& out)
 {
     cv::Mat result;
@@ -115,8 +118,7 @@ cv::Mat ImageAnalyser::computeSobel(const cv::Mat& mat)//1D FAUT 2Dprendre x, y 
 
     gray = applyGreyScaleCondition(mat);
 
-    cv::Sobel(gray, dest, CV_16S, dx, dy, ksize, scale, delta, borderType);
-    convertScaleAbs( dest, dest );
+    cv::Sobel(gray, dest, CV_8UC1, dx, dy, ksize, scale, delta, borderType);
 
     return dest;
 }
@@ -130,8 +132,7 @@ cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat& mat)
     tmp = computeGaussianBlur(tmp);
 
     /// Apply Laplace function
-    cv::Laplacian( tmp, dest, CV_16S, 3, 1, 0, cv::BORDER_DEFAULT );
-    convertScaleAbs( dest, dest );
+    cv::Laplacian( tmp, dest, CV_8UC1, 3, 1, 0, cv::BORDER_DEFAULT );
 
     return dest;
 }
@@ -149,7 +150,7 @@ cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat,  cv::Ptr<cv::Stere
 
     ///Disparity map
     bmState->compute(lMat, rMat, disparity);
-    cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
+    cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
 
     return disparity;
 }
@@ -168,7 +169,7 @@ cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::Ster
 
     ///Disparity map
     sgbmState->compute(lMat, rMat, disparity);
-    cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
+    cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
 
     return disparity;
 }
