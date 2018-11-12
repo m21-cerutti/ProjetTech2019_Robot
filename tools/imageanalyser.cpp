@@ -136,7 +136,7 @@ cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat& mat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat, cv::StereoBM bmState)
+cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat,  cv::Ptr<cv::StereoBM> bmState)
 {
     cv::Mat lMat, rMat, disparity;
 
@@ -144,17 +144,17 @@ cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat, cv::StereoBM bmSta
     ImageAnalyser::separateImage(mat, lMat, rMat);
 
     ///Gray
-    lMat = applyGreyScaleCondition(lMat);
-    rMat = applyGreyScaleCondition(rMat);
+    lMat = ImageAnalyser::applyGreyScaleCondition(lMat);
+    rMat = ImageAnalyser::applyGreyScaleCondition(rMat);
 
     ///Disparity map
-    bmState(lMat, rMat, disparity);
+    bmState->compute(lMat, rMat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
 
     return disparity;
 }
 
-cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::StereoSGBM sgbmState)
+cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbmState)
 {
 
     cv::Mat lMat, rMat, disparity;
@@ -167,7 +167,7 @@ cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::StereoSGBM s
     rMat = applyGreyScaleCondition(rMat);
 
     ///Disparity map
-    sgbmState(lMat, rMat, disparity);
+    sgbmState->compute(lMat, rMat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8U);
 
     return disparity;

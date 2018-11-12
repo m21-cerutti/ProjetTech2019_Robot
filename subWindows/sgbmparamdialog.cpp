@@ -43,24 +43,46 @@ void SGBMParamDialog::refreshModifs()
 void SGBMParamDialog::applyDisparity()
 {
     //bgm parameters
-    cv::StereoSGBM bmState;
+    int minDisparity = ui->minDisparity_slider->value();;
+    int numDisparities = ui->numDisparities_slider->value();
+    int blockSize = ui->SADwindowSize_slider->value();
+    int P1 =  ui->P1_slider->value();
+    int P2 = ui->P2_slider->value();
+    int disp12MaxDiff = ui->disp12_slider->value();
+    int preFilterCap = ui->preFilterCap_slider->value();
+    int uniquenessRatio = ui->uniquenessRatio_slider->value();
+    int speckleWindowSize = ui->speckleWindowsSize_slider->value();
+    int speckleRange = ui->speckleRange_slider->value();
 
-    bmState.preFilterCap = ui->preFilterCap_slider->value();
-    bmState.fullDP = (ui->FullDP_cb->checkState() == Qt::Checked);
-    bmState.P1 = ui->P1_slider->value();
-    bmState.P2 = ui->P2_slider->value();
-    bmState.minDisparity = ui->minDisparity_slider->value();
-    bmState.numberOfDisparities = ui->numDisparities_slider->value();
-    bmState.uniquenessRatio = ui->uniquenessRatio_slider->value();
-    bmState.speckleWindowSize = ui->speckleWindowsSize_slider->value();
-    bmState.speckleRange = ui->speckleRange_slider->value();
-    bmState.disp12MaxDiff = ui->disp12_slider->value();
-    bmState.SADWindowSize = ui->SADwindowSize_slider->value();
+    int mode;
+    if(ui->FullDP_cb->checkState() == Qt::Checked)
+    {
+        mode = cv::StereoSGBM::MODE_HH;
+    }
+    else
+    {
+        mode = cv::StereoSGBM::MODE_SGBM;
+    }
+
+     cv::Ptr<cv::StereoSGBM> sgbmState =
+             cv::StereoSGBM::create(minDisparity,
+                                    numDisparities,
+                                    blockSize,
+                                    P1,
+                                    P2,
+                                    disp12MaxDiff,
+                                    preFilterCap,
+                                    uniquenessRatio,
+                                    speckleWindowSize,
+                                    speckleRange,
+                                    mode);
+
+
 
     //Conversion and application of Disparity
     ImageAnalyser::toMatCV(img_src, mat_dst);
 
-    mat_dst = ImageAnalyser::computeEfficiency(this->time, ImageAnalyser::computeSGBMDisparity, mat_dst, bmState);
+    mat_dst = ImageAnalyser::computeEfficiency(this->time, ImageAnalyser::computeSGBMDisparity, mat_dst, sgbmState);
 
     //View the result
     ImageAnalyser::toQImage(mat_dst, img_dst);

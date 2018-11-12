@@ -18,7 +18,7 @@
 class ImageAnalyser
 {
 
-private:
+public:
 
     /**
      * @brief Transform into greyscale matrice if it's not one yet.
@@ -26,8 +26,6 @@ private:
      * @return the gray matrice (or itself)
      */
     static cv::Mat applyGreyScaleCondition(const cv::Mat &mat);
-
-public:
 
     /**
      * @brief show the matrice, without Qt
@@ -93,7 +91,7 @@ public:
      *     SADWindowsSize
      * @return the disparity matrice
      */
-    static cv::Mat computeBMDisparity(const cv::Mat& mat,  cv::StereoBM bmState);
+    static cv::Mat computeBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoBM> bmState);
 
     /**
      * @brief Make disparity map with SGBM algorithm
@@ -112,7 +110,7 @@ public:
      *     SADWindowSize
      * @return the disparity matrice
      */
-    static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::StereoSGBM sgbmState);
+    static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbmState);
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.
@@ -126,7 +124,7 @@ public:
 
     ///Surchage template
     template<typename T, typename U>
-    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat& mat, U& argstereo)
+    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat& mat, U argstereo)
     {
         double elapsedTime;
         clock_t stopTime;

@@ -14,10 +14,12 @@ TEMPLATE = app
 # Import OpenCV
 #INCLUDEPATH += /usr/include/opencv
 #LIBS += -L//usr/lib/x86_64-linux-gnu -lopencv_core -lopencv_highgui
+
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += opencv
 }
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the

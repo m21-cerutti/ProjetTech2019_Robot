@@ -40,11 +40,10 @@ void BMParamDialog::refreshModifs()
 void BMParamDialog::applyDisparity()
 {
     //bgm parameters
-    int numberOfDisparities = ui->numDisparities_slider->value();
-    int SADWindowSize = ui->SADwindowSize_slider->value();
+    int numDisparities = ui->numDisparities_slider->value();
+    int blockSize = ui->SADwindowSize_slider->value();
 
-    cv::StereoBM bmState;
-    bmState.init(cv::StereoBM::BASIC_PRESET, numberOfDisparities, SADWindowSize);
+    cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
 
     //Conversion and application of Disparity
     ImageAnalyser::toMatCV(img_src, mat_dst);
