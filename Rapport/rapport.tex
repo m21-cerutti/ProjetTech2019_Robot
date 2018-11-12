@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage[french]{babel}
+\usepackage{pdfpages}
+
+\title{Rapport du projet de Programmation Système}
+\date{\today}
+
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref} % 		Ajouter des liens
+\usepackage{color} % 			Gestion des couleurs
+\usepackage[normalem]{ulem} % 	Underline
+
+\usepackage{comment}%			Commenter
+
+\usepackage{listingsutf8}% 		Code informatique
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+\lstset{
+	tabsize=4,
+    	extendedchars=true,
+    	breaklines=true,
+    	keepspaces=true,
+	inputencoding=utf8,
+    	extendedchars=true,
+    	literate=%
+                {é}{{\'e}}{1}%
+                {è}{{\`e}}{1}%
+                {à}{{\`a}}{1}%
+                {ç}{{\c{c}}}{1}%
+                {œ}{{\oe}}{1}%
+                {ù}{{\`u}}{1}%
+                {É}{{\'E}}{1}%
+                {È}{{\`E}}{1}%
+                {À}{{\`A}}{1}%
+                {Ç}{{\c{C}}}{1}%
+                {Œ}{{\OE}}{1}%
+                {Ê}{{\^E}}{1}%
+                {ê}{{\^e}}{1}%
+                {î}{{\^i}}{1}%
+                {ô}{{\^o}}{1}%
+                {û}{{\^u}}{1}%
+                {ë}{{\¨{e}}}1
+                {û}{{\^{u}}}1
+                {â}{{\^{a}}}1
+                {Â}{{\^{A}}}1
+                {Î}{{\^{I}}}1
+}
+\lstdefinestyle{CMakeStyle}{
+    language={},
+  	backgroundcolor=\color{backgroundColour},
+    numberstyle=\tiny\color{mGray},
+    basicstyle=\footnotesize,
+    numbers=left,
+    numbersep=5pt,
+  	frame=single,
+}
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    language=C
+}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+ \begin{sffamily}
+  \begin{center}
+            \includegraphics[scale=0.04]{img/ubx-logo.png}
+            \\[2cm]
+        
+    
+    {\huge \bfseries Rapport du projet de Programmation Système : Création d'un framework de test\\[0.5cm] }
+
+    \rule{\linewidth}{.5pt}
+    \\[2cm]
+
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushleft} \large
+        \author{}Etudiants :\\
+        	Vincent \textsc{Ameeuw}\\
+        	Marc \textsc{Cerutti}\\
+        	Christophe \textsc{Gaydier}\\
+      \end{flushleft}
+    \end{minipage}
+
+    \vfill
+
+    {\large \today}
+
+  \end{center}
+  \end{sffamily}
+  
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+
+
+\begin{comment}
+%CONSIGNES
+
+
+\end{comment}
+
+
+% - Introduction ------ %
+\newpage
+\part{Introduction}
+
+\newpage
+% - Developpement ----- %
+\part{Développement}
+% ----- Partie A ------ %
+\section{Partie A}
+
+% ----- Partie B ------ %
+\newpage
+\section{Partie B}
+
+% - Conclusion -------- %
+\newpage
+\part{Conclusion}
+
+
+\newpage
+
+\appendix
+
+\part{Annexes}
+
+\listoffigures
+
+\end{document}
