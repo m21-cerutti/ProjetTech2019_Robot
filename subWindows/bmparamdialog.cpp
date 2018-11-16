@@ -3,12 +3,12 @@
 
 BMParamDialog::BMParamDialog(QImage& src, QWidget *parent):
     QDialog(parent),
-    img_src(src),
-    img_dst(src),
-    time(0),
+    _img_src(src),
+    _img_dst(src),
+    _time(0),
     ui(new Ui::BMParamDialog)
 {
-    ImageAnalyser::toMatCV(src, mat_dst);
+    ImageAnalyser::toMatCV(src, _mat_dst);
     ui->setupUi(this);
     setWindowTitle("Parameters of BM Disparity Map");
     refreshImages();
@@ -22,10 +22,10 @@ BMParamDialog::~BMParamDialog()
 void BMParamDialog::refreshImages()
 {
     //refresh
-    ui->imgView->setPixmap(QPixmap::fromImage(img_dst.scaled(ui->boxImg->width()*0.9,
+    ui->imgView->setPixmap(QPixmap::fromImage(_img_dst.scaled(ui->boxImg->width()*0.9,
                                                              ui->boxImg->height()*0.9,
                                                              Qt::AspectRatioMode::KeepAspectRatio)));
-    ui->labelTime->setText("Time(ms): "+ QString::number((time)));
+    ui->labelTime->setText("Time(ms): "+ QString::number((_time)));
 }
 
 void BMParamDialog::refreshModifs()
@@ -46,12 +46,12 @@ void BMParamDialog::applyDisparity()
     cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
 
     //Conversion and application of Disparity
-    ImageAnalyser::toMatCV(img_src, mat_dst);
+    ImageAnalyser::toMatCV(_img_src, _mat_dst);
 
-    mat_dst = ImageAnalyser::computeEfficiency(this->time, ImageAnalyser::computeBMDisparity, mat_dst, bmState);
+    _mat_dst = ImageAnalyser::computeEfficiency(this->_time, ImageAnalyser::computeBMDisparity, _mat_dst, bmState);
 
     //View the result
-    ImageAnalyser::toQImage(mat_dst, img_dst);
+    ImageAnalyser::toQImage(_mat_dst, _img_dst);
 
 }
 
@@ -69,18 +69,18 @@ void BMParamDialog::on_btnShow_clicked()
 
 void BMParamDialog::on_btnReset_clicked()
 {
-    img_dst = img_src;
+    _img_dst = _img_src;
     refreshImages();
 }
 
 cv::Mat BMParamDialog::getMatResult() const
 {
-    return mat_dst;
+    return _mat_dst;
 }
 
 double BMParamDialog::getTimeResult() const
 {
-    return time;
+    return _time;
 }
 
 void BMParamDialog::on_numDisparities_slider_valueChanged(int value)

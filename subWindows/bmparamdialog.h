@@ -53,13 +53,13 @@ private slots:
 
 private:
     ///Image Source, need only for reset
-    QImage& img_src;
+    QImage& _img_src;
 
     ///Image Destination
-    QImage img_dst;
-    cv::Mat mat_dst;
+    QImage _img_dst;
+    cv::Mat _mat_dst;
 
-    double time;
+    double _time;
 
     Ui::BMParamDialog *ui;
 };

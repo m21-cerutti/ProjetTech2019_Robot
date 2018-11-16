@@ -95,7 +95,7 @@ public:
      *     SADWindowsSize
      * @return the disparity matrice
      */
-    static cv::Mat computeBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoBM> bmState);
+    static cv::Mat computeBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoBM> bm_state);
 
     /**
      * @brief Make disparity map with SGBM algorithm
@@ -114,7 +114,7 @@ public:
      *     SADWindowSize
      * @return the disparity matrice
      */
-    static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbmState);
+    static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
 
 
