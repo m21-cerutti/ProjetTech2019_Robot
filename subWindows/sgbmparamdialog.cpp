@@ -45,7 +45,7 @@ void SGBMParamDialog::applyDisparity()
     //bgm parameters
     int minDisparity = ui->minDisparity_slider->value();;
     int numDisparities = ui->numDisparities_slider->value();
-    int blockSize = ui->SADwindowSize_slider->value();
+    int blockSize = ui->blockSize_slider->value();
     int P1 =  ui->P1_slider->value();
     int P2 = ui->P2_slider->value();
     int disp12MaxDiff = ui->disp12_slider->value();
@@ -131,13 +131,13 @@ void SGBMParamDialog::on_numDisparities_slider_valueChanged(int value)
     refreshModifs();
 }
 
-void SGBMParamDialog::on_SADwindowSize_slider_valueChanged(int value)
+void SGBMParamDialog::on_blockSize_slider_valueChanged(int value)
 {
     // need to be not divisible by 2
     if ((value % 2) != 1) {
         value -= 1;
     }
-    ui->SADwindowSize_slider->setValue(value);
+    ui->blockSize_slider->setValue(value);
     refreshModifs();
 }
 

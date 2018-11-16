@@ -41,7 +41,7 @@ void BMParamDialog::applyDisparity()
 {
     //bgm parameters
     int numDisparities = ui->numDisparities_slider->value();
-    int blockSize = ui->SADwindowSize_slider->value();
+    int blockSize = ui->blockSize_slider->value();
 
     cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
 
@@ -92,13 +92,13 @@ void BMParamDialog::on_numDisparities_slider_valueChanged(int value)
     refreshModifs();
 }
 
-void BMParamDialog::on_SADwindowSize_slider_valueChanged(int value)
+void BMParamDialog::on_blockSize_slider_valueChanged(int value)
 {
     // need to be not divisible by 2
     if ((value % 2) != 1) {
         value -= 1;
     }
-    ui->SADwindowSize_slider->setValue(value);
+    ui->blockSize_slider->setValue(value);
     refreshModifs();
 }
 

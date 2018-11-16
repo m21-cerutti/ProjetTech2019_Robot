@@ -47,7 +47,7 @@ private slots:
 
     void on_numDisparities_slider_valueChanged(int value);
 
-    void on_SADwindowSize_slider_valueChanged(int value);
+    void on_blockSize_slider_valueChanged(int value);
 
     void on_cbRealTime_toggled(bool checked);
 

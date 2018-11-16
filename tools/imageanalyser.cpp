@@ -9,25 +9,13 @@ void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat)
         std::cerr << "Matrice empty.\n";
         return;
     }
-    /*
-    if(mode ==0)
-    {
-        QImage img;
-        toQImage(mat, img);
-        FastImageView view (img);
-        view.exec();
-    }
-    else
-    {*/
-        namedWindow(name, cv::WINDOW_NORMAL);
-        cv::imshow(name, mat);
-    //}
+    namedWindow(name, cv::WINDOW_NORMAL);
+    cv::imshow(name, mat);
 }
 
-//TO CHANGE
 cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat& mat)
 {
-    if(mat.type() != CV_8UC1)
+    if(mat.type() != CV_8UC1 && mat.type() == (CV_8UC3 | CV_8UC4))
     {
         cv::Mat gray;
         cv::cvtColor(mat, gray, CV_BGRA2GRAY);
@@ -36,7 +24,6 @@ cv::Mat ImageAnalyser::applyGreyScaleCondition(const cv::Mat& mat)
     return mat;
 }
 
-//TO CHANGE
 void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
 {
     if(in.empty())
@@ -55,13 +42,28 @@ void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
         out = dest.copy();
         break;
     }
-    default:
+    ///BGR case
+    case CV_8UC3:
+    {
+        cv::Mat tmp;
+        cv::cvtColor(in, tmp, CV_BGR2BGRA);
+        QImage dest((const uchar *) tmp.data, tmp.cols, tmp.rows, tmp.step, QImage::Format_RGBA8888_Premultiplied);
+        out = dest.copy();
+        break;
+    }
+    ///BGRA case
+    case CV_8UC4:
     {
         cv::Mat tmp;
         cv::cvtColor(in, tmp, CV_BGRA2RGBA);
-        // make QImage
         QImage dest((const uchar *) tmp.data, tmp.cols, tmp.rows, tmp.step, QImage::Format_RGBA8888_Premultiplied);
         out = dest.copy();
+        break;
+    }
+    default:
+    {
+        out = QImage();
+        std::cerr << "Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4.\n";
         break;
     }
     }
@@ -80,7 +82,7 @@ void ImageAnalyser::toMatCV(const QImage &in, cv::Mat& out)
     result.copyTo(out);
 }
 
-void ImageAnalyser::separateImage(const cv::Mat& mat, cv::Mat &matL, cv::Mat &matR)
+void ImageAnalyser::separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &mat_right)
 {
     /// Parity of the image
     int offset = 0;
@@ -89,22 +91,22 @@ void ImageAnalyser::separateImage(const cv::Mat& mat, cv::Mat &matL, cv::Mat &ma
         return;
     }
     /// left img from otigin to src's middle
-    matL = mat.colRange(0, mat.cols/2);
+    mat_left = mat.colRange(0, mat.cols/2);
     /// Verify odd size
     offset = mat.cols % 2;
-    matR = mat.colRange((mat.cols/2) + offset, mat.cols);
+    mat_right = mat.colRange((mat.cols/2) + offset, mat.cols);
 }
 
 cv::Mat ImageAnalyser::computeGaussianBlur(const cv::Mat& mat)
 {
     cv::Mat dest;
-    double sigmaX = 0, sigmaY = 0;
+    double sigma_x = 0, sigma_y = 0;
     cv::Size size(3,3);
-    cv::GaussianBlur( mat, dest, size, sigmaX, sigmaY, cv::BORDER_DEFAULT );
+    cv::GaussianBlur( mat, dest, size, sigma_x, sigma_y, cv::BORDER_DEFAULT );
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeSobel(const cv::Mat& mat)//1D FAUT 2Dprendre x, y et max des deux
+cv::Mat ImageAnalyser::computeGradient(const cv::Mat& mat)//1D FAUT 2D, prendre x, y et max des deux
 {
     cv::Mat gray, dest;
 
@@ -114,11 +116,10 @@ cv::Mat ImageAnalyser::computeSobel(const cv::Mat& mat)//1D FAUT 2Dprendre x, y 
     int ksize = 3;
     double scale = 1;
     double delta = 0;
-    int borderType= cv::BORDER_DEFAULT;
 
     gray = applyGreyScaleCondition(mat);
 
-    cv::Sobel(gray, dest, CV_8UC1, dx, dy, ksize, scale, delta, borderType);
+    cv::Sobel(gray, dest, CV_8UC1, dx, dy, ksize, scale, delta);
 
     return dest;
 }
@@ -137,54 +138,55 @@ cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat& mat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat,  cv::Ptr<cv::StereoBM> bmState)
+cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat,  cv::Ptr<cv::StereoBM> bm_state)
 {
-    cv::Mat lMat, rMat, disparity;
+    cv::Mat left_mat, right_mat, disparity;
 
     ///Separate
-    ImageAnalyser::separateImage(mat, lMat, rMat);
+    ImageAnalyser::separateImage(mat, left_mat, right_mat);
 
     ///Gray
-    lMat = ImageAnalyser::applyGreyScaleCondition(lMat);
-    rMat = ImageAnalyser::applyGreyScaleCondition(rMat);
+    left_mat = ImageAnalyser::applyGreyScaleCondition(left_mat);
+    right_mat = ImageAnalyser::applyGreyScaleCondition(right_mat);
 
     ///Disparity map
-    bmState->compute(lMat, rMat, disparity);
+    bm_state->compute(left_mat, right_mat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
 
     return disparity;
 }
 
-cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbmState)
+cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbm_state)
 {
 
-    cv::Mat lMat, rMat, disparity;
+    cv::Mat left_mat, right_mat, disparity;
 
     ///Separate
-    ImageAnalyser::separateImage(mat, lMat, rMat);
+    ImageAnalyser::separateImage(mat, left_mat, right_mat);
 
     ///Gray
-    lMat = applyGreyScaleCondition(lMat);
-    rMat = applyGreyScaleCondition(rMat);
+    left_mat = applyGreyScaleCondition(left_mat);
+    right_mat = applyGreyScaleCondition(right_mat);
 
     ///Disparity map
-    sgbmState->compute(lMat, rMat, disparity);
+    sgbm_state->compute(left_mat, right_mat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
+
 
     return disparity;
 }
 
 cv::Mat ImageAnalyser::computeEfficiency(double &time, ImageAnalyser::filter_func func, const cv::Mat& mat)
 {
-    double elapsedTime;
-    clock_t stopTime;
-    clock_t startTime = clock();
+    double elapsed_time;
+    clock_t start_time, stop_time;
+    start_time = clock();
 
     cv::Mat result = func(mat);
 
-    stopTime = clock();
-    elapsedTime = (stopTime - startTime) / (CLOCKS_PER_SEC / (double) 1000.0);
-    time = elapsedTime;
+    stop_time = clock();
+    elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
+    time = elapsed_time;
 
     return result;
 

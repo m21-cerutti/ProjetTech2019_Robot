@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1219</width>
-    <height>508</height>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -413,7 +413,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>SADWindowsSize</string>
+           <string>blockSize</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -594,7 +594,7 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QSlider" name="SADwindowSize_slider">
+         <widget class="QSlider" name="blockSize_slider">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -628,7 +628,7 @@
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QSpinBox" name="SADwindowSize_spin">
+         <widget class="QSpinBox" name="blockSize_spin">
           <property name="minimum">
            <number>1</number>
           </property>
@@ -945,9 +945,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>SADwindowSize_spin</sender>
+   <sender>blockSize_spin</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>SADwindowSize_slider</receiver>
+   <receiver>blockSize_slider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -961,9 +961,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>SADwindowSize_slider</sender>
+   <sender>blockSize_slider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>SADwindowSize_spin</receiver>
+   <receiver>blockSize_spin</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">

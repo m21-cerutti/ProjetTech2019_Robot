@@ -42,9 +42,10 @@ Laisser le code cvtColor ne faccilite pas le code
 Mettre plus de références
 
 PROCHAINE SEANCE
-Simplifier le code
+Simplifier le code (enlever apply grey, faire pour un utilisateur)
 Rennomer les variables avec convention (code et fichiers) et commenter le code
 Voire carte disparité probleme
+Faire gradient
 
 
 AMELIORATIONS

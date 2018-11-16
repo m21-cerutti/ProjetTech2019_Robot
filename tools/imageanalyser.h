@@ -13,6 +13,8 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/core/affine.hpp>
 
+#include  <opencv2/ximgproc/disparity_filter.hpp>
+
 #include <time.h>
 
 class ImageAnalyser
@@ -60,7 +62,7 @@ public:
     * @param matL Left result
     * @param matR Right result
     */
-    static void separateImage(const cv::Mat& mat, cv::Mat &matL, cv::Mat &matR);
+    static void separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &mat_right);
 
     /**
      * @brief Apply a gaussian filter
@@ -74,7 +76,7 @@ public:
      * @param mat the source matrice
      * @return the result
      */
-    static cv::Mat computeSobel(const cv::Mat& mat);
+    static cv::Mat computeGradient(const cv::Mat& mat);
 
     /**
     * @brief Transform into greyscale if needed and apply the laplacian.
@@ -114,6 +116,41 @@ public:
      */
     static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbmState);
 
+
+
+
+    /**
+     * @brief computeFilterSteroFunc
+     * @param func
+     * @param mat
+     * @param argstereo
+     * @return
+     */
+    template<typename T, typename U>
+    static cv::Mat computeFilterSteroFunc(T func, const cv::Mat& mat, U argstereo)
+    {
+        cv::Mat result;
+        /*
+        cv::Ptr<cv::ximgproc::DisparityWLSFilter> wls_filter;
+        double matching_time;
+        double filtering_time;
+        double scale = 1.0;
+
+        cv::Mat result = func(mat, argstereo);
+
+        wls_filter->setLambda(lambda);
+        wls_filter->setSigmaColor(sigma);
+
+        filtering_time = (double)getTickCount();
+        wls_filter->filter( result, left_view, filtered_disparity_map);
+        filtering_time = ((double)getTickCount() - filtering_time)/getTickFrequency();
+
+        getDisparityVis(result, result, scale);
+        */
+        return result;
+    }
+
+
     /**
      * @brief Compute the approximate efficiency of a function in ms.
      * @param timeElapsed
@@ -128,15 +165,15 @@ public:
     template<typename T, typename U>
     static cv::Mat computeEfficiency(double& time, T func, const cv::Mat& mat, U argstereo)
     {
-        double elapsedTime;
-        clock_t stopTime;
-        clock_t startTime = clock();
+        double elapsed_time;
+        clock_t start_time, stop_time;
+        start_time = clock();
 
         cv::Mat result = func(mat, argstereo);
 
-        stopTime = clock();
-        elapsedTime = (stopTime - startTime) / (CLOCKS_PER_SEC / (double) 1000.0);
-        time = elapsedTime;
+        stop_time = clock();
+        elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
+        time = elapsed_time;
 
         return result;
     }

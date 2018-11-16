@@ -137,7 +137,7 @@ void MainWindow::on_btnSobel_clicked()
     }
 
     double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeSobel, image_mat);
+    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGradient, image_mat);
 
     refreshImages();
     showEfficiency("Sobel", time);
