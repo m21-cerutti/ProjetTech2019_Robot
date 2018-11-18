@@ -6,6 +6,10 @@
 
 QT       += core gui
 
+QT_CONFIG -= no-pkg-config
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 3DRV
@@ -15,10 +19,6 @@ TEMPLATE = app
 #INCLUDEPATH += /usr/include/opencv
 #LIBS += -L//usr/lib/x86_64-linux-gnu -lopencv_core -lopencv_highgui
 
-unix {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += opencv
-}
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
