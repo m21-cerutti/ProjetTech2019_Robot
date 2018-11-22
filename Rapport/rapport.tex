@@ -49,6 +49,7 @@
                 {â}{{\^{a}}}1
                 {Â}{{\^{A}}}1
                 {Î}{{\^{I}}}1
+                {|}{|}1  
 }
 \lstdefinestyle{CMakeStyle}{
     language={},
@@ -59,7 +60,7 @@
     numbersep=5pt,
   	frame=single,
 }
-\lstdefinestyle{CStyle}{
+\lstdefinestyle{C++Style}{
     backgroundcolor=\color{backgroundColour},
     commentstyle=\color{mGreen},
     keywordstyle=\color{magenta},
@@ -71,9 +72,8 @@
     captionpos=b,
     numbers=left,
     numbersep=5pt,
-    language=C
+    language=C++
 }
-
 
 
 \begin{document}
@@ -122,15 +122,59 @@
 \newpage
 \part{Introduction}
 
+	L'objectif de ce projet de L3 informatique est à terme de créer un robot suiveur qui suivrai son utilisateur à distance de 2 mètres.\\
+
+	On passera cependant par plusieurs étapes.
+	\\\\
+	D'abord la création de nos fonctions d'analyse et une interface graphique à partir de la bibliothèque OpenCv et Qt respectivement. OpenCv implémente notamment des algorithmes pour faire les filtres, les cartes de disparité et les cartes de profondeur nécessaires à l'analyse d'images pour l'intelligence artificielle, et Qt un système d'interface complet pour pouvoir créer une interface permettant de tester nos fonctions d'analyse d'images.\\
+Il faudra par contre se concentrer sur les fonctions d'analyse parce qu’elles doivent être optimisé pour les systèmes embarqué.
+\\\\
+	Ensuite la création sous Unity  d'une simulation avec les différents paramètres permettant de créer des comportements par défaut et testant les différents algorithmes.Elle devra prévoir les spécificités du matériel et prévoir différents tests pour différents environnements et situations.\\
+\\\\
+RENDU FINAL:\\
+	Paramètres de fonctions\\
+	Carte de disparité\\
+	Carte de profondeur\\
+	Rapport\\
+	Avec graphiques performances\\
+	Tests\\
+	Soutenance\\
+
 \newpage
 % - Developpement ----- %
 \part{Développement}
-% ----- Partie A ------ %
-\section{Partie A}
 
-% ----- Partie B ------ %
+% ----- Bibliothèque d'analyse ------ %
 \newpage
-\section{Partie B}
+\section{Bibliothèque d'analyse}
+
+\subsection{Fonctionnalités}
+
+\newpage
+\subsection{Interface Qt}
+
+
+% ----- Mise en place simulation ------ %
+\newpage
+\section{Mise en place simulation}
+
+\subsection{Spécificité de caméra}
+
+
+\newpage
+\subsection{Analyse d'environnement}
+
+
+\newpage
+\subsection{Algorithme de de décision}
+
+
+\newpage
+\subsection{Tests}
+
+% ----- Situation réelle ------ %
+\newpage
+\section{Situation réelle}
 
 % - Conclusion -------- %
 \newpage
@@ -146,66 +190,72 @@
 \listoffigures
 
 \newpage
-Rapport du groupe CERUTTI
-Le 05 novembre 2018
+\section{Hiérarchie du projet}
+\lstinputlisting[]{hierarchie.txt}
 
-Interface graphique:
-	-Rajout d'une check box pour remettre à l'image d'origine automatiquement dans la fenêtre principal.
-	-Rajout de l'affichage de l'approximation de l'efficacité des fonctions.
-	-Mise a jour du code des boutons, des menus, et des fenêtres pour implémenter ces nouvelles mécaniques.
-	-Rajout d'une fenêtre pour les paramètres de StereoBM.
+
+\newpage
+\section{Rapport Initial}
+Scission du groupe initial du fait de problèmes internes concernant des choix d'implémentation de l'interface graphique.\\
+
+Fonctionnalités de base déjà présentes à ce moment :\\
+	-Fonctions de conversion basique d'images de OpenCv vers Qt.\\
+	-Mise en place d'une bibliothèque graphique d'analyse adaptant les fonctions d'OpenCv.\\
+	-Ouverture de dialogues particulier pour les cartes de disparité.\\
+	-Filtres de flou Gaussien, de Laplacien, et de séparation d'image pour les cartes de disparité implémenté.\\
+	-Fonction de débuguage d'image pour l'affichage OpenCv crée.\\
+
+\newpage
+\section{Rapport 05 novembre 2018}
+
+\textbf{Rapport du groupe CERUTTI}\\
+Le 05 novembre 2018\\
+
+Interface graphique:\\
+	-Rajout d'une check box pour remettre à l'image d'origine automatiquement dans la fenêtre principal.\\
+	-Rajout de l'affichage de l'approximation de l'efficacité des fonctions.\\
+	-Mise a jour du code des boutons, des menus, et des fenêtres pour implémenter ces nouvelles mécaniques.\\
+	-Rajout d'une fenêtre pour les paramètres de StereoBM.\\
 	-Rajout des boutons de Sobel et Flou gaussien.
+\\
 	
-Analyse d'images:
-	-Amélioration des algorithmes pour prendre en charge les images en GrayScale, permet d'enlever les conversions
-		redondantes, et l'utilisation des fonctions de manière successives facilité.
-	-Rajout de showMatrice(cv::Mat mat) dans ImageAnalyser pour le débuguage.
-	-Rajout de computeEfficiency(double time, func, args) pour avoir une approximation de l'efficacité des algorithmes.
-	-Rajout des fonctions Sobel et Flou gaussien.
+Analyse d'images:\\
+	-Amélioration des algorithmes pour prendre en charge les images en GrayScale, permet d'enlever les conversions redondantes, et l'utilisation des fonctions de manière successives facilité.\\
+	-Rajout de showMatrice(cv::Mat mat) dans ImageAnalyser pour le débuguage.\\
+	-Rajout de computeEfficiency(double time, func, args) pour avoir une approximation de l'efficacité des algorithmes.\\
+	-Rajout des fonctions Sobel et Flou gaussien.\\
 
-Mise en place d'un exécutable pour les tests d'analyse d'images.
+Mise en place d'un exécutable pour les tests d'analyse d'images.\\
 
-Pistes d'améliorations:
-	-Implémentation des tests
-	-Recherche des meilleurs paramètres pour algorithmes stereo
-	-Factorisation du code pour les fenêtres BM et SGBM
-	-Recherche sur la possible utilisation de threads
-	-SteroVar non essayé openCv
-	-Recherche analyse de flux vidéo
+Pistes d'améliorations:\\
+	-Implémentation des tests\\
+	-Recherche des meilleurs paramètres pour algorithmes stereo\\
+	-Factorisation du code pour les fenêtres BM et SGBM\\
+	-Recherche sur la possible utilisation de threads\\
+	-SteroVar non essayé openCv\\
+	-Recherche analyse de flux vidéo\\
 	-Recherche object tracking et template
+\\\\
 
+\textbf{Remarques professeur :}\\
+Pas d'image dans Git\\
+Signaler fuites mémoire, même bibliothèque\\
+Sobel demandé n'est pas juste l'utilisation la fonction de OpenCv, l'objectif était de faire un gradient\\
+Voire problème de carte de disparité\\
+Trop de découpage  de code\\
+Laisser le code cvtColor dans les fonctions nécessaires sinon cela ne facilite pas la lecture de code\\
+Mettre des références à la place de la recopie de matrice
+\\\\
 
+\textbf{Prochaine séance :}\\
+Simplifier le code\\
+Renommer les variables avec convention (code et fichiers) et commenter le code\\
+Voire carte disparité problème\\
+Prévoir quoi faire avec le matériel\\
+\\\\
 
-////
-
-Pas d'image dans git
-Signaler fuites mémoire, meme biblotheque
-Sobel n'est pas juste la fonction, voire voca, faire un gradient
-Diparity map, négatif ?
-Voire pour normalisation
-Image inversée ?
-Trop de découpage 
-On voit pas grayscale
-Laisser le code cvtColor ne faccilite pas le code
-Mettre plus de références
-
-PROCHAINE SEANCE
-Simplifier le code
-Rennomer les variables avec convention (code et fichiers) et commenter le code
-Voire carte disparité probleme
-
-
-AMELIORATIONS
-Prévoir quoi faire avec le matériel
-
-RENDU FINAL
-Parametres
-Carte de disparité
-Carte de profondeur
-Rapport
-Avec graphiques performances
-Tests
-Soutenance
+\newpage
+\section{Rapport 22 novembre 2018}
 
 
 \newpage

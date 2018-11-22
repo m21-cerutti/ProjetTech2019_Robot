@@ -1,0 +1,25 @@
+Procédure pour le marériel.
+
+Préparation:
+
+Connaitres les spécificités du robot et des cameras :
+	Distance entre les yeux
+	Angle de dispersion
+	Champ de vision
+	(Definition de l'objectif)
+	Format de sortie camera
+	Temps d'occlusion
+	Distortion de la lentille
+	Distance focal
+Préparer une simulation avec ces parametres 
+	Parametres variables
+	Differents profils en fonction de l'environnement
+	Algorithme principal
+
+Jour J :
+
+Verifier la distance entre les yeux
+Mesurer l'angle de dispersion
+Check BIOS matériel
+Modifier les paramétres par défaut de l'algorithme.
+Vérifier l'environnement pour adapter le mode.

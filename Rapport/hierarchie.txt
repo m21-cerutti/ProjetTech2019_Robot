@@ -1,0 +1,34 @@
+l3-rvc
+.
+|-- 3DRV.pro
+|-- 3DRV.supp
+|-- cmdHierachie
+|-- ImageAnalyserTest.pro
+|-- main.cpp
+|-- maintests.cpp
+|-- mainwindow.cpp
+|-- mainwindow.h
+|-- mainwindow.ui
+|-- Rapport
+|   |-- hierarchie.txt
+|   |-- img
+|   |   `-- ubx-logo.png
+|   |-- Procédure Matériel
+|   |-- rapport_05_11_2018.txt
+|   |-- rapport.pdf
+|   `-- rapport.tex
+|-- README.md
+|-- subWindows
+|   |-- bmparamdialog.cpp
+|   |-- bmparamdialog.h
+|   |-- bmparamdialog.ui
+|   |-- sgbmparamdialog.cpp
+|   |-- sgbmparamdialog.h
+|   `-- sgbmparamdialog.ui
+`-- tools
+    |-- imageanalyser.cpp
+    |-- imageanalyser.h
+    |-- imageanalysertests.cpp
+    `-- imageanalysertests.h
+
+4 directories, 26 files

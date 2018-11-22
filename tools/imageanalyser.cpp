@@ -42,7 +42,7 @@ void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
         out = dest.copy();
         break;
     }
-    ///BGR case
+        ///BGR case
     case CV_8UC3:
     {
         cv::Mat tmp;
@@ -51,7 +51,7 @@ void ImageAnalyser::toQImage(const cv::Mat &in, QImage& out)
         out = dest.copy();
         break;
     }
-    ///BGRA case
+        ///BGRA case
     case CV_8UC4:
     {
         cv::Mat tmp;
@@ -106,34 +106,43 @@ cv::Mat ImageAnalyser::computeGaussianBlur(const cv::Mat& mat)
     return dest;
 }
 
-cv::Mat ImageAnalyser::computeGradient(const cv::Mat& mat)//1D FAUT 2D, prendre x, y et max des deux
+cv::Mat ImageAnalyser::computeGradient(const cv::Mat& mat)
 {
-    cv::Mat gray, dest;
+    cv::Mat grad_x, grad_y, dest;
 
-    ///Parameters default
-    int dx = 1;
-    int dy = 0;//A CHANGER
-    int ksize = 3;
     double scale = 1;
     double delta = 0;
 
-    gray = applyGreyScaleCondition(mat);
+    dest = computeGaussianBlur(mat);
+    dest = applyGreyScaleCondition(dest);
 
-    cv::Sobel(gray, dest, CV_8UC1, dx, dy, ksize, scale, delta);
+    /// Gradient X
+    Sobel( dest, grad_x, CV_16S, 1, 0, 3, scale, delta, cv::BORDER_DEFAULT );
+    convertScaleAbs( grad_x, grad_x );
+
+    /// Gradient Y
+    Sobel( dest, grad_y, CV_16S, 0, 1, 3, scale, delta, cv::BORDER_DEFAULT );
+    convertScaleAbs( grad_y, grad_y );
+
+    /// Total Gradient (approximate)
+    addWeighted( grad_x, 1, grad_y, 1, 0, dest );
+    dest.convertTo(dest, CV_8UC1);
 
     return dest;
 }
 
 cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat& mat)
 {
-    cv::Mat tmp, dest;
+    cv::Mat gray, abs_dst, dest;
 
     ///Transform to Gray and smooth
-    tmp = applyGreyScaleCondition(mat);
-    tmp = computeGaussianBlur(tmp);
+    gray = applyGreyScaleCondition(mat);
+    gray = computeGaussianBlur(gray);
 
     /// Apply Laplace function
-    cv::Laplacian( tmp, dest, CV_8UC1, 3, 1, 0, cv::BORDER_DEFAULT );
+    cv::Laplacian( gray, dest, CV_16S, 3, 1, 1, cv::BORDER_DEFAULT );
+    convertScaleAbs( dest, abs_dst );
+    dest.convertTo(dest, CV_8UC1);
 
     return dest;
 }
