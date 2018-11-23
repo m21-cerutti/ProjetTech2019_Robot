@@ -147,9 +147,16 @@ cv::Mat ImageAnalyser::computeLaplacian(const cv::Mat& mat)
     return dest;
 }
 
+void ImageAnalyser::fillBlank(const cv::Mat &src, cv::Mat &out)
+{
+    cv::Mat tmp(src.rows,src.cols, src.type(), cvScalar(255, 255, 255, 255));;
+    tmp.copyTo(out);
+    return;
+}
+
 cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat,  cv::Ptr<cv::StereoBM> bm_state)
 {
-    cv::Mat left_mat, right_mat, disparity;
+    cv::Mat invert, left_mat, right_mat, disparity;
 
     ///Separate
     ImageAnalyser::separateImage(mat, left_mat, right_mat);
@@ -162,13 +169,17 @@ cv::Mat ImageAnalyser::computeBMDisparity(const cv::Mat& mat,  cv::Ptr<cv::Stere
     bm_state->compute(left_mat, right_mat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
 
+    fillBlank(disparity, invert);
+    cv::subtract(invert, disparity, disparity);
+
+
     return disparity;
 }
 
 cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbm_state)
 {
 
-    cv::Mat left_mat, right_mat, disparity;
+    cv::Mat invert, left_mat, right_mat, disparity;
 
     ///Separate
     ImageAnalyser::separateImage(mat, left_mat, right_mat);
@@ -181,6 +192,8 @@ cv::Mat ImageAnalyser::computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::Ster
     sgbm_state->compute(left_mat, right_mat, disparity);
     cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
 
+    fillBlank(disparity, invert);
+    cv::subtract(invert, disparity, disparity);
 
     return disparity;
 }

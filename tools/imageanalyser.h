@@ -85,6 +85,14 @@ public:
     */
     static cv::Mat computeLaplacian(const cv::Mat& mat);
 
+    /**
+     * @brief Fill an image with blank. THe source determine the type
+     * Use for disparity map.
+     * @param mat
+     * @param out the result matrice.
+     */
+    static void fillBlank(const cv::Mat& src, cv::Mat &out);
+
 
     /**
      * @brief Make disparity map with BM algorithm
