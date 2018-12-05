@@ -26,8 +26,8 @@ void SGBMParamDialog::refreshImages()
 {
     //refresh
     ui->imgView->setPixmap(QPixmap::fromImage(_img_dst.scaled(ui->boxImg->width()*0.9,
-                                                             ui->boxImg->height()*0.9,
-                                                             Qt::AspectRatioMode::KeepAspectRatio)));
+                                                              ui->boxImg->height()*0.9,
+                                                              Qt::AspectRatioMode::KeepAspectRatio)));
     ui->labelTime->setText("Time(ms): "+ QString::number((_time)));
 }
 
@@ -64,25 +64,24 @@ void SGBMParamDialog::applyDisparity()
         mode = cv::StereoSGBM::MODE_SGBM;
     }
 
-     cv::Ptr<cv::StereoSGBM> sgbmState =
-             cv::StereoSGBM::create(minDisparity,
-                                    numDisparities,
-                                    blockSize,
-                                    P1,
-                                    P2,
-                                    disp12MaxDiff,
-                                    preFilterCap,
-                                    uniquenessRatio,
-                                    speckleWindowSize,
-                                    speckleRange,
-                                    mode);
 
+    cv::Ptr<cv::StereoSGBM> sgbmState =
+            cv::StereoSGBM::create(minDisparity,
+                                   numDisparities,
+                                   blockSize,
+                                   P1,
+                                   P2,
+                                   disp12MaxDiff,
+                                   preFilterCap,
+                                   uniquenessRatio,
+                                   speckleWindowSize,
+                                   speckleRange,
+                                   mode);
 
 
     //Conversion and application of Disparity
     ImageAnalyser::toMatCV(_img_src, _mat_dst);
-
-    _mat_dst = ImageAnalyser::computeEfficiency(this->_time, ImageAnalyser::computeSGBMDisparity, _mat_dst, sgbmState);
+    this->_time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
 
     //View the result
     ImageAnalyser::toQImage(_mat_dst, _img_dst);

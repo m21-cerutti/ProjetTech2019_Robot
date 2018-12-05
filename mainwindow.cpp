@@ -122,7 +122,7 @@ void MainWindow::on_btnGauss_clicked()
     }
 
     double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGaussianBlur, image_mat);
+    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeGaussianBlur, image_mat, image_mat);
 
     refreshImages();
     showEfficiency("GaussianBlur", time);
@@ -137,7 +137,7 @@ void MainWindow::on_btnSobel_clicked()
     }
 
     double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeGradient, image_mat);
+    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeGradient, image_mat, image_mat);
 
     refreshImages();
     showEfficiency("Sobel", time);
@@ -153,7 +153,7 @@ void MainWindow::on_btnLaplacian_clicked()
     }
 
     double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, ImageAnalyser::computeLaplacian, image_mat);
+    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeLaplacian, image_mat, image_mat);
 
     refreshImages();
     showEfficiency("Laplacian", time);
@@ -229,6 +229,7 @@ void MainWindow::on_actionOrigin_triggered()
 
 void MainWindow::on_actionTestCalibrateCamera_triggered()
 {
+
     resetBeforeOperationCheck();
     if (image_src.isNull())
     {
@@ -236,21 +237,9 @@ void MainWindow::on_actionTestCalibrateCamera_triggered()
     }
 
     double time;
-    image_mat = ImageAnalyser::computeEfficiency(time, CameraCalibration::findCalibrate( mat_calib, image_mat);
+    time = ImageAnalyser::computeEfficiency(CameraCalibration::findCalibrate, image_mat, image_mat);
 
+    //Refresh window
     refreshImages();
-    showEfficiency("Laplacian", time);
-    QImage image_calib;
-    cv::Mat mat_calib;
-    if(image_calib.load(filename)){
-
-        ImageAnalyser::toMatCV(image_calib, mat_calib);
-        if (CameraCalibration::findCalibrate( mat_calib, image_mat))
-        {
-            qDebug()<< "CALIBRATION FOUND\n";
-        }
-
-        //Refresh window
-        refreshImages();
-    }
+    showEfficiency("Calibration", time);
 }

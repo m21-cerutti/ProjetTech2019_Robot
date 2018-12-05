@@ -48,7 +48,7 @@ void BMParamDialog::applyDisparity()
     //Conversion and application of Disparity
     ImageAnalyser::toMatCV(_img_src, _mat_dst);
 
-    _mat_dst = ImageAnalyser::computeEfficiency(this->_time, ImageAnalyser::computeBMDisparity, _mat_dst, bmState);
+    this->_time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeBMDisparity, _mat_dst, _mat_dst, bmState);
 
     //View the result
     ImageAnalyser::toQImage(_mat_dst, _img_dst);

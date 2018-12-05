@@ -29,7 +29,7 @@ bool CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)
         //qDebug() << "Points("<< j%CHESS_WIDTH <<" ; "<< j/CHESS_WIDTH << ")";
     }
 
-    cvtColor(source, gray, CV_BGR2GRAY);
+    ImageAnalyser::applyGray(source, gray);
 
     bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FILTER_QUADS | CALIB_CB_NORMALIZE_IMAGE |  CALIB_CB_FAST_CHECK);
 

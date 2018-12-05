@@ -13,7 +13,8 @@ class SGBMParamDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SGBMParamDialog(QImage &src, QWidget *parent = 0);
+
+    explicit SGBMParamDialog(QImage &src, QWidget *parent = nullptr);
 
     ~SGBMParamDialog();
 

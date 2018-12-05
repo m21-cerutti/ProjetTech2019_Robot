@@ -13,7 +13,8 @@ class BMParamDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit BMParamDialog(QImage &src, QWidget *parent = 0);
+
+    explicit BMParamDialog(QImage &src, QWidget *parent = nullptr);
     ~BMParamDialog();
 
     cv::Mat getMatResult() const;

@@ -20,19 +20,7 @@
 class ImageAnalyser
 {
 
-private:
-
-    /**
-     * @brief Transform into greyscale matrice if it's not one yet.
-     * @param mat the matrice to transform
-     * @return the gray matrice (or itself)
-     */
-    static cv::Mat applyGreyScaleCondition(const cv::Mat &mat);
-
 public:
-
-    ///Function pointer for efficiency calculation
-    typedef void (*filter_func) (const cv::Mat&, cv::Mat);
 
     /**
      * @brief show the matrice, without Qt
@@ -40,7 +28,6 @@ public:
      * @param mat the matrice to display
      */
     static void showMatrice(std::string name, const cv::Mat& mat);
-
 
     /**
     * @brief convert cv::Mat img to QImage img
@@ -54,7 +41,14 @@ public:
     * @param in QImage to convert
     * @param out cv::Mat the output
     */
-    static void toMatCV(const QImage& in, cv::Mat& out);
+    static void toMatCV(const QImage& in, cv::Mat &out);
+
+    /**
+     * @brief Transform into greyscale matrice if it's not one yet.
+     * @param mat the matrice to transform
+     * @return the gray matrice (or itself)
+     */
+    static void applyGray(const cv::Mat &src, cv::Mat &out);
 
     /**
     * @brief Seperate the image in 2 equal parts: left & right)
@@ -62,28 +56,28 @@ public:
     * @param matL Left result
     * @param matR Right result
     */
-    static void separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &mat_right);
+    static void separateImage(const cv::Mat &src, cv::Mat &mat_left, cv::Mat &mat_right);
 
     /**
      * @brief Apply a gaussian filter
      * @param mat the source matrice
      * @return the result
      */
-    static void computeGaussianBlur(const cv::Mat& mat, cv::Mat& out);
+    static void computeGaussianBlur(const cv::Mat &src, cv::Mat &out);
 
     /**
      * @brief Apply a sobel filter
      * @param mat the source matrice
      * @return the result
      */
-    static void computeGradient(const cv::Mat& mat);
+    static void computeGradient(const cv::Mat &src, cv::Mat &out);
 
     /**
     * @brief Transform into greyscale if needed and apply the laplacian.
     * @param mat the source matrice
     * @return the result matrice
     */
-    static void computeLaplacian(const cv::Mat& mat);
+    static void computeLaplacian(const cv::Mat &src, cv::Mat &out);
 
     /**
      * @brief Fill an image with blank. THe source determine the type
@@ -103,7 +97,7 @@ public:
      *     SADWindowsSize
      * @return the disparity matrice
      */
-    static void computeBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoBM> bm_state);
+    static void computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
 
     /**
      * @brief Make disparity map with SGBM algorithm
@@ -122,14 +116,11 @@ public:
      *     SADWindowSize
      * @return the disparity matrice
      */
-    static void computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbm_state);
-
-
-
+    static void computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
     /*
     template<typename T, typename U>
-    static cv::Mat computeFilterSteroFunc(T func, const cv::Mat& mat, U argstereo)
+    static cv::Mat computeFilterSteroFunc(T func, const cv::Mat &src, U argstereo)
     {
         cv::Mat result;
 
@@ -155,29 +146,40 @@ public:
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.
-     * @param timeElapsed
-     * @param func template for a function who return a cv::Mat and take a cv::Mat for parameter
-     * @param mat argument for the fonction, often the source
+     * @param func template for a function who take a source cv::Mat and an output cv::Mat, at least.
+     * @param src the source image matrice.
+     * @param out output of the function.
      * @param argstereo optionnal argument for the fonction (especially stereo functions)
-     * @return the resulting cv::Mat of the fonction
+     * @return the time that have taken.
      */
-    static cv::Mat computeEfficiency(double& time, filter_func func, const cv::Mat& mat);
-
-    ///Surchage template
-    template<typename T, typename U>
-    static cv::Mat computeEfficiency(double& time, T func, const cv::Mat& mat, U argstereo)
+    template<typename T>
+    static double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out)
     {
         double elapsed_time;
         clock_t start_time, stop_time;
         start_time = clock();
 
-        cv::Mat result = func(mat, argstereo);
+        func(src, out);
 
         stop_time = clock();
         elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
-        time = elapsed_time;
 
-        return result;
+        return elapsed_time;
+    }
+
+    template<typename T, typename U>
+    static double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out, U argstereo)
+    {
+        double elapsed_time;
+        clock_t start_time, stop_time;
+        start_time = clock();
+
+        func(src, out, argstereo);
+
+        stop_time = clock();
+        elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
+
+        return elapsed_time;
     }
 
 };
