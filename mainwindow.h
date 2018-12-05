@@ -11,6 +11,7 @@
 #include <QDebug>
 
 #include "tools/imageanalyser.h"
+#include "tools/cameracalibration.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"
 
@@ -72,6 +73,8 @@ private slots:
     void on_actionGaussian_triggered();
 
     void on_actionSobel_triggered();
+
+    void on_actionTestCalibrateCamera_triggered();
 
 private:
 

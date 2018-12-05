@@ -32,14 +32,14 @@ private:
 public:
 
     ///Function pointer for efficiency calculation
-    typedef cv::Mat (*filter_func) (const cv::Mat&);
+    typedef void (*filter_func) (const cv::Mat&, cv::Mat);
 
     /**
      * @brief show the matrice, without Qt
      * @param name the name of the windows cv
      * @param mat the matrice to display
      */
-    static void showMatrice(std::string name, cv::Mat& mat);
+    static void showMatrice(std::string name, const cv::Mat& mat);
 
 
     /**
@@ -69,21 +69,21 @@ public:
      * @param mat the source matrice
      * @return the result
      */
-    static cv::Mat computeGaussianBlur(const cv::Mat& mat);
+    static void computeGaussianBlur(const cv::Mat& mat, cv::Mat& out);
 
     /**
      * @brief Apply a sobel filter
      * @param mat the source matrice
      * @return the result
      */
-    static cv::Mat computeGradient(const cv::Mat& mat);
+    static void computeGradient(const cv::Mat& mat);
 
     /**
     * @brief Transform into greyscale if needed and apply the laplacian.
     * @param mat the source matrice
     * @return the result matrice
     */
-    static cv::Mat computeLaplacian(const cv::Mat& mat);
+    static void computeLaplacian(const cv::Mat& mat);
 
     /**
      * @brief Fill an image with blank. THe source determine the type
@@ -103,7 +103,7 @@ public:
      *     SADWindowsSize
      * @return the disparity matrice
      */
-    static cv::Mat computeBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoBM> bm_state);
+    static void computeBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoBM> bm_state);
 
     /**
      * @brief Make disparity map with SGBM algorithm
@@ -122,23 +122,17 @@ public:
      *     SADWindowSize
      * @return the disparity matrice
      */
-    static cv::Mat computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbm_state);
+    static void computeSGBMDisparity(const cv::Mat& mat, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
 
 
 
-    /**
-     * @brief computeFilterSteroFunc
-     * @param func
-     * @param mat
-     * @param argstereo
-     * @return
-     */
+    /*
     template<typename T, typename U>
     static cv::Mat computeFilterSteroFunc(T func, const cv::Mat& mat, U argstereo)
     {
         cv::Mat result;
-        /*
+
         cv::Ptr<cv::ximgproc::DisparityWLSFilter> wls_filter;
         double matching_time;
         double filtering_time;
@@ -154,10 +148,10 @@ public:
         filtering_time = ((double)getTickCount() - filtering_time)/getTickFrequency();
 
         getDisparityVis(result, result, scale);
-        */
+
         return result;
     }
-
+*/
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.

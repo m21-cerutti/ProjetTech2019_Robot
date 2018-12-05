@@ -1,36 +1,71 @@
 #include "cameracalibration.h"
 
 
-bool CameraCalibration::calibrateFromImages(std::vector<cv::Mat> &sources_images, cv::Mat &out)
+bool CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_images, cv::Mat &out)
 {
 
     return false;
 }
 
-bool CameraCalibration::calibrateCamera(cv::Mat source, cv::Mat &out)
+bool CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)
 {
-    /*
-    cv::findChessboardCorners 	(
-            cv::Mat	image, //Image source
-            Size  	patternSize, //Nb corners
-            vector<vector<Point2f>>  	corners,
-            int  	flags = CALIB_CB_ADAPTIVE_THRESH+CALIB_CB_NORMALIZE_IMAGE
-        )
-    */
+    using namespace cv;
 
-    /*
-    double cv::calibrateCamera 	( 	vector<vector<Point3f>>  	objectPoints, //Theory, unit cann be arbitrary
-    vector<vector<Point2f>>  	imagePoints, //Real, find chess
-            Size  	imageSize, //Size board height x width
-            InputOutputArray  	cameraMatrix,
-            InputOutputArray  	distCoeffs,
-            OutputArrayOfArrays  	rvecs,
-            OutputArrayOfArrays  	tvecs,
-            OutputArray  	stdDeviationsIntrinsics,
-            OutputArray  	stdDeviationsExtrinsics,
-            OutputArray  	perViewErrors,
-            int  	flags = 0,
-            TermCriteria  	criteria = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, DBL_EPSILON)
-        )*/
-    return false;
+    ImageAnalyser::showMatrice("Start", source);
+
+    Mat gray, undistorded;
+    int num_squares = CHESS_WIDTH * CHESS_HEIGHT;
+    Size board_size = Size(CHESS_WIDTH, CHESS_HEIGHT);
+
+    std::vector<std::vector<Point3f>> object_points;
+    std::vector<std::vector<Point2f>> image_points;
+
+    std::vector<Point2f> corners;
+
+    std::vector<Point3f> obj;
+    for(int j=0;j<num_squares;j++)
+    {
+        obj.push_back(Point3f(j%CHESS_WIDTH, j/CHESS_WIDTH, 0.0f));
+        //qDebug() << "Points("<< j%CHESS_WIDTH <<" ; "<< j/CHESS_WIDTH << ")";
+    }
+
+    cvtColor(source, gray, CV_BGR2GRAY);
+
+    bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FILTER_QUADS | CALIB_CB_NORMALIZE_IMAGE |  CALIB_CB_FAST_CHECK);
+
+    if(found)
+    {
+        cornerSubPix(gray, corners,
+                     Size(11, 11),
+                     Size(-1, -1),
+                     TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+        drawChessboardCorners(gray, board_size, corners, found);
+
+        image_points.push_back(corners);
+        object_points.push_back(obj);
+
+    }
+    else
+    {
+        return false;
+    }
+
+    ImageAnalyser::showMatrice("Points", gray);
+
+    Mat intrinsic = Mat(3, 3, CV_32FC1);
+    Mat distCoeffs;
+    std::vector<Mat> rvecs;
+    std::vector<Mat> tvecs;
+
+    intrinsic.ptr<float>(0)[0] = 1;
+    intrinsic.ptr<float>(1)[1] = 1;
+
+    calibrateCamera(object_points, image_points, source.size(), intrinsic, distCoeffs, rvecs, tvecs);
+
+    undistort(source, undistorded, intrinsic, distCoeffs);
+
+    ImageAnalyser::showMatrice("Undistorded", undistorded);
+
+    undistorded.copyTo(out);
+    return true;
 }

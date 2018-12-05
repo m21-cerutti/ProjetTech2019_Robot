@@ -226,3 +226,31 @@ void MainWindow::on_actionOrigin_triggered()
 {
     on_btnOrigin_clicked();
 }
+
+void MainWindow::on_actionTestCalibrateCamera_triggered()
+{
+    resetBeforeOperationCheck();
+    if (image_src.isNull())
+    {
+        return;
+    }
+
+    double time;
+    image_mat = ImageAnalyser::computeEfficiency(time, CameraCalibration::findCalibrate( mat_calib, image_mat);
+
+    refreshImages();
+    showEfficiency("Laplacian", time);
+    QImage image_calib;
+    cv::Mat mat_calib;
+    if(image_calib.load(filename)){
+
+        ImageAnalyser::toMatCV(image_calib, mat_calib);
+        if (CameraCalibration::findCalibrate( mat_calib, image_mat))
+        {
+            qDebug()<< "CALIBRATION FOUND\n";
+        }
+
+        //Refresh window
+        refreshImages();
+    }
+}

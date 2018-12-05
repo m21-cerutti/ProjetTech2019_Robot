@@ -2,7 +2,7 @@
 
 
 //TO CHANGE
-void ImageAnalyser::showMatrice(std::string name, cv::Mat& mat)
+void ImageAnalyser::showMatrice(std::string name, const cv::Mat &mat)
 {
     if(mat.empty())
     {
