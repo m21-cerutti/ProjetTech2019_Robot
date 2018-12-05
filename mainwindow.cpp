@@ -237,7 +237,7 @@ void MainWindow::on_actionTestCalibrateCamera_triggered()
     }
 
     double time;
-    time = ImageAnalyser::computeEfficiency(CameraCalibration::findCalibrate, _image_mat, _image_mat);
+    time = ImageAnalyser::computeEfficiency(CameraCalibration::findOneCalibration, _image_mat, _image_mat);
 
     //Refresh window
     refreshImages();

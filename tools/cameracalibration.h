@@ -16,8 +16,8 @@
 #include "imageanalyser.h"
 #include <QtDebug>
 
-#define WIDTH_CHESS_CASE 1
-#define HEIGHT_CHESS_CASE 1
+//#define WIDTH_CHESS_CASE 1
+//#define HEIGHT_CHESS_CASE 1
 #define CHESS_WIDTH 9
 #define CHESS_HEIGHT 6
 
@@ -26,19 +26,16 @@ class CameraCalibration
 {
 public:
 
-    /**
-     * @brief find
-     * @param mat
-     */
     static bool calibrateFromImages(const std::vector<cv::Mat>& sources_images, cv::Mat& out);
 
     /**
-     * @brief findCalibrate
-     * @param source
-     * @param out
-     * @return
+     * @brief Find a special calibration for one image.
+     * Put the result in the file "default_camera.txt" in the build directory.
+     * @param source the source matrice.
+     * @param out the output matrice, undistorded camera.
+     * @return if we have find a chess correspondence
      */
-    static bool findCalibrate(const cv::Mat &source, cv::Mat& out);
+    static bool findOneCalibration(const cv::Mat &source, cv::Mat& out);
 
 };
 

@@ -6,7 +6,7 @@ bool CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_
     return false;
 }
 
-bool CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)
+bool CameraCalibration::findOneCalibration(const cv::Mat &source, cv::Mat &out)
 {
     using namespace cv;
 
