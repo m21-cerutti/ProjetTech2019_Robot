@@ -25,7 +25,7 @@ void MainWindow::chooseImage(){
     QString filename = QFileDialog::getOpenFileName(this, "Open Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"),0, QFileDialog::DontUseNativeDialog);
 
     // open image
-    if(image_src.load(filename)){
+    if(_image_src.load(filename)){
 
         //Create default matrice
         on_btnOrigin_clicked();
@@ -38,16 +38,16 @@ void MainWindow::chooseImage(){
 
 void MainWindow::refreshImages()
 {
-    if (!image_src.isNull())
+    if (!_image_src.isNull())
     {
         //Refresh source
-        ui->imageLabelSrc->setPixmap(QPixmap::fromImage(image_src.scaled(ui->boxSrc->width()*0.9,
+        ui->imageLabelSrc->setPixmap(QPixmap::fromImage(_image_src.scaled(ui->boxSrc->width()*0.9,
                                                                          ui->boxSrc->height()*0.9,
                                                                          Qt::AspectRatioMode::KeepAspectRatio)));
 
         //Refresh destination
         QImage img;
-        ImageAnalyser::toQImage(image_mat, img);
+        ImageAnalyser::toQImage(_image_mat, img);
         ui->imageLabelDst->setPixmap(QPixmap::fromImage(img.scaled(ui->boxDest->width()*0.9,
                                                                    ui->boxDest->height()*0.9,
                                                                    Qt::AspectRatioMode::KeepAspectRatio)));
@@ -102,13 +102,13 @@ void MainWindow::on_cbDestination_stateChanged(int arg1)
 
 void MainWindow::on_btnOrigin_clicked()
 {
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
 
     //Convert
-    ImageAnalyser::toMatCV(image_src, image_mat);
+    ImageAnalyser::toMatCV(_image_src, _image_mat);
 
     refreshImages();
 }
@@ -116,13 +116,13 @@ void MainWindow::on_btnOrigin_clicked()
 void MainWindow::on_btnGauss_clicked()
 {
     resetBeforeOperationCheck();
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
 
     double time;
-    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeGaussianBlur, image_mat, image_mat);
+    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeGaussianBlur, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("GaussianBlur", time);
@@ -131,13 +131,13 @@ void MainWindow::on_btnGauss_clicked()
 void MainWindow::on_btnSobel_clicked()
 {
     resetBeforeOperationCheck();
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
 
     double time;
-    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeGradient, image_mat, image_mat);
+    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeGradient, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Sobel", time);
@@ -147,13 +147,13 @@ void MainWindow::on_btnSobel_clicked()
 void MainWindow::on_btnLaplacian_clicked()
 {
     resetBeforeOperationCheck();
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
 
     double time;
-    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeLaplacian, image_mat, image_mat);
+    time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeLaplacian, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Laplacian", time);
@@ -162,16 +162,16 @@ void MainWindow::on_btnLaplacian_clicked()
 void MainWindow::on_btnSGBMDisparity_clicked()
 {
     resetBeforeOperationCheck();
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
     QImage img;
-    ImageAnalyser::toQImage(image_mat, img);
+    ImageAnalyser::toQImage(_image_mat, img);
     SGBMParamDialog dial(img);
     if(dial.exec() != QDialog::Rejected)
     {
-        image_mat = dial.getMatResult().clone();
+        _image_mat = dial.getMatResult().clone();
         double time = dial.getTimeResult();
         refreshImages();
         showEfficiency("SGBMDisparity", time);
@@ -181,16 +181,16 @@ void MainWindow::on_btnSGBMDisparity_clicked()
 void MainWindow::on_btnBMDisparity_clicked()
 {
     resetBeforeOperationCheck();
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
     QImage img;
-    ImageAnalyser::toQImage(image_mat, img);
+    ImageAnalyser::toQImage(_image_mat, img);
     BMParamDialog dial(img);
     if(dial.exec() != QDialog::Rejected)
     {
-        image_mat = dial.getMatResult().clone();
+        _image_mat = dial.getMatResult().clone();
         double time = dial.getTimeResult();
         refreshImages();
         showEfficiency("BMDisparity", time);
@@ -231,13 +231,13 @@ void MainWindow::on_actionTestCalibrateCamera_triggered()
 {
 
     resetBeforeOperationCheck();
-    if (image_src.isNull())
+    if (_image_src.isNull())
     {
         return;
     }
 
     double time;
-    time = ImageAnalyser::computeEfficiency(CameraCalibration::findCalibrate, image_mat, image_mat);
+    time = ImageAnalyser::computeEfficiency(CameraCalibration::findCalibrate, _image_mat, _image_mat);
 
     //Refresh window
     refreshImages();

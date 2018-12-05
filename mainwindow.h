@@ -78,11 +78,11 @@ private slots:
 
 private:
 
-    double efficiencyFunction;
+    double _efficiency_time;
 
-    QImage image_src;
+    QImage _image_src;
 
-    cv::Mat image_mat;
+    cv::Mat _image_mat;
 
     Ui::MainWindow *ui;
 };

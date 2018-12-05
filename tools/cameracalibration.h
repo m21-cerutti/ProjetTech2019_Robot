@@ -11,6 +11,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <time.h>
+#include <fstream>
 
 #include "imageanalyser.h"
 #include <QtDebug>
@@ -32,8 +33,10 @@ public:
     static bool calibrateFromImages(const std::vector<cv::Mat>& sources_images, cv::Mat& out);
 
     /**
-     * @brief find
-     * @param mat
+     * @brief findCalibrate
+     * @param source
+     * @param out
+     * @return
      */
     static bool findCalibrate(const cv::Mat &source, cv::Mat& out);
 

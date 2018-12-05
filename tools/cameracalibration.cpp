@@ -3,15 +3,12 @@
 
 bool CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_images, cv::Mat &out)
 {
-
     return false;
 }
 
 bool CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)
 {
     using namespace cv;
-
-    ImageAnalyser::showMatrice("Start", source);
 
     Mat gray, undistorded;
     int num_squares = CHESS_WIDTH * CHESS_HEIGHT;
@@ -26,7 +23,6 @@ bool CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)
     for(int j=0;j<num_squares;j++)
     {
         obj.push_back(Point3f(j%CHESS_WIDTH, j/CHESS_WIDTH, 0.0f));
-        //qDebug() << "Points("<< j%CHESS_WIDTH <<" ; "<< j/CHESS_WIDTH << ")";
     }
 
     ImageAnalyser::applyGray(source, gray);
@@ -50,21 +46,45 @@ bool CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)
         return false;
     }
 
-    ImageAnalyser::showMatrice("Points", gray);
-
+    //Parameters to save
     Mat intrinsic = Mat(3, 3, CV_32FC1);
-    Mat distCoeffs;
+    Mat dist_coeffs;
     std::vector<Mat> rvecs;
     std::vector<Mat> tvecs;
 
     intrinsic.ptr<float>(0)[0] = 1;
     intrinsic.ptr<float>(1)[1] = 1;
 
-    calibrateCamera(object_points, image_points, source.size(), intrinsic, distCoeffs, rvecs, tvecs);
+    //Calibration
+    calibrateCamera(object_points, image_points, source.size(), intrinsic, dist_coeffs, rvecs, tvecs);
 
-    undistort(source, undistorded, intrinsic, distCoeffs);
+    //Save parameters
+    std::ofstream outstream;
+    std::ofstream::openmode mode{std::fstream::out};
+    mode |= std::ofstream::trunc;
+    outstream.open("default_camera.txt", mode );
 
-    ImageAnalyser::showMatrice("Undistorded", undistorded);
+    if (!outstream.is_open())
+        throw Exception ( 1, "Fail to open file \"default_camera.txt\"." ,
+                          "CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
+
+    outstream << "intrinsic" << std::endl;
+    outstream << intrinsic << std::endl;
+    outstream << "distCoeffs" << std::endl;
+    outstream << dist_coeffs << std::endl;
+    outstream << "rvecs" << std::endl;
+    for(auto v : rvecs)
+        outstream << v << std::endl;
+    outstream << "tvecs" << std::endl;
+    for(auto v : tvecs)
+        outstream << v << std::endl;
+    outstream.close();
+
+    if ( !outstream.good())
+        throw Exception ( 2, "Fail to write in the file \"default_camera.txt\".",
+                          "CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
+
+    undistort(source, undistorded, intrinsic, dist_coeffs);
 
     undistorded.copyTo(out);
     return true;

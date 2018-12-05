@@ -81,7 +81,7 @@ void SGBMParamDialog::applyDisparity()
 
     //Conversion and application of Disparity
     ImageAnalyser::toMatCV(_img_src, _mat_dst);
-    this->_time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
+    _time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
 
     //View the result
     ImageAnalyser::toQImage(_mat_dst, _img_dst);

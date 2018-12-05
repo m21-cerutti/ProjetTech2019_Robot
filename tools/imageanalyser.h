@@ -45,14 +45,14 @@ public:
 
     /**
      * @brief Transform into greyscale matrice if it's not one yet.
-     * @param mat the matrice to transform
-     * @return the gray matrice (or itself)
+     * @param src the matrice to transform
+     * @param out the output matrice
      */
     static void applyGray(const cv::Mat &src, cv::Mat &out);
 
     /**
     * @brief Seperate the image in 2 equal parts: left & right)
-    * @param mat the source matrice.
+    * @param src the source matrice.
     * @param matL Left result
     * @param matR Right result
     */
@@ -60,48 +60,49 @@ public:
 
     /**
      * @brief Apply a gaussian filter
-     * @param mat the source matrice
-     * @return the result
+     * @param src the source matrice
+     * @param out the output matrice
      */
     static void computeGaussianBlur(const cv::Mat &src, cv::Mat &out);
 
     /**
      * @brief Apply a sobel filter
-     * @param mat the source matrice
-     * @return the result
+     * @param src the source matrice
+     * @param out the output matrice
      */
     static void computeGradient(const cv::Mat &src, cv::Mat &out);
 
     /**
     * @brief Transform into greyscale if needed and apply the laplacian.
-    * @param mat the source matrice
-    * @return the result matrice
+    * @param src the source matrice
+    * @param out the output matrice
     */
     static void computeLaplacian(const cv::Mat &src, cv::Mat &out);
 
     /**
      * @brief Fill an image with blank. THe source determine the type
      * Use for disparity map.
-     * @param mat
-     * @param out the result matrice.
+     * @param src the source matrice
+     * @param out the output matrice.
      */
     static void fillBlank(const cv::Mat& src, cv::Mat &out);
 
 
     /**
      * @brief Make disparity map with BM algorithm
-     * @param mat the matrice to compute with left and right image
+     * @param src the matrice to compute with left and right image
+     * @param out the output matrice.
      * @param bmState he parameters initialised for computing
      *     PRESET
      *     nbdisparities
      *     SADWindowsSize
-     * @return the disparity matrice
      */
     static void computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
 
     /**
      * @brief Make disparity map with SGBM algorithm
-     * @param mat the matrice to compute with left and right image
+     * @param src the matrice to compute with left and right image
+     * @param out the output matrice.
      * @param sgbmState the parameters initialised for computing
      *     preFilterCap
      *     fullDP
@@ -114,7 +115,6 @@ public:
      *     speckleRange
      *     disp12MaxDiff
      *     SADWindowSize
-     * @return the disparity matrice
      */
     static void computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
