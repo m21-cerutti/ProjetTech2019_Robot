@@ -8,7 +8,7 @@ BMParamDialog::BMParamDialog(QImage& src, QWidget *parent):
     _time(0),
     ui(new Ui::BMParamDialog)
 {
-    ImageAnalyser::toMatCV(src, _mat_dst);
+    InterfaceCvQt::toMatCV(src, _mat_dst);
     ui->setupUi(this);
     setWindowTitle("Parameters of BM Disparity Map");
     refreshImages();
@@ -46,12 +46,12 @@ void BMParamDialog::applyDisparity()
     cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
 
     //Conversion and application of Disparity
-    ImageAnalyser::toMatCV(_img_src, _mat_dst);
+    InterfaceCvQt::toMatCV(_img_src, _mat_dst);
 
-    this->_time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeBMDisparity, _mat_dst, _mat_dst, bmState);
+    this->_time = InterfaceCvQt::computeEfficiency(ImageAnalyser::computeBMDisparity, _mat_dst, _mat_dst, bmState);
 
     //View the result
-    ImageAnalyser::toQImage(_mat_dst, _img_dst);
+    InterfaceCvQt::toQImage(_mat_dst, _img_dst);
 
 }
 

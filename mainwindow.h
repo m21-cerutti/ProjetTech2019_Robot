@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#define IMAGE_DEBUG
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QPixmap>
@@ -10,6 +12,7 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "tools/interfacecvqt.h"
 #include "tools/imageanalyser.h"
 #include "tools/cameracalibration.h"
 #include "subWindows/sgbmparamdialog.h"

@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include "tools/imageanalyser.h"
+#include "tools/interfacecvqt.h"
+
 
 namespace Ui {
 class SGBMParamDialog;

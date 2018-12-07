@@ -6,9 +6,9 @@ Correction depuis dernier rendu:
 
     -Adoption d'une convention de nommage:
 Attribut                        |_name_complete            
-Variables locales         |name_complete                
-Méthodes                    |nameComplete
-Classes                        |NameClass
+Variables locales         	|name_complete                
+Méthodes                    	|nameComplete
+Classes                        	|NameClass
 Fichiers                        |nameclass.*
 
     -Changement de la fonction Sobel en Gradient, et implémentation en vrai Gradient.
@@ -31,5 +31,26 @@ Pistes d'améliorations:
     -Créer un système de sauvegarde général pour calibration et performances.
     -Améliorer le système de calibration par multiples valeurs et prise en charge automatique de calibration par dossier d'images.
     -Améliorer l'interface pour prendre en compte la calibration de différentes caméras.
+
+
+//Analyse général
+
+Commenter
+
+Parametre
+Pas en dur fichier(sauvegarde)
+Chemin
+Image
+
+Classes à séparer 
+Conversion
+Analyse
+Calibration
+
+Rajouter des exemples dans le rapport
+
+
+
+Prochain rendu janvier 
 
 

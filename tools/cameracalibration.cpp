@@ -22,11 +22,10 @@ bool CameraCalibration::findOneCalibration(const cv::Mat &source, cv::Mat &out)
     std::vector<Point3f> obj;
     for(int j=0;j<num_squares;j++)
     {
-        obj.push_back(Point3f(j%CHESS_WIDTH, j/CHESS_WIDTH, 0.0f));
+        obj.push_back(Point3f(j/CHESS_WIDTH, j%CHESS_WIDTH, 0.0f));
     }
 
-    ImageAnalyser::applyGray(source, gray);
-
+    cv::cvtColor(source, gray, CV_BGRA2GRAY);
     bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FILTER_QUADS | CALIB_CB_NORMALIZE_IMAGE |  CALIB_CB_FAST_CHECK);
 
     if(found)
@@ -84,6 +83,7 @@ bool CameraCalibration::findOneCalibration(const cv::Mat &source, cv::Mat &out)
         throw Exception ( 2, "Fail to write in the file \"default_camera.txt\".",
                           "CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
 
+    std::cout << "File done." << std::endl;
     undistort(source, undistorded, intrinsic, dist_coeffs);
 
     undistorded.copyTo(out);

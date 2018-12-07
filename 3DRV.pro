@@ -39,14 +39,16 @@ SOURCES += \
     tools/imageanalyser.cpp \
     subWindows/sgbmparamdialog.cpp \
     subWindows/bmparamdialog.cpp \
-    tools/cameracalibration.cpp
+    tools/cameracalibration.cpp \
+    tools/interfacecvqt.cpp
 
 HEADERS += \
         mainwindow.h \
     tools/imageanalyser.h \
     subWindows/sgbmparamdialog.h \
     subWindows/bmparamdialog.h \
-    tools/cameracalibration.h
+    tools/cameracalibration.h \
+    tools/interfacecvqt.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

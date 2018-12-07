@@ -8,7 +8,7 @@ SGBMParamDialog::SGBMParamDialog(QImage& src, QWidget *parent) :
     _time(0),
     ui(new Ui::SGBMParamDialog)
 {
-    ImageAnalyser::toMatCV(src, _mat_dst);
+    InterfaceCvQt::toMatCV(src, _mat_dst);
     ui->setupUi(this);
     setWindowTitle("Parameters of SGBM Disparity Map");
     refreshImages();
@@ -80,11 +80,11 @@ void SGBMParamDialog::applyDisparity()
 
 
     //Conversion and application of Disparity
-    ImageAnalyser::toMatCV(_img_src, _mat_dst);
-    _time = ImageAnalyser::computeEfficiency(ImageAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
+    InterfaceCvQt::toMatCV(_img_src, _mat_dst);
+    _time = InterfaceCvQt::computeEfficiency(ImageAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
 
     //View the result
-    ImageAnalyser::toQImage(_mat_dst, _img_dst);
+    InterfaceCvQt::toQImage(_mat_dst, _img_dst);
 
 }
 
