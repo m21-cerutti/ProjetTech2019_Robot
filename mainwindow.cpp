@@ -47,7 +47,7 @@ void MainWindow::refreshImages()
 
         //Refresh destination
         QImage img;
-        InterfaceCvQt::toQImage(_image_mat, img);
+        CVQTInterface::toQImage(_image_mat, img);
         ui->imageLabelDst->setPixmap(QPixmap::fromImage(img.scaled(ui->boxDest->width()*0.9,
                                                                    ui->boxDest->height()*0.9,
                                                                    Qt::AspectRatioMode::KeepAspectRatio)));
@@ -108,7 +108,7 @@ void MainWindow::on_btnOrigin_clicked()
     }
 
     //Convert
-    InterfaceCvQt::toMatCV(_image_src, _image_mat);
+    CVQTInterface::toMatCV(_image_src, _image_mat);
 
     refreshImages();
 }
@@ -122,7 +122,7 @@ void MainWindow::on_btnGauss_clicked()
     }
 
     double time;
-    time = InterfaceCvQt::computeEfficiency(ImageAnalyser::computeGaussianBlur, _image_mat, _image_mat);
+    time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeGaussianBlur, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("GaussianBlur", time);
@@ -137,7 +137,7 @@ void MainWindow::on_btnSobel_clicked()
     }
 
     double time;
-    time = InterfaceCvQt::computeEfficiency(ImageAnalyser::computeGradient, _image_mat, _image_mat);
+    time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeGradient, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Sobel", time);
@@ -153,7 +153,7 @@ void MainWindow::on_btnLaplacian_clicked()
     }
 
     double time;
-    time = InterfaceCvQt::computeEfficiency(ImageAnalyser::computeLaplacian, _image_mat, _image_mat);
+    time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeLaplacian, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Laplacian", time);
@@ -167,7 +167,7 @@ void MainWindow::on_btnSGBMDisparity_clicked()
         return;
     }
     QImage img;
-    InterfaceCvQt::toQImage(_image_mat, img);
+    CVQTInterface::toQImage(_image_mat, img);
     SGBMParamDialog dial(img);
     if(dial.exec() != QDialog::Rejected)
     {
@@ -186,7 +186,7 @@ void MainWindow::on_btnBMDisparity_clicked()
         return;
     }
     QImage img;
-    InterfaceCvQt::toQImage(_image_mat, img);
+    CVQTInterface::toQImage(_image_mat, img);
     BMParamDialog dial(img);
     if(dial.exec() != QDialog::Rejected)
     {
@@ -237,7 +237,7 @@ void MainWindow::on_actionTestCalibrateCamera_triggered()
     }
 
     double time;
-    time = InterfaceCvQt::computeEfficiency(CameraCalibration::findOneCalibration, _image_mat, _image_mat);
+    time = ProjectDebuger::computeEfficiency(CameraCalibration::findOneCalibration, _image_mat, _image_mat);
 
     //Refresh window
     refreshImages();

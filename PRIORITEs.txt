@@ -1,0 +1,23 @@
+
+Citer les sources pour
+	-Conversion de QImage
+	-Cartes de disparité
+	-Filtres
+	-Calibration
+
+Créer bibliotheque pour programme de prise en charge sans interface (préparation Unity).
+
+(Utiliser classes à instancier ?)
+
+Créer un système de sauvegarde général pour calibration et performances.
++Résultat
+
+Améliorer le système de calibration par multiples valeurs.
+
+Améliorer l'interface pour prendre en compte la calibration de différentes caméras.
+
+Filtre pour les cartes de disparité (si cela n'impacte pas les performances)
+
+Calculer cartes de profondeur.
+
+

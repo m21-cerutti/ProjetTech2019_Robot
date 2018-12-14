@@ -9,7 +9,7 @@
 #include <fstream>
 
 //Debug
-//#include "tools/interfacecvqt.h"
+#include "tools/projectdebuger.h"
 
 #define CHESS_WIDTH 9
 #define CHESS_HEIGHT 6

@@ -1,17 +1,6 @@
-#include "interfacecvqt.h"
+#include "cvqtinterface.h"
 
-void InterfaceCvQt::showMatrice(std::string name, const cv::Mat &mat)
-{
-    if(mat.empty())
-    {
-        std::cerr << "Matrice empty.\n";
-        return;
-    }
-    namedWindow(name, cv::WINDOW_NORMAL);
-    cv::imshow(name, mat);
-}
-
-void InterfaceCvQt::toQImage(const cv::Mat &in, QImage &out)
+void CVQTInterface::toQImage(const cv::Mat &in, QImage &out)
 {
     if(in.empty())
     {
@@ -29,7 +18,7 @@ void InterfaceCvQt::toQImage(const cv::Mat &in, QImage &out)
         out = dest.copy();
         break;
     }
-        ///BGR case
+    ///BGR case
     case CV_8UC3:
     {
         cv::Mat tmp;
@@ -38,7 +27,7 @@ void InterfaceCvQt::toQImage(const cv::Mat &in, QImage &out)
         out = dest.copy();
         break;
     }
-        ///BGRA case
+    ///BGRA case
     case CV_8UC4:
     {
         cv::Mat tmp;
@@ -50,13 +39,13 @@ void InterfaceCvQt::toQImage(const cv::Mat &in, QImage &out)
     default:
     {
         out = QImage();
-        std::cerr << "Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4.\n";
+        ProjectDebuger::messageDebug("Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4.", true);
         break;
     }
     }
 }
 
-void InterfaceCvQt::toMatCV(const QImage &in, cv::Mat& out)
+void CVQTInterface::toMatCV(const QImage &in, cv::Mat& out)
 {
     cv::Mat result;
     if(!in.isNull())

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "tools/imageanalyser.h"
-#include "tools/interfacecvqt.h"
+#include "tools/cvqtinterface.h"
 
 
 namespace Ui {

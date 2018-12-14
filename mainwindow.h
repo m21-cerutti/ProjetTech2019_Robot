@@ -12,7 +12,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "tools/interfacecvqt.h"
+#include "tools/projectdebuger.h"
+#include "tools/cvqtinterface.h"
 #include "tools/imageanalyser.h"
 #include "tools/cameracalibration.h"
 #include "subWindows/sgbmparamdialog.h"

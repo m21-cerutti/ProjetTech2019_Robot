@@ -1,13 +1,27 @@
-#ifndef INTERFACECVQT_H
-#define INTERFACECVQT_H
+#ifndef PROJECTDEBUGER_H
+#define PROJECTDEBUGER_H
 
-#include <QImage>
+
 #include <cv.h>
 #include <opencv2/opencv.hpp>
 
-class InterfaceCvQt
+#include <time.h>
+
+//Not set on robot
+//#define isComputer
+
+#ifdef isComputer
+#include <QDebug>
+#endif //isComputer
+
+class ProjectDebuger
 {
 public:
+    /**
+     * @brief messageDebug
+     * @param message
+     */
+    static void messageDebug(std::string message, bool error = true);
 
     /**
      * @brief show the matrice, without Qt
@@ -15,20 +29,6 @@ public:
      * @param mat the matrice to display
      */
     static void showMatrice(std::string name, const cv::Mat& mat);
-
-    /**
-    * @brief convert cv::Mat img to QImage img
-    * @param in cv::Mat to convert
-    * @param out QImage the output
-    */
-    static void toQImage(const cv::Mat& in, QImage &out);
-
-    /**
-    * @brief convert Qimage in cv::Mat img
-    * @param in QImage to convert
-    * @param out cv::Mat the output
-    */
-    static void toMatCV(const QImage& in, cv::Mat &out);
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.
@@ -67,7 +67,6 @@ public:
 
         return elapsed_time;
     }
-
 };
 
-#endif // INTERFACECVQT_H
+#endif // PROJECTDEBUGER_H

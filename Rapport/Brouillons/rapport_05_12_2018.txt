@@ -56,7 +56,17 @@ Procédure calibration avec + que camera param, echelle etc
 
 //PROF REMARQUE
 
+Sobel erreur
+Syntheses à améliorer
+-enlever qtdesigner.txt
+-mettre algos
+-résultats
+-problème
+-pas de code dans rapport
 
+Erreur récurentes (?)
+Rigueur sur le code, moins sur la théorie
+Rapport pas un bilan d'activité
 
 
 

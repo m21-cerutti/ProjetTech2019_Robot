@@ -13,10 +13,9 @@
 
 //#include  <opencv2/ximgproc/disparity_filter.hpp>
 
-#include <time.h>
 
 //Debug
-//#include "tools/interfacecvqt.h"
+#include "tools/projectdebuger.h"
 
 class ImageAnalyser
 {
