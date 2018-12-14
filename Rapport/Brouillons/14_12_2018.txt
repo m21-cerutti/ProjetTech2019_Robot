@@ -1,0 +1,44 @@
+
+Thales cours:
+Paramete:
+-Connaite ecartement camera C1C2
+-Focal AO (calibration)
+-Disparité AB(petit coté droite)
+-> on connait pas OC2, c'est la profondeur
+
+Mais cas parfait
+
+Ouverture
+Erreur focal
+2 valeurs différentes
+
+
+PAstafariste
+
+//Faire présentation
+Présentation équinotes
+Conférences TED
+
+//IA
+SVM
+Random Forest
+90%
+//Deep Learnig
+CNN
+(convolution neural networks)
+98%
+Humain ->> 95.96%
+
+//Aprentissage
+Yann LeCun
+(Collége de france)
+
+//Unity
+Possibilités
+Code sans interface
+-Bilibliotheque
+-Socket
+-Fichier
+
+
+

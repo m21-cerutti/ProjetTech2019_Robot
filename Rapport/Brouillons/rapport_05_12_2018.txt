@@ -50,7 +50,21 @@ Calibration
 Rajouter des exemples dans le rapport
 
 
-
 Prochain rendu janvier 
+Carte de profondeur
+Procédure calibration avec + que camera param, echelle etc
+
+//PROF REMARQUE
+
+
+
+
+
+
+
+
+
+
+
 
 
