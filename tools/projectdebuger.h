@@ -8,7 +8,7 @@
 #include <time.h>
 
 //Not set on robot
-//#define isComputer
+#define isComputer
 
 #ifdef isComputer
 #include <QDebug>

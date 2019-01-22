@@ -243,3 +243,30 @@ void MainWindow::on_actionTestCalibrateCamera_triggered()
     refreshImages();
     showEfficiency("Calibration", time);
 }
+
+void MainWindow::on_actionTestCalibrateFolder_triggered()
+{
+    resetBeforeOperationCheck();
+
+    QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"),0, QFileDialog::DontUseNativeDialog);
+
+    std::vector<cv::Mat> vect_images;
+    for(QString filename : filenames)
+    {
+        QImage img;
+        if(img.load(filename)){
+
+           cv::Mat tmp;
+           CVQTInterface::toMatCV(img, tmp);
+           vect_images.push_back(tmp);
+        }
+    }
+
+    CameraCalibration::calibrateFromImages(vect_images);
+    //double time;
+    //time = ProjectDebuger::computeEfficiency();
+
+    //Refresh window
+    refreshImages();
+    showEfficiency("Calibration multiple", 0);
+}

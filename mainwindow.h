@@ -80,6 +80,8 @@ private slots:
 
     void on_actionTestCalibrateCamera_triggered();
 
+    void on_actionTestCalibrateFolder_triggered();
+
 private:
 
     double _efficiency_time;

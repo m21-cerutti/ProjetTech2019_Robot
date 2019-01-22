@@ -347,6 +347,7 @@
     <addaction name="menuDisparity_Map"/>
     <addaction name="separator"/>
     <addaction name="actionTestCalibrateCamera"/>
+    <addaction name="actionTestCalibrateFolder"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -404,7 +405,12 @@
   </action>
   <action name="actionTestCalibrateCamera">
    <property name="text">
-    <string>TestCalibrateCamera</string>
+    <string>&amp;TestCalibrateCamera</string>
+   </property>
+  </action>
+  <action name="actionTestCalibrateFolder">
+   <property name="text">
+    <string>TestCalibrateFolder</string>
    </property>
   </action>
  </widget>
