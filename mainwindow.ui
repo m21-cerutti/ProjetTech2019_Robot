@@ -348,6 +348,7 @@
     <addaction name="separator"/>
     <addaction name="actionTestCalibrateCamera"/>
     <addaction name="actionTestCalibrateFolder"/>
+    <addaction name="actionCamera_calibration"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -411,6 +412,11 @@
   <action name="actionTestCalibrateFolder">
    <property name="text">
     <string>TestCalibrateFolder</string>
+   </property>
+  </action>
+  <action name="actionCamera_calibration">
+   <property name="text">
+    <string>Camera calibration</string>
    </property>
   </action>
  </widget>

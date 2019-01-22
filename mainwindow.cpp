@@ -22,7 +22,7 @@ MainWindow::~MainWindow()
 void MainWindow::chooseImage(){
 
     //get filename of image
-    QString filename = QFileDialog::getOpenFileName(this, "Open Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"),0, QFileDialog::DontUseNativeDialog);
+    QString filename = QFileDialog::getOpenFileName(this, "Open Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
 
     // open image
     if(_image_src.load(filename)){
@@ -41,15 +41,15 @@ void MainWindow::refreshImages()
     if (!_image_src.isNull())
     {
         //Refresh source
-        ui->imageLabelSrc->setPixmap(QPixmap::fromImage(_image_src.scaled(ui->boxSrc->width()*0.9,
-                                                                         ui->boxSrc->height()*0.9,
+        ui->imageLabelSrc->setPixmap(QPixmap::fromImage(_image_src.scaled((int)(ui->boxSrc->width()*0.9),
+                                                                         (int)(ui->boxSrc->height()*0.9),
                                                                          Qt::AspectRatioMode::KeepAspectRatio)));
 
         //Refresh destination
         QImage img;
         CVQTInterface::toQImage(_image_mat, img);
-        ui->imageLabelDst->setPixmap(QPixmap::fromImage(img.scaled(ui->boxDest->width()*0.9,
-                                                                   ui->boxDest->height()*0.9,
+        ui->imageLabelDst->setPixmap(QPixmap::fromImage(img.scaled((int)(ui->boxDest->width()*0.9),
+                                                                   (int)(ui->boxDest->height()*0.9),
                                                                    Qt::AspectRatioMode::KeepAspectRatio)));
     }
 }
@@ -236,19 +236,19 @@ void MainWindow::on_actionTestCalibrateCamera_triggered()
         return;
     }
 
-    double time;
-    time = ProjectDebuger::computeEfficiency(CameraCalibration::findOneCalibration, _image_mat, _image_mat);
+   // double time;
+    //time = ProjectDebuger::computeEfficiency(CameraCalibration::findOneCalibration, _image_mat, _image_mat);
 
     //Refresh window
-    refreshImages();
-    showEfficiency("Calibration", time);
+    //refreshImages();
+    //showEfficiency("Calibration", time);
 }
 
 void MainWindow::on_actionTestCalibrateFolder_triggered()
 {
     resetBeforeOperationCheck();
 
-    QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"),0, QFileDialog::DontUseNativeDialog);
+    QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
 
     std::vector<cv::Mat> vect_images;
     for(QString filename : filenames)
@@ -262,7 +262,7 @@ void MainWindow::on_actionTestCalibrateFolder_triggered()
         }
     }
 
-    CameraCalibration::calibrateFromImages(vect_images);
+    CameraCalibration::calibrateFromImages(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH());
     //double time;
     //time = ProjectDebuger::computeEfficiency();
 

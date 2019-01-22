@@ -1,34 +1,30 @@
 #include "cameracalibration.h"
 
 
-void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_images)
+int CameraCalibration::findChessBoard(const std::vector<cv::Mat> &sources_images,
+                                       std::vector<std::vector<cv::Point3f>>& object_points,
+                                       std::vector<std::vector<cv::Point2f>>& image_points)
 {
     using namespace cv;
 
     Mat gray;
+
+    //Initialisation
     Size board_size = Size(CHESS_WIDTH, CHESS_HEIGHT);
-
-    std::vector<std::vector<Point3f>> object_points;
-    std::vector<std::vector<Point2f>> image_points;
-
     std::vector<Point2f> corners;
-
     std::vector<Point3f> obj;
-
-    int num_squares = CHESS_WIDTH * CHESS_HEIGHT;
     for (float i = 0; i < CHESS_HEIGHT; i++){
-        for (float j = 0; j < CHESS_WIDTH; i++){
-            obj.push_back(Point3f(i, j, 0.0f));
+        for (float j = 0; j < CHESS_WIDTH; j++){
+            obj.push_back(Point3f(i*SQUARE_SIZE, j*SQUARE_SIZE, 0.0f));
         }
     }
 
-
+    //Research
     int nb_rejected=0;
-
     for(cv::Mat source : sources_images)
     {
         cv::cvtColor(source, gray, CV_BGRA2GRAY);
-        bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FILTER_QUADS | CALIB_CB_NORMALIZE_IMAGE |  CALIB_CB_FAST_CHECK);
+        bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK);
 
         if(found)
         {
@@ -40,17 +36,36 @@ void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_
 
             image_points.push_back(corners);
             object_points.push_back(obj);
-
         }
         else
         {
-            ProjectDebuger::showMatrice("Image rejected_"+nb_rejected++, source);
+            nb_rejected++;
+            ProjectDebuger::showMatrice("IMG_rejected_"+std::to_string(nb_rejected), source);
         }
+    }
+    return nb_rejected;
+}
+
+void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_images, std::string path_camera_file, MODE_CALIBRATION behaviour)
+{
+    using namespace cv;
+
+    std::vector<std::vector<Point3f>> object_points;
+    std::vector<std::vector<Point2f>> image_points;
+
+    switch (behaviour)
+    {
+    case Chessboard:
+        findChessBoard(sources_images, object_points, image_points);
+        break;
+
+    case Charuco:
+        break;
     }
 
     //Parameters to save
-    Mat intrinsic = Mat(3, 3, CV_32FC1);
-    Mat dist_coeffs;
+    Mat intrinsic = Mat(3, 3, CV_64F);
+    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
     std::vector<Mat> rvecs;
     std::vector<Mat> tvecs;
     intrinsic.ptr<float>(0)[0] = 1;
@@ -59,78 +74,23 @@ void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_
     //Calibration
     calibrateCamera(object_points, image_points, sources_images[0].size(), intrinsic, dist_coeffs, rvecs, tvecs);
 
-    saveCameraParameters( FILE_CAMERA_PATH, intrinsic, dist_coeffs, rvecs, tvecs);
+    //Save
+    saveCameraParameters( path_camera_file, intrinsic, dist_coeffs, rvecs, tvecs);
 
+    //Debug
+    /*
     int i = 0;
     for (cv::Mat source : sources_images)
     {
         Mat undistorded;
         undistort(source, undistorded, intrinsic, dist_coeffs);
-        ProjectDebuger::showMatrice("imagecalib_"+std::to_string(i),undistorded);
-        i++;
+        ProjectDebuger::showMatrice("imagecalib_"+std::to_string(i++),undistorded);
     }
+    */
 }
 
-bool CameraCalibration::findOneCalibration(const cv::Mat &source, cv::Mat &out)
-{
-    using namespace cv;
 
-    Mat gray, undistorded;
-    Size board_size = Size(CHESS_WIDTH, CHESS_HEIGHT);
-
-    std::vector<std::vector<Point3f>> object_points;
-    std::vector<std::vector<Point2f>> image_points;
-
-    std::vector<Point2f> corners;
-
-    std::vector<Point3f> obj;
-
-    int num_squares = CHESS_WIDTH * CHESS_HEIGHT;
-    for(int j=0;j<num_squares;j++)
-    {
-        obj.push_back(Point3f(j/CHESS_WIDTH, j%CHESS_WIDTH, 0.0f));
-    }
-
-    cv::cvtColor(source, gray, CV_BGRA2GRAY);
-    bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FILTER_QUADS | CALIB_CB_NORMALIZE_IMAGE |  CALIB_CB_FAST_CHECK);
-
-    if(found)
-    {
-        cornerSubPix(gray, corners,
-                     Size(11, 11),
-                     Size(-1, -1),
-                     TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
-        drawChessboardCorners(gray, board_size, corners, found);
-
-        image_points.push_back(corners);
-        object_points.push_back(obj);
-
-    }
-    else
-    {
-        return false;
-    }
-
-    //Parameters to save
-    Mat intrinsic = Mat(3, 3, CV_32FC1);
-    Mat dist_coeffs;
-    std::vector<Mat> rvecs;
-    std::vector<Mat> tvecs;
-    intrinsic.ptr<float>(0)[0] = 1;
-    intrinsic.ptr<float>(1)[1] = 1;
-
-    //Calibration
-    calibrateCamera(object_points, image_points, source.size(), intrinsic, dist_coeffs, rvecs, tvecs);
-
-    saveCameraParameters( FILE_CAMERA_PATH, intrinsic, dist_coeffs, rvecs, tvecs);
-
-    undistort(source, undistorded, intrinsic, dist_coeffs);
-
-    undistorded.copyTo(out);
-    return true;
-}
-
-void CameraCalibration::applyCameraParametersUndistorded(const std::__cxx11::string file_path, const cv::Mat &source, cv::Mat &out)
+void CameraCalibration::applyCameraParametersUndistorded(const std::string file_path, const cv::Mat &source, cv::Mat &out)
 {
     std::ifstream instream;
     std::ifstream::openmode mode{std::fstream::in};
