@@ -1,9 +1,14 @@
 #include "cameracalibration.h"
 
 
+/*A faire pour set 1 Charuco
+ *
+ * https://docs.opencv.org/3.2.0/da/d13/tutorial_aruco_calibration.html
+*/
+
 int CameraCalibration::findChessBoard(const std::vector<cv::Mat> &sources_images,
-                                       std::vector<std::vector<cv::Point3f>>& object_points,
-                                       std::vector<std::vector<cv::Point2f>>& image_points)
+                                      std::vector<std::vector<cv::Point3f>>& object_points,
+                                      std::vector<std::vector<cv::Point2f>>& image_points)
 {
     using namespace cv;
 
@@ -64,18 +69,18 @@ void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_
     }
 
     //Parameters to save
-    Mat intrinsic = Mat(3, 3, CV_64F);
+    Mat camera_matrix = Mat(3, 3, CV_64F);
     Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
     std::vector<Mat> rvecs;
     std::vector<Mat> tvecs;
-    intrinsic.ptr<float>(0)[0] = 1;
-    intrinsic.ptr<float>(1)[1] = 1;
+    camera_matrix.ptr<float>(0)[0] = 1;
+    camera_matrix.ptr<float>(1)[1] = 1;
 
     //Calibration
-    calibrateCamera(object_points, image_points, sources_images[0].size(), intrinsic, dist_coeffs, rvecs, tvecs);
+    calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
 
     //Save
-    saveCameraParameters( path_camera_file, intrinsic, dist_coeffs, rvecs, tvecs);
+    saveCameraParameters( path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
 
     //Debug
     /*
@@ -83,81 +88,76 @@ void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_
     for (cv::Mat source : sources_images)
     {
         Mat undistorded;
-        undistort(source, undistorded, intrinsic, dist_coeffs);
+        undistort(source, undistorded, camera_matrix, dist_coeffs);
         ProjectDebuger::showMatrice("imagecalib_"+std::to_string(i++),undistorded);
     }
     */
 }
 
 
-void CameraCalibration::applyCameraParametersUndistorded(const std::string file_path, const cv::Mat &source, cv::Mat &out)
+void CameraCalibration::applyUndistordedFromFile(const std::string file_path, const cv::Mat &source, cv::Mat &out)
 {
-    std::ifstream instream;
-    std::ifstream::openmode mode{std::fstream::in};
+    using namespace cv;
 
-    instream.open(file_path, mode );
-
-    if (!instream.is_open())
-        throw cv::Exception ( 1, "Fail to open file \""+file_path+"\"." ,
-                              "CameraCalibration::applyCameraParametersUndistorded(const std::__cxx11::string file_path, const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
-
-    /*
-    instream << "intrinsic" << std::endl;
-    instream << intrinsic << std::endl;
-    instream << "distCoeffs" << std::endl;
-    instream << dist_coeffs << std::endl;
-    */
-
-    instream.close();
-
-    if ( !instream.good())
-        throw cv::Exception ( 2, "Fail to write in the file \""+file_path+"\".",
-                              "CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
-
-    std::cout << "Apply read." << std::endl;
+    Mat camera_matrix, dist_coeffs;
+    std::vector<cv::Mat> rvecs;
+    std::vector<cv::Mat> tvecs;
+    if(!loadCameraParemeters(file_path, camera_matrix, dist_coeffs, rvecs, tvecs))
+        return;
 
     cv::Mat undistorded;
-    //undistort(source, undistorded, intrinsic, dist_coeffs);
+    undistort(source, undistorded, camera_matrix, dist_coeffs);
 
     undistorded.copyTo(out);
 }
 
-
-/*A faire pour set 1
- *
- * https://docs.opencv.org/3.2.0/da/d13/tutorial_aruco_calibration.html
-*/
-
-void CameraCalibration::saveCameraParameters(const std::string file_path,
-                                             const cv::Mat intrinsic,
-                                             const  cv::Mat dist_coeffs,
-                                             const std::vector<cv::Mat> rvecs,
-                                             const std::vector<cv::Mat> tvecs )
+bool CameraCalibration::loadCameraParemeters(const std::string file_path, cv::Mat& camera_matrix, cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs)
 {
-    std::ofstream outstream;
-    std::ofstream::openmode mode{std::fstream::out};
-    mode |= std::ofstream::trunc;
-    outstream.open(file_path, mode );
+    using namespace cv;
 
-    if (!outstream.is_open())
-        throw cv::Exception ( 1, "Fail to open file \""+file_path+"\"." ,
-                              "CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
+    if(!fs.isOpened()) {
+        ProjectDebuger::messageDebug("Can't open file for read calibration.", true);
+        return false;
+    }
 
-    outstream << "intrinsic" << std::endl;
-    outstream << intrinsic << std::endl;
-    outstream << "distCoeffs" << std::endl;
-    outstream << dist_coeffs << std::endl;
-    outstream << "rvecs" << std::endl;
-    for(auto v : rvecs)
-        outstream << v << std::endl;
-    outstream << "tvecs" << std::endl;
-    for(auto v : tvecs)
-        outstream << v << std::endl;
-    outstream.close();
+    std::string date;
+    fs["calibration_date"] >> date;
+    std::cout << "Calibration date : " <<  date;
+    fs["camera_matrix"] >> camera_matrix;
+    fs["dist_coeffs"] >> dist_coeffs;
+    fs["rvecs"] >> rvecs;
+    fs["tvecs"] >> tvecs;
+    fs.release();
 
-    if ( !outstream.good())
-        throw cv::Exception ( 2, "Fail to write in the file \""+file_path+"\".",
-                              "CameraCalibration::findCalibrate(const cv::Mat &source, cv::Mat &out)", __FILE__, __LINE__);
+    std::cout << "Read camera parameter sucessfull." << std::endl;
+    return true;
+}
 
-    std::cout << "File done." << std::endl;
+
+bool CameraCalibration::saveCameraParameters(const std::string file_path,
+                                             const cv::Mat& camera_matrix,
+                                             const  cv::Mat& dist_coeffs,
+                                             const std::vector<cv::Mat>& rvecs,
+                                             const std::vector<cv::Mat>& tvecs )
+{
+    using namespace cv;
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
+    if(!fs.isOpened()) {
+        ProjectDebuger::messageDebug("Can't open file for write calibration.", true);
+        return false;
+    }
+
+    time_t rawtime; time(&rawtime);
+    std::string date =  asctime(localtime(&rawtime));
+    fs << "calibration_date" << date;
+    fs << "camera_matrix" << camera_matrix;
+    fs << "dist_coeffs" << dist_coeffs;
+    fs << "rvecs" << rvecs;
+    fs << "tvecs" << tvecs;
+    fs.release();
+
+    std::cout << "File done. Date : " << date <<std::endl;
+    return true;
 }

@@ -78,9 +78,9 @@ private slots:
 
     void on_actionSobel_triggered();
 
-    void on_actionTestCalibrateCamera_triggered();
+    void on_actionApplyFromFile_triggered();
 
-    void on_actionTestCalibrateFolder_triggered();
+    void on_actionCalibrate_triggered();
 
 private:
 

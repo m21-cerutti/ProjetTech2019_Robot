@@ -227,24 +227,26 @@ void MainWindow::on_actionOrigin_triggered()
     on_btnOrigin_clicked();
 }
 
-void MainWindow::on_actionTestCalibrateCamera_triggered()
+void MainWindow::on_actionApplyFromFile_triggered()
 {
-
     resetBeforeOperationCheck();
     if (_image_src.isNull())
     {
         return;
     }
 
-   // double time;
-    //time = ProjectDebuger::computeEfficiency(CameraCalibration::findOneCalibration, _image_mat, _image_mat);
+    QString filename = QFileDialog::getOpenFileName(this, "Open camera calibration file", "~/", tr("XML Files (*.xml)"), nullptr, QFileDialog::DontUseNativeDialog);
 
-    //Refresh window
-    //refreshImages();
-    //showEfficiency("Calibration", time);
+    // open image
+    if(!filename.isEmpty())
+    {
+        CameraCalibration::applyUndistordedFromFile(filename.toStdString(), _image_mat, _image_mat);
+        //Refresh window
+        refreshImages();
+    }
 }
 
-void MainWindow::on_actionTestCalibrateFolder_triggered()
+void MainWindow::on_actionCalibrate_triggered()
 {
     resetBeforeOperationCheck();
 

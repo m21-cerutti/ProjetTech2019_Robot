@@ -336,6 +336,13 @@
      <addaction name="actionSimple"/>
      <addaction name="actionAdvanced"/>
     </widget>
+    <widget class="QMenu" name="menuCamera_calibration">
+     <property name="title">
+      <string>Camera calibration</string>
+     </property>
+     <addaction name="actionCalibrate"/>
+     <addaction name="actionApplyFromFile"/>
+    </widget>
     <addaction name="actionAbout"/>
     <addaction name="separator"/>
     <addaction name="actionOrigin"/>
@@ -346,9 +353,7 @@
     <addaction name="actionLaplacian"/>
     <addaction name="menuDisparity_Map"/>
     <addaction name="separator"/>
-    <addaction name="actionTestCalibrateCamera"/>
-    <addaction name="actionTestCalibrateFolder"/>
-    <addaction name="actionCamera_calibration"/>
+    <addaction name="menuCamera_calibration"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -404,19 +409,14 @@
     <string>G&amp;ray</string>
    </property>
   </action>
-  <action name="actionTestCalibrateCamera">
+  <action name="actionCalibrate">
    <property name="text">
-    <string>&amp;TestCalibrateCamera</string>
+    <string>Calibrate</string>
    </property>
   </action>
-  <action name="actionTestCalibrateFolder">
+  <action name="actionApplyFromFile">
    <property name="text">
-    <string>TestCalibrateFolder</string>
-   </property>
-  </action>
-  <action name="actionCamera_calibration">
-   <property name="text">
-    <string>Camera calibration</string>
+    <string>ApplyFromFile</string>
    </property>
   </action>
  </widget>

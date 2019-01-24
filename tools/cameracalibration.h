@@ -14,7 +14,7 @@
 #define SQUARE_SIZE 5
 #define CHESS_WIDTH 9
 #define CHESS_HEIGHT 6
-#define DEFAULT_FILE_CAMERA_PATH "calib_default_camera.txt"
+#define DEFAULT_FILE_CAMERA_PATH "calib_default_camera.xml"
 
 class CameraCalibration
 {
@@ -47,9 +47,11 @@ public:
      */
     static void calibrateFromImages(const std::vector<cv::Mat>& sources_images, std::string path_camera_file, MODE_CALIBRATION behaviour = Chessboard);
 
-    static void applyCameraParametersUndistorded(const std::string file_path, const cv::Mat& source, cv::Mat& out);
+    static void applyUndistordedFromFile(const std::string file_path, const cv::Mat& source, cv::Mat& out);
 
-    static void saveCameraParameters(const std::string file_path, cv::Mat intrinsic,  cv::Mat dist_coeffs, std::vector<cv::Mat> rvecs, std::vector<cv::Mat> tvecs );
+    static bool loadCameraParemeters(const std::string file_path, cv::Mat& camera_matrix,  cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs);
+
+    static bool saveCameraParameters(const std::string file_path, const cv::Mat &camera_matrix,  const cv::Mat &dist_coeffs, const std::vector<cv::Mat> &rvecs, const std::vector<cv::Mat> &tvecs );
 
 
 };
