@@ -272,3 +272,30 @@ void MainWindow::on_actionCalibrate_triggered()
     refreshImages();
     showEfficiency("Calibration multiple", 0);
 }
+
+void MainWindow::on_actionCharucoCalibrate_triggered()
+{
+    resetBeforeOperationCheck();
+
+    QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    std::vector<cv::Mat> vect_images;
+    for(QString filename : filenames)
+    {
+        QImage img;
+        if(img.load(filename)){
+
+           cv::Mat tmp;
+           CVQTInterface::toMatCV(img, tmp);
+           vect_images.push_back(tmp);
+        }
+    }
+
+    CameraCalibration::calibrateFromImages(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH(), CameraCalibration::MODE_CALIBRATION::Charuco);
+    //double time;
+    //time = ProjectDebuger::computeEfficiency();
+
+    //Refresh window
+    refreshImages();
+    showEfficiency("Calibration charuco", 0);
+}

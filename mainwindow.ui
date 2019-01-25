@@ -338,9 +338,10 @@
     </widget>
     <widget class="QMenu" name="menuCamera_calibration">
      <property name="title">
-      <string>Camera calibration</string>
+      <string>&amp;Camera calibration</string>
      </property>
      <addaction name="actionCalibrate"/>
+     <addaction name="actionCharucoCalibrate"/>
      <addaction name="actionApplyFromFile"/>
     </widget>
     <addaction name="actionAbout"/>
@@ -411,12 +412,17 @@
   </action>
   <action name="actionCalibrate">
    <property name="text">
-    <string>Calibrate</string>
+    <string>&amp;Calibrate</string>
    </property>
   </action>
   <action name="actionApplyFromFile">
    <property name="text">
-    <string>ApplyFromFile</string>
+    <string>&amp;ApplyFromFile</string>
+   </property>
+  </action>
+  <action name="actionCharucoCalibrate">
+   <property name="text">
+    <string>CharucoCalibrate</string>
    </property>
   </action>
  </widget>

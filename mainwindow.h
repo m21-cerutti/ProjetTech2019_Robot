@@ -82,6 +82,8 @@ private slots:
 
     void on_actionCalibrate_triggered();
 
+    void on_actionCharucoCalibrate_triggered();
+
 private:
 
     double _efficiency_time;

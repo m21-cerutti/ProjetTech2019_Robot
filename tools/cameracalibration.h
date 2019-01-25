@@ -5,15 +5,24 @@
 #include <highgui.h>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/aruco.hpp>
+#include <opencv2/aruco/charuco.hpp>
+#include <opencv2/aruco/dictionary.hpp>
 
 #include <fstream>
 
 //Debug
 #include "tools/projectdebuger.h"
 
-#define SQUARE_SIZE 5
+//Board
+#define SQUARE_SIZE (2*10e-2)
 #define CHESS_WIDTH 9
 #define CHESS_HEIGHT 6
+
+//Charuco
+#define MARKER_SIZE (1*10e-2)
+//Compter charuco
+
 #define DEFAULT_FILE_CAMERA_PATH "calib_default_camera.xml"
 
 class CameraCalibration
@@ -32,9 +41,9 @@ public:
     ///Functions
 private:
 
-    static int findChessBoard(const std::vector<cv::Mat>& sources_images,
-                               std::vector<std::vector<cv::Point3f> > &object_points,
-                               std::vector<std::vector<cv::Point2f> > &image_points);
+    static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,std::string path_camera_file);
+
+    static int charucoCalibration(const std::vector<cv::Mat>& sources_images, std::string path_camera_file);
 
 public:
 
