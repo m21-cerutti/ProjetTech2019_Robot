@@ -43,6 +43,11 @@ public:
 
 public:
 
+    
+    static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,std::string path_camera_file);
+
+    static int charucoCalibration(const std::vector<cv::Mat>& sources_images, std::string path_camera_file);
+    
     /**
      * @brief Find a special calibration for one image.
      * Put the result in the file "default_camera.txt" in the build directory.
@@ -51,10 +56,6 @@ public:
      * @return if we have find a chess correspondence
      */
     static void calibrateFromImages(const std::vector<cv::Mat>& sources_images, std::string path_camera_file, MODE_CALIBRATION behaviour = Chessboard);
-
-    static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,std::string path_camera_file);
-
-    static int charucoCalibration(const std::vector<cv::Mat>& sources_images, std::string path_camera_file);
 
     static void applyUndistordedFromFile(const std::string file_path, const cv::Mat& source, cv::Mat& out);
 

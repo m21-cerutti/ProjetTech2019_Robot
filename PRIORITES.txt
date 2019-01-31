@@ -12,12 +12,17 @@ Créer bibliotheque pour programme de prise en charge sans interface (préparati
 Créer un système de sauvegarde général pour calibration et performances.
 +Résultat
 
-Améliorer le système de calibration par multiples valeurs.
-
-Améliorer l'interface pour prendre en compte la calibration de différentes caméras.
-
-Filtre pour les cartes de disparité (si cela n'impacte pas les performances)
+Améliorer l'interface pour prendre en compte l'ffichage de calibration.
 
 Calculer cartes de profondeur.
 
+(Filtre pour les cartes de disparité)
+
+
+
+
+Questions pour prof:
+
+Charuco ne prends pas tout les Ids
+Fonction carte de profondeur
 

@@ -270,7 +270,7 @@ void MainWindow::on_actionCalibrate_triggered()
 
     //Refresh window
     refreshImages();
-    showEfficiency("Calibration multiple", 0);
+    showEfficiency("Calibration CHESS", 0);
 }
 
 void MainWindow::on_actionCharucoCalibrate_triggered()
@@ -297,5 +297,5 @@ void MainWindow::on_actionCharucoCalibrate_triggered()
 
     //Refresh window
     refreshImages();
-    showEfficiency("Calibration charuco", 0);
+    showEfficiency("Calibration CHARUCO", 0);
 }

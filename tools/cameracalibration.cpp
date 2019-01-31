@@ -14,9 +14,9 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
     Size board_size = Size(CHESS_WIDTH, CHESS_HEIGHT);
     std::vector<Point2f> corners;
     std::vector<Point3f> obj;
-    for (float i = 0; i < CHESS_HEIGHT; i++){
-        for (float j = 0; j < CHESS_WIDTH; j++){
-            obj.push_back(Point3f(i*SQUARE_SIZE, j*SQUARE_SIZE, 0.0f));
+    for (double i = 0; i < CHESS_HEIGHT; i++){
+        for (double j = 0; j < CHESS_WIDTH; j++){
+            obj.push_back(Point3f((float)(i*SQUARE_SIZE), (float)(j*SQUARE_SIZE), 0.0f));
         }
     }
 
@@ -55,23 +55,10 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
     camera_matrix.ptr<float>(1)[1] = 1;
 
     //Calibration
-    calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
-
-    calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs, CALIB_USE_INTRINSIC_GUESS);
+    calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs, 0, TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 60, DBL_EPSILON) );
 
     //Save
     saveCameraParameters( path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
-
-    //Debug
-    /*
-    int i = 0;
-    for (cv::Mat source : sources_images)
-    {
-        Mat undistorded;
-        undistort(source, undistorded, camera_matrix, dist_coeffs);
-        ProjectDebuger::showMatrice("imagecalib_"+std::to_string(i++),undistorded);
-    }
-    */
 
     return nb_rejected;
 }
@@ -81,15 +68,22 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
     using namespace cv;
 
     Mat gray;
+    Mat camera_matrix = Mat(3, 3, CV_64F);
+    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
 
     std::vector<std::vector<cv::Point2f>> allCharucoCorners;
     std::vector<std::vector<int>> allCharucoIds;
 
-    //FIND CHESSBOARD
+    //FIND CHARUCO
     //Initialisation
+
+    Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
+    detectorParams->doCornerRefinement = true;
+    detectorParams->cornerRefinementMaxIterations = 120;
+
     Ptr< aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME::DICT_ARUCO_ORIGINAL);
 
-    cv::Ptr<aruco::CharucoBoard> board = aruco::CharucoBoard::create(CHESS_WIDTH, CHESS_HEIGHT, SQUARE_SIZE, MARKER_SIZE, dictionary);
+    cv::Ptr<aruco::CharucoBoard> board = aruco::CharucoBoard::create(CHARU_WIDHT, CHARU_HEIGHT, SQUARE_SIZE, MARKER_SIZE, dictionary);
 
     int nb_rejected = 0;
     int nb_sucess = 0;
@@ -97,20 +91,26 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
     {
         cv::cvtColor(source, gray, CV_BGRA2GRAY);
         std::vector<int> ids;
-        std::vector<std::vector<cv::Point2f>> corners;
+        std::vector<std::vector<cv::Point2f>> corners, rejected;
 
-        cv::aruco::detectMarkers(gray, dictionary, corners, ids);
+        cv::aruco::detectMarkers(gray, dictionary, corners, ids, detectorParams);
+        cv::aruco::refineDetectedMarkers(gray, board, corners, ids, rejected);
+
         // if at least one marker detected
         if (ids.size() > 0) {
-            //cv::aruco::drawDetectedMarkers(gray, corners, ids);
+            cv::aruco::drawDetectedMarkers(gray, corners, ids);
             std::vector<cv::Point2f> charucoCorners;
             std::vector<int> charucoIds;
-            cv::aruco::interpolateCornersCharuco(corners, ids, gray, board, charucoCorners, charucoIds );
+
+            //ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess++), gray);
+
+            aruco::interpolateCornersCharuco(corners, ids, gray, board, charucoCorners, charucoIds);
+
             // if at least one charuco corner detected
             if(charucoIds.size() > 0){
                 nb_sucess++;
                 cv::aruco::drawDetectedCornersCharuco(gray, charucoCorners, charucoIds, cv::Scalar(255, 0, 0));
-                ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess), gray);
+                ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess++), gray);
             }
             else
             {
@@ -124,6 +124,8 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
             //ProjectDebuger::showMatrice("IMG_rejected_"+std::to_string(nb_rejected), gray);
         }
     }
+    //END FIND CHARUCO
+
     /*
     //Parameters to save
     Mat camera_matrix = Mat(3, 3, CV_64F);
