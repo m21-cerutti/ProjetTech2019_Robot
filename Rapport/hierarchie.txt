@@ -8,14 +8,7 @@ l3-rvc
 |-- mainwindow.cpp
 |-- mainwindow.h
 |-- mainwindow.ui
-|-- PRIORITES.txt
 |-- Rapport
-|   |-- Brouillons
-|   |   |-- 14_12_2018.txt
-|   |   |-- Calibration.txt
-|   |   |-- Procédure Matériel
-|   |   |-- rapport_05_11_2018.txt
-|   |   `-- rapport_05_12_2018.txt
 |   |-- hierarchie.txt
 |   |-- img
 |   |   `-- ubx-logo.png

@@ -13,9 +13,9 @@
 \usepackage{color} % 			Gestion des couleurs
 \usepackage[normalem]{ulem} % 	Underline
 
-\usepackage{comment}%			Commenter
+\usepackage	{comment}%			Commenter
 
-\usepackage{listingsutf8}% 		Code informatique
+\usepackage	{listingsutf8}% 		Code informatique
 \definecolor{mGreen}{rgb}{0,0.6,0}
 \definecolor{mGray}{rgb}{0.5,0.5,0.5}
 \definecolor{mPurple}{rgb}{0.58,0,0.82}
@@ -114,93 +114,132 @@
 \newpage
 \part{Présentation du sujet}
 
+\section{Déroulement}
 	L'objectif de ce projet de L3 informatique est à terme de créer un robot suiveur qui suivrai son utilisateur à distance de 2 mètres.\\
 
 	On passera cependant par plusieurs étapes.
 	\\\\
 	D'abord la création de nos fonctions d'analyse et une interface graphique à partir de la bibliothèque OpenCv et Qt respectivement. OpenCv implémente notamment des algorithmes pour faire les filtres, les cartes de disparité et les cartes de profondeur nécessaires à l'analyse d'images pour l'intelligence artificielle, et Qt un système d'interface complet pour pouvoir créer une interface permettant de tester nos fonctions d'analyse d'images.\\
-Il faudra par contre se concentrer sur les fonctions d'analyse parce qu’elles doivent être optimisé pour les systèmes embarqué.
 \\\\
-	Ensuite la création sous Unity  d'une simulation avec les différents paramètres permettant de créer des comportements par défaut et testant les différents algorithmes.Elle devra prévoir les spécificités du matériel et prévoir différents tests pour différents environnements et situations.\\
+	Ensuite la création sous Unity d'une simulation avec les différents paramètres permettant de créer les comportements par défaut du robot et testant les différents algorithmes. Elle devra prévoir les spécificités du matériel et les tests pour différents environnements et situations.\\
 	
-\begin{comment} 
-\\\\
-RENDU FINAL:\\
-	Paramètres de fonctions\\
-	Carte de disparité\\
-	Carte de profondeur\\
-	Rapport\\
-	Avec graphiques performances\\
-	Tests\\
-	Soutenance\\
-\end{comment}
-
-
-% - Developpement ----- %
+	Ces deux étapes se feront respectivement au semestre 5 et 6 de Licence informatique 2018-2019.\\
+	
 \newpage
 \section{Analyse de l’existant}
 
+Les consignes sont de s'appuyer sur la bibliothèque d'OpenCv 3.2.0
+et Qt supérieur à 4.8 afin d'assurer une compatibilité avec les ordinateurs du Cremi. \\
+Du fait de la communauté de OpenCv et de Qt, de nombreux tutoriels sont disponibles en ligne afin de nous permettre d'assurer les fonctionnalités demandé, à savoir le traitement et l'analyse d'image et la création d'une interface pour tester le résultat.\\
 
-\newpage
-\section{Besoins-non fonctionnels}
+Nous avons aussi comme matériel un robot avec une caméra stéréoscopique mis à la disposition des élèves avec bien sur des contraintes de disponibilité.
 
 
-\newpage
-\section{Besoins fonctionnels}
+\section{Besoins}
 
-\newpage
-\subsection{Filtre d'images}
+Comme notre programme de traitement d'image sera utilisé dans un système embarqué, la performance de notre code est critique, ainsi que la mémoire utilisé.\\
+Il faudra aussi pour la portabilité sur le robot exactement savoir les parties de bibliothèque OpenCv à importer.\\
+
+Pour analyser l'environnement du Robot, il faut assurer la gestion de ces caméra stéréoscopique et le traitement des images qui seront transmis à l'unité de contrôle.\\
+
+Il faut aussi une interface qui permettra de tester, quantifier les performances, et s'assurer qualitativement du bon déroulement de l'implémentation des fonctionnalités.\\
+Cela amène en plus à des fonctions de conversions d'images pour passer du format de OpenCv à Qt. \\
 
 %------------------%
 \newpage
 \part{Architecture}
 
-
-\newpage
 \section{Vue Global et conventions}
 
-% ----- Mise en place simulation ------ %
+La convention de nommage adopté est la suivante :\\
+
+\begin{tabular}{ l c }
+   Attribut & \textit{\_name\_complete }\\
+   Variables locales  & \textit{name\_complete}\\ 
+   Méthodes & \textit{nameComplete}\\
+   Classes 	& \textit{NameClass}\\
+   Fichiers	& \textit{nameclass.*}\\
+ \end{tabular}\\
+
+La hiérarchie des fichiers est en annexe.\\
+Le dossier "tools" rassemble les classes concernant le débuguage, la conversion, et le traitement d'images.
+Le dossier "subWindows" contient les classes de sous fenêtres à la fenêtre principal de l'interface.
+
 \newpage
 \section{Interface Qt}
+
+%Photo interface et sous fenetres
 
 \newpage
 \section{Bibliothèque d'analyse}
 
-\newpage
 \subsection{Filtre d'images}
+
+%Photo performances
 
 \newpage
 \subsection{Carte de disparité}
 
+%Photo résultat pire-mieux
+
 \newpage
 \subsection{Calibration Camera}
+
+%Photo résultat pire-mieux
 
 \newpage
 \subsection{Carte de profondeur}
 
+%Photo résultat pire-mieux
+
+\begin{comment}
 \newpage
 \section{Simulation}
+\end{comment}
 
 %------------------%
 \newpage
 \part{Tests}
 
-\newpage
 \section{Tests unitaires}
 
-\newpage
 \section{Performances}
 
+\subsection{Filtre d'images}
+
+%Tableau performances
+
+\subsection{Carte de disparité}
+
+%Tableau performances
+
+\subsection{Calibration Camera}
+
+%Tableau performances
+
+\subsection{Carte de profondeur}
+
+%Tableau performances
 
 %------------------%
 \newpage
 \part{Bilan}
 
-\newpage
-\section{Difficultés rencontrés}
+\section{Semestre 5}
 
-\newpage
-\section{Critique et améliorations potentielles}
+\subsection{Difficultés rencontrés}
+
+Pas assez de bras
+
+\subsection{Critique et améliorations potentielles}
+
+Améliorer l'interface et les tests.
+
+\begin{comment}
+\section{Semestre 6}
+\subsection{Difficultés rencontrés}
+\subsection{Critique et améliorations potentielles}
+\end{comment}
 
 %------------------%
 \newpage
@@ -215,7 +254,8 @@ RENDU FINAL:\\
 
 
 \newpage
-\section{Rapport Initial}
+\section{Rapports}
+\subsection{Rapport Initial}
 Scission du groupe initial du fait de problèmes internes concernant des choix d'implémentation de l'interface graphique.\\
 
 Fonctionnalités de base déjà présentes à ce moment :\\
@@ -225,8 +265,8 @@ Fonctionnalités de base déjà présentes à ce moment :\\
 	-Filtres de flou Gaussien, de Laplacien, et de séparation d'image pour les cartes de disparité implémenté.\\
 	-Fonction de débuguage d'image pour l'affichage OpenCv crée.\\
 
-\newpage
-\section{Rapport 05 novembre 2018}
+
+\subsection{Rapport 05 novembre 2018}
 
 \textbf{Rapport du groupe CERUTTI}\\
 Le 05 novembre 2018\\
@@ -255,7 +295,7 @@ Pistes d'améliorations:\\
 	-SteroVar non essayé openCv\\
 	-Recherche analyse de flux vidéo\\
 	-Recherche object tracking et template
-\\\\
+\\
 
 \textbf{Remarques professeur :}\\
 Pas d'image dans Git\\
@@ -267,15 +307,15 @@ Laisser le code cvtColor dans les fonctions nécessaires sinon cela ne facilite 
 Mettre des références à la place de la recopie de matrice
 \\\\
 
-\textbf{Prochaine séance :}\\
+\textbf{Prochain rapport :}\\
 Simplifier le code\\
 Renommer les variables avec convention (code et fichiers) et commenter le code\\
 Voire carte disparité problème\\
 Prévoir quoi faire avec le matériel\\
-\\\\
+Calibration\\
+\\
 
-\newpage
-\section{Rapport 5 Décembre 2018}
+\subsection{Rapport 5 Décembre 2018}
 Rapport du groupe CERUTTI
 Le 05 Décembre 2018
 
@@ -283,26 +323,27 @@ Le 05 Décembre 2018
 Correction depuis dernier rendu:
 
     -Adoption d'une convention de nommage:\\
-Attribut                        |\_name\_complete            
-Variables locales         		|name\_complete                
-Méthodes                    	|nameComplete
-Classes                        	|NameClass
-Fichiers                        |nameclass.*
-
+\begin{tabular}{ l c }
+   Attribut & \textit{\_name\_complete }\\
+   Variables locales  & \textit{name\_complete}\\ 
+   Méthodes & \textit{nameComplete}\\
+   Classes 	& \textit{NameClass}\\
+   Fichiers	& \textit{nameclass.*}\\
+ \end{tabular}\\
+ 
     -Changement de la fonction Sobel en Gradient, et implémentation en vrai Gradient.\\
     -Correction des cartes de disparité inversé\\
     -Amélioration des performances en enlevant la recopie des return et en passant des références en paramètre.\\
    
 
-Calibration:
-    -Implémentation de findOneCalibration. Pour une image particulier il trouve les paramètres de calibration,
-et les mets dans un fichier. Il envoie ensuite dans la matrice de sortie l'image non distordue.\\
-    -Test valgrind, 32 erreurs externes (supposé lié à la bibliothèque Qt).\\
+Calibration:\\
+    -Implémentation de findOneCalibration. Pour une image particulier il trouve les paramètres de calibration, et les mets dans un fichier. Il envoie ensuite dans la matrice de sortie l'image non distordue.\\
+    -Test valgrind, 32 erreurs externes (supposé lié à la bibliothèque Qt)\\
 
 Interface graphique:\\
     -Rajout d'une option TestCameraCalibrate, dans les menus prend l'image courant d'interface et applique findOneCalibration.\\
 Remarque, certaines images sont distordus comme la set1/10\_20\_43\_159.jpg après calibration. Possibilité que le ChessBoard soit trop loin, couplé au fait qu'il n'y a qu'une seule valuation de calibration.
-   \\
+\\
 
 Pistes d'améliorations:\\
     -Filtre pour les cartes de disparité (si cela n'impacte pas les performances)\\
@@ -311,19 +352,25 @@ Pistes d'améliorations:\\
     -Améliorer l'interface pour prendre en compte la calibration de différentes caméras.\\
 
 \textbf{Remarques professeur :}\\
-Sobel erreur\\
-Syntheses à améliorer\\
+-Sobel erreur\\
+-Synthèses à améliorer\\
 -enlever qtdesigner.txt\\
 -mettre algos\\
 -résultats\\
 -problème\\
 -pas de code dans rapport\\
+-Erreur récurentes (?)\\
+-Rigueur sur le code, moins sur la théorie\\
+-Rapport pas un bilan d'activité\\
+\\
 
-Erreur récurentes (?)\\
-Rigueur sur le code, moins sur la théorie\\
-Rapport pas un bilan d'activité\\
-
-
-\newpage
+\textbf{Prochain rapport :}\\
+Faire un deuxième système de calibration par ChAruco.\\
+Calculer cartes de profondeur.\\
+Rendu du rapport de semestre 5\\
+Implémenter des tests unitaires et de performances.\\
+Améliorer l'interface pour prendre en compte l'affichage de calibration.\\
+(Filtre pour les cartes de disparité)\\
+\\\\
 
 \end{document}

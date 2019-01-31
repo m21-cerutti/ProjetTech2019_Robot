@@ -12,7 +12,7 @@ Créer bibliotheque pour programme de prise en charge sans interface (préparati
 Créer un système de sauvegarde général pour calibration et performances.
 +Résultat
 
-Améliorer l'interface pour prendre en compte l'ffichage de calibration.
+Améliorer l'interface pour prendre en compte l'affichage de calibration.
 
 Calculer cartes de profondeur.
 
@@ -24,5 +24,9 @@ Calculer cartes de profondeur.
 Questions pour prof:
 
 Charuco ne prends pas tout les Ids
+Quoi mettre dans le rapport
 Fonction carte de profondeur
 
+setereoCalibrate
+stereoRectify
+reprojectImageTo3D
