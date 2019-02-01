@@ -33,7 +33,7 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
                          Size(11, 11),
                          Size(-1, -1),
                          TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
-            drawChessboardCorners(gray, board_size, corners, found);
+            //drawChessboardCorners(gray, board_size, corners, found);
 
             image_points.push_back(corners);
             object_points.push_back(obj);
@@ -79,7 +79,26 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
 
     Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
     detectorParams->doCornerRefinement = true;
-    detectorParams->cornerRefinementMaxIterations = 120;
+
+    detectorParams->adaptiveThreshWinSizeMin = 3;
+    detectorParams->adaptiveThreshWinSizeMax = 23;
+    detectorParams->adaptiveThreshWinSizeStep = 10;
+    detectorParams->adaptiveThreshConstant = 7;
+    detectorParams->minMarkerPerimeterRate = 0.03;
+    detectorParams->maxMarkerPerimeterRate = 4.0;
+    detectorParams->polygonalApproxAccuracyRate = 0.05;
+    detectorParams->minCornerDistanceRate = 0.05;
+    detectorParams->minDistanceToBorder = 3;
+    detectorParams->minMarkerDistanceRate = 0.05;
+    detectorParams->cornerRefinementWinSize = 5;
+    detectorParams->cornerRefinementMaxIterations = 120;//30
+    detectorParams->cornerRefinementMinAccuracy = 0.1;
+    detectorParams->markerBorderBits = 1;
+    detectorParams->perspectiveRemovePixelPerCell = 8;
+    detectorParams->perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams->maxErroneousBitsInBorderRate = 0.04;
+    detectorParams->minOtsuStdDev = 5.0;
+    detectorParams->errorCorrectionRate = 0.6;
 
     Ptr< aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME::DICT_ARUCO_ORIGINAL);
 
@@ -98,17 +117,20 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
 
         // if at least one marker detected
         if (ids.size() > 0) {
-            cv::aruco::drawDetectedMarkers(gray, corners, ids);
+            //cv::aruco::drawDetectedMarkers(gray, corners, ids);
             std::vector<cv::Point2f> charucoCorners;
             std::vector<int> charucoIds;
 
             //ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess++), gray);
+
+
 
             aruco::interpolateCornersCharuco(corners, ids, gray, board, charucoCorners, charucoIds);
 
             // if at least one charuco corner detected
             if(charucoIds.size() > 0){
                 nb_sucess++;
+
                 cv::aruco::drawDetectedCornersCharuco(gray, charucoCorners, charucoIds, cv::Scalar(255, 0, 0));
                 ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess++), gray);
             }
@@ -183,6 +205,7 @@ void CameraCalibration::applyUndistordedFromFile(const std::string file_path, co
 
     undistorded.copyTo(out);
 }
+
 
 bool CameraCalibration::loadCameraParemeters(const std::string file_path, cv::Mat& camera_matrix, cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs)
 {

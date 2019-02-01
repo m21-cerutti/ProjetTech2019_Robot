@@ -21,8 +21,8 @@
 
 //Board Charuco
 #define MARKER_SIZE (1*10e-2)
-#define CHARU_WIDHT 10
-#define CHARU_HEIGHT 7
+#define CHARU_WIDHT 9
+#define CHARU_HEIGHT 6
 
 #define DEFAULT_FILE_CAMERA_PATH "calib_default_camera.xml"
 
@@ -42,7 +42,6 @@ public:
     ///Functions
 
 public:
-
 
     static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,std::string path_camera_file);
 

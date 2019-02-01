@@ -17,6 +17,29 @@
 class ProjectDebuger
 {
 public:
+
+    template<typename T>
+    static std::string matToString(const cv::Mat& source)
+    {
+        std::string print;
+        for(int i=0; i<source.rows; i++)
+        {
+            print += "[";
+            for(int j=0; j<source.cols; j++)
+            {
+                print += std::to_string(source.at<T>(i,j));
+                if(j != source.rows-1)
+                    print += ", ";
+                else
+                {
+                    print += "]";
+                    print += "\n";
+                }
+            }
+        }
+        return print;
+    }
+
     /**
      * @brief messageDebug
      * @param message

@@ -18,6 +18,7 @@
 #include "tools/cameracalibration.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"
+#include "subWindows/cameraparamdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -82,7 +83,9 @@ private slots:
 
     void on_actionCalibrate_triggered();
 
-    void on_actionCharucoCalibrate_triggered();
+    //void on_actionCharucoCalibrate_triggered();
+
+    void on_actionCalibration_triggered();
 
 private:
 

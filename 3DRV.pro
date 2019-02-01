@@ -41,7 +41,8 @@ SOURCES += \
     subWindows/bmparamdialog.cpp \
     tools/cameracalibration.cpp \
     tools/cvqtinterface.cpp \
-    tools/projectdebuger.cpp
+    tools/projectdebuger.cpp \
+    subWindows/cameraparamdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -50,7 +51,8 @@ HEADERS += \
     subWindows/bmparamdialog.h \
     tools/cameracalibration.h \
     tools/cvqtinterface.h \
-    tools/projectdebuger.h
+    tools/projectdebuger.h \
+    subWindows/cameraparamdialog.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -60,6 +62,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 FORMS += \
     mainwindow.ui \
     subWindows/sgbmparamdialog.ui \
-    subWindows/bmparamdialog.ui
+    subWindows/bmparamdialog.ui \
+    subWindows/cameraparamdialog.ui
 
 DISTFILES +=

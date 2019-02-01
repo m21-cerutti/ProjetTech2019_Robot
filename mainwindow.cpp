@@ -273,6 +273,7 @@ void MainWindow::on_actionCalibrate_triggered()
     showEfficiency("Calibration CHESS", 0);
 }
 
+/*-
 void MainWindow::on_actionCharucoCalibrate_triggered()
 {
     resetBeforeOperationCheck();
@@ -298,4 +299,11 @@ void MainWindow::on_actionCharucoCalibrate_triggered()
     //Refresh window
     refreshImages();
     showEfficiency("Calibration CHARUCO", 0);
+}
+*/
+
+void MainWindow::on_actionCalibration_triggered()
+{
+    CameraParamDialog dial;
+    dial.exec();
 }

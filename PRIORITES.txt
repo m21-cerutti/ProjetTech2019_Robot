@@ -27,6 +27,17 @@ Charuco ne prends pas tout les Ids
 Quoi mettre dans le rapport
 Fonction carte de profondeur
 
+
+Carte de profondeur:
+
 setereoCalibrate
 stereoRectify
 reprojectImageTo3D
+
+A faire pour rapport:
+
+Visualisation parametres caméra
+Charuco affinage de paramétres
+Ouverture fichier vidéo
+Carte de profondeur
+Rapport
