@@ -92,6 +92,8 @@ private slots:
 
     void on_actionChessboard_debug_triggered();
 
+    void on_actionStereoVideo_triggered();
+
 private:
 
     double _efficiency_time;

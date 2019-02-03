@@ -74,19 +74,20 @@ public:
     }
 
     template<typename T, typename U>
-    static double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out, U argstereo)
+    static double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out, U arg)
     {
         double elapsed_time;
         clock_t start_time, stop_time;
         start_time = clock();
 
-        func(src, out, argstereo);
+        func(src, out, arg);
 
         stop_time = clock();
         elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
 
         return elapsed_time;
     }
+
 };
 
 #endif // PROJECTDEBUGER_H

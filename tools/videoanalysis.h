@@ -49,6 +49,8 @@ public:
 
     static void videoChessDebug(std::string path_video);
 
+    static void stereoVideo(std::string path_video_left, std::string path_video_right);
+
 
 };
 

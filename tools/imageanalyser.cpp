@@ -83,14 +83,21 @@ void ImageAnalyser::fillBlank(const cv::Mat &src, cv::Mat &out)
 
 void ImageAnalyser::computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
 {
-    cv::Mat invert, left_mat, right_mat, disparity;
+    cv::Mat left_mat, right_mat;
 
     ///Separate
     separateImage(src, left_mat, right_mat);
 
+    computeBMDisparityStereo(left_mat, right_mat, out, bm_state);
+}
+
+void ImageAnalyser::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
+{
+    cv::Mat invert, left_mat, right_mat, disparity;
+
     ///Gray
-    applyGray(left_mat, left_mat);
-    applyGray(right_mat, right_mat);
+    applyGray(src_left, left_mat);
+    applyGray(src_right, right_mat);
 
     ///Disparity map
     bm_state->compute(left_mat, right_mat, disparity);
@@ -103,14 +110,19 @@ void ImageAnalyser::computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr
 
 void ImageAnalyser::computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
 {
-    cv::Mat invert, left_mat, right_mat, disparity;
-
-    ///Separate
+    cv::Mat left_mat, right_mat;
     separateImage(src, left_mat, right_mat);
 
+    computeSGBMDisparityStereo(left_mat, right_mat, out, sgbm_state);
+}
+
+void ImageAnalyser::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
+{
+    cv::Mat invert, left_mat, right_mat, disparity;
+
     ///Gray
-    applyGray(left_mat, left_mat);
-    applyGray(right_mat, right_mat);
+    applyGray(src_left, left_mat);
+    applyGray(src_right, right_mat);
 
     ///Disparity map
     sgbm_state->compute(left_mat, right_mat, disparity);

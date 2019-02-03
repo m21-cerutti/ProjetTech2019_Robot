@@ -77,6 +77,8 @@ public:
      *     SADWindowsSize
      */
     static void computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
+    static void computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
+
 
     /**
      * @brief Make disparity map with SGBM algorithm
@@ -96,6 +98,7 @@ public:
      *     SADWindowSize
      */
     static void computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
+    static void computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
     /*
     template<typename T, typename U>

@@ -41,3 +41,18 @@ Charuco affinage de paramétres
 Ouverture fichier vidéo
 Carte de profondeur
 Rapport
+
+Idées:
+Fenetre de choix de parametre
+
+Main opencv video avec 
+VideoStereoAnalyser class
+Ferai l'analyse vidéo avec des commandes qui permmetrai d'ouvrir des fenetre Qt si nécessaire.
+1)Calibration de chaque caméra à partir d'un set d'image
+2)Correction de distorsion
+3)Création carte de disparité
+3.bis)Choix fenetre parametre
+(demanderait une refonte totale de l'interface)
+4)setereoCalibrate
+5)stereoRectify
+6)reprojectImageTo3D

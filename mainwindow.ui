@@ -363,6 +363,7 @@
     </property>
     <addaction name="actionOpen_video"/>
     <addaction name="actionChessboard_debug"/>
+    <addaction name="actionStereoVideo"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -445,6 +446,11 @@
   <action name="actionChessboard_debug">
    <property name="text">
     <string>Chessboard debug</string>
+   </property>
+  </action>
+  <action name="actionStereoVideo">
+   <property name="text">
+    <string>StereoVideo</string>
    </property>
   </action>
  </widget>

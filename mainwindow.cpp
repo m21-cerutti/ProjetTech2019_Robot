@@ -329,3 +329,14 @@ void MainWindow::on_actionChessboard_debug_triggered()
         VideoAnalysis::videoChessDebug(filename.toStdString());
     }
 }
+
+void MainWindow::on_actionStereoVideo_triggered()
+{
+    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    // open image
+    if(filepaths.size() == 2)
+    {
+        VideoAnalysis::stereoVideo(filepaths.at(0).toStdString(), filepaths.at(1).toStdString());
+    }
+}

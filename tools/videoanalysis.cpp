@@ -53,3 +53,62 @@ void VideoAnalysis::videoChessDebug(std::string path_video)
     }
     return;
 }
+
+void VideoAnalysis::stereoVideo(std::string path_video_left, std::string path_video_right)
+{
+    using namespace cv;
+    VideoCapture cap_left(path_video_left);
+    VideoCapture cap_right(path_video_right);
+    if ( !cap_left.isOpened() || ! cap_right.isOpened())
+    {
+        ProjectDebuger::messageDebug("Cannot open the videos files.", true);
+        return;
+    }
+
+    namedWindow("Video_reader_L", CV_WINDOW_AUTOSIZE);
+    namedWindow("Video_reader_R", CV_WINDOW_AUTOSIZE);
+
+    int index_frame = 0;
+    while(true)
+    {
+        Mat frame_l, frame_r, out;
+
+        index_frame++;
+        if (!cap_left.read(frame_l) || !cap_right.read(frame_r))
+        {
+            std::cout<<"\n Cannot read the videos files. \n";
+            break;
+        }
+
+        /*
+        cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(64, 11);
+        ImageAnalyser::computeBMDisparityStereo(frame_l,frame_r, out, bmState);
+        */
+        /*
+        cv::Ptr<cv::StereoSGBM> sgbmState =
+                cv::StereoSGBM::create(-64,
+                                       192,
+                                       5,
+                                       600,
+                                       2400,
+                                       10,
+                                       4,
+                                       10,
+                                       150,
+                                       2,
+                                       false);
+        ImageAnalyser::computeSGBMDisparityStereo(frame_l,frame_r, out, sgbmState);
+        imshow("disp", out);
+        */
+
+        imshow("Video_reader_L", frame_l);
+        imshow("Video_reader_R", frame_r);
+
+
+        if(waitKey(30) == 27) // Wait for 'esc' key press to exit
+        {
+            break;
+        }
+    }
+    return;
+}
