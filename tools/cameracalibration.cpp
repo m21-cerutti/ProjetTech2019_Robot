@@ -104,8 +104,8 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
     //Initialisation
 
     Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
-    detectorParams->doCornerRefinement = true;
-
+    detectorParams->doCornerRefinement = false;
+    /*
     detectorParams->adaptiveThreshWinSizeMin = 3;
     detectorParams->adaptiveThreshWinSizeMax = 23;
     detectorParams->adaptiveThreshWinSizeStep = 10;
@@ -117,7 +117,7 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
     detectorParams->minDistanceToBorder = 3;
     detectorParams->minMarkerDistanceRate = 0.05;
     detectorParams->cornerRefinementWinSize = 5;
-    detectorParams->cornerRefinementMaxIterations = 120;//30
+    detectorParams->cornerRefinementMaxIterations = 30;
     detectorParams->cornerRefinementMinAccuracy = 0.1;
     detectorParams->markerBorderBits = 1;
     detectorParams->perspectiveRemovePixelPerCell = 8;
@@ -125,6 +125,7 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
     detectorParams->maxErroneousBitsInBorderRate = 0.04;
     detectorParams->minOtsuStdDev = 5.0;
     detectorParams->errorCorrectionRate = 0.6;
+    */
 
     Ptr< aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME::DICT_ARUCO_ORIGINAL);
 
