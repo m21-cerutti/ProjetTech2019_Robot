@@ -16,6 +16,7 @@
 #include "tools/cvqtinterface.h"
 #include "tools/imageanalyser.h"
 #include "tools/cameracalibration.h"
+#include "tools/videoanalysis.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"
 #include "subWindows/cameraparamdialog.h"
@@ -86,6 +87,10 @@ private slots:
     //void on_actionCharucoCalibrate_triggered();
 
     void on_actionCalibration_triggered();
+
+    void on_actionOpen_video_triggered();
+
+    void on_actionChessboard_debug_triggered();
 
 private:
 

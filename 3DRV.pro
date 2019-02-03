@@ -42,7 +42,8 @@ SOURCES += \
     tools/cameracalibration.cpp \
     tools/cvqtinterface.cpp \
     tools/projectdebuger.cpp \
-    subWindows/cameraparamdialog.cpp
+    subWindows/cameraparamdialog.cpp \
+    tools/videoanalysis.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -52,7 +53,8 @@ HEADERS += \
     tools/cameracalibration.h \
     tools/cvqtinterface.h \
     tools/projectdebuger.h \
-    subWindows/cameraparamdialog.h
+    subWindows/cameraparamdialog.h \
+    tools/videoanalysis.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

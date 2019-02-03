@@ -3,11 +3,15 @@
 
 void ImageAnalyser::applyGray(const cv::Mat &src, cv::Mat &out)
 {
-    if(src.type() != CV_8UC1 && src.type() == (CV_8UC3 | CV_8UC4))
+    if(src.type() != CV_8UC1)
     {
         cv::Mat gray;
         cv::cvtColor(src, gray, CV_BGRA2GRAY);
         gray.copyTo(out);
+    }
+    else if(src.type() == CV_8UC1)
+    {
+        src.copyTo(out);
     }
 }
 

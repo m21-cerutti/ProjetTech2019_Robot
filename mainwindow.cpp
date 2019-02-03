@@ -307,3 +307,25 @@ void MainWindow::on_actionCalibration_triggered()
     CameraParamDialog dial;
     dial.exec();
 }
+
+void MainWindow::on_actionOpen_video_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this, "Open video file", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    // open image
+    if(!filename.isEmpty())
+    {
+        VideoAnalysis::filterVideo(filename.toStdString(), ImageAnalyser::computeGradient);
+    }
+}
+
+void MainWindow::on_actionChessboard_debug_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this, "Open video file", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    // open image
+    if(!filename.isEmpty())
+    {
+        VideoAnalysis::videoCalibration(filename.toStdString());
+    }
+}

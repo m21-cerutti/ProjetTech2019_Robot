@@ -329,40 +329,52 @@
     <property name="title">
      <string>Optio&amp;ns</string>
     </property>
-    <widget class="QMenu" name="menuDisparity_Map">
-     <property name="title">
-      <string>&amp;Disparity Map</string>
-     </property>
-     <addaction name="actionSimple"/>
-     <addaction name="actionAdvanced"/>
-    </widget>
-    <widget class="QMenu" name="menuCamera_calibration">
-     <property name="title">
-      <string>&amp;Camera calibration</string>
-     </property>
-     <addaction name="actionCalibrate"/>
-     <addaction name="actionApplyFromFile"/>
-     <addaction name="actionCalibration"/>
-    </widget>
     <addaction name="actionAbout"/>
     <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuCameraCalibration">
+    <property name="title">
+     <string>CameraCalibration</string>
+    </property>
+    <addaction name="actionCalibrate"/>
+    <addaction name="actionApplyFromFile"/>
+    <addaction name="actionCalibration"/>
+   </widget>
+   <widget class="QMenu" name="menuFilter">
+    <property name="title">
+     <string>Filter</string>
+    </property>
     <addaction name="actionOrigin"/>
-    <addaction name="separator"/>
     <addaction name="actionGray"/>
     <addaction name="actionGaussian"/>
     <addaction name="actionSobel"/>
     <addaction name="actionLaplacian"/>
-    <addaction name="menuDisparity_Map"/>
-    <addaction name="separator"/>
-    <addaction name="menuCamera_calibration"/>
+   </widget>
+   <widget class="QMenu" name="menuDisparity_map">
+    <property name="title">
+     <string>Disparity map</string>
+    </property>
+    <addaction name="actionSimple"/>
+    <addaction name="actionAdvanced"/>
+   </widget>
+   <widget class="QMenu" name="menuVideo">
+    <property name="title">
+     <string>Video</string>
+    </property>
+    <addaction name="actionOpen_video"/>
+    <addaction name="actionChessboard_debug"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
+   <addaction name="menuFilter"/>
+   <addaction name="menuDisparity_map"/>
+   <addaction name="menuCameraCalibration"/>
+   <addaction name="menuVideo"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>&amp;Open</string>
+    <string>&amp;Open image</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -422,7 +434,17 @@
   </action>
   <action name="actionCalibration">
    <property name="text">
-    <string>Calibration</string>
+    <string>Calibration menu</string>
+   </property>
+  </action>
+  <action name="actionOpen_video">
+   <property name="text">
+    <string>Filter Gradient</string>
+   </property>
+  </action>
+  <action name="actionChessboard_debug">
+   <property name="text">
+    <string>Chessboard debug</string>
    </property>
   </action>
  </widget>
