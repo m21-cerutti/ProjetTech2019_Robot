@@ -8,6 +8,7 @@ CameraParamDialog::CameraParamDialog(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Camera calibration");
 
+    ui->print_images->hide();
     ui->print_cameramatrix->hide();
     ui->print_distcoeffs->hide();
     ui->print_rvecs->hide();
@@ -34,6 +35,32 @@ void CameraParamDialog::refreshImages()
 
 }
 
+void CameraParamDialog::refreshPrintMatrix()
+{
+    QString text;
+    text += "width: ";
+    text += QString::number(_width);
+    text +="\nheight: ";
+    text +=QString::number(_height);
+    text += "\n";
+    ui->print_images->setText(text);
+    ui->print_cameramatrix->setText(QString::fromStdString(ProjectDebuger::matToString<double>(_camera_matrix)));
+    ui->print_distcoeffs->setText(QString::fromStdString(ProjectDebuger::matToString<double>(_dist_coeffs)));
+    std::string rvecs_print;
+    for(cv::Mat mat : _rvecs)
+    {
+        rvecs_print+= ProjectDebuger::matToString<double>(mat) +"\n*********\n";
+    }
+    ui->print_rvecs->setText(QString::fromStdString(rvecs_print));
+
+    std::string tvecs_print;
+    for(cv::Mat mat : _tvecs)
+    {
+        tvecs_print+= ProjectDebuger::matToString<double>(mat) +"\n*********\n";
+    }
+    ui->print_tvecs->setText(QString::fromStdString(tvecs_print));
+}
+
 void CameraParamDialog::on_btn_openCamera_clicked()
 {
     QString filepath = QFileDialog::getOpenFileName(this, "Open camera calibration file", "~/", tr("XML Files (*.xml)"), nullptr, QFileDialog::DontUseNativeDialog);
@@ -41,60 +68,72 @@ void CameraParamDialog::on_btn_openCamera_clicked()
     // open image
     if(!filepath.isEmpty())
     {
-        CameraCalibration::loadCameraParemeters(filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
-
-        ui->print_cameramatrix->setText(QString::fromStdString(ProjectDebuger::matToString<double>(_camera_matrix)));
-
+        CameraCalibration::loadCameraParemeters(filepath.toStdString(), _width, _height, _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+        refreshPrintMatrix();
     }
 
-        ui->print_cameramatrix->show();
-        ui->print_distcoeffs->show();
-        ui->print_rvecs->show();
-        ui->print_tvecs->show();
+    ui->print_images->show();
+    ui->print_cameramatrix->show();
+    ui->print_distcoeffs->show();
+    ui->print_rvecs->show();
+    ui->print_tvecs->show();
 }
-
-
-
 
 void CameraParamDialog::on_btn_calibrate_clicked()
 {
-    /*
-    if(ui->cb_charuco->checkState() == Qt::Checked)
+
+    QString filepath = QFileDialog::getSaveFileName(this, "Open camera calibration file", "~/", tr("XML Files (*.xml)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    if(!filepath.isEmpty() && !_vect_images.empty())
     {
-        CameraCalibration::calibrateFromImages(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH(), CameraCalibration::MODE_CALIBRATION::Charuco);
+        if(ui->cb_charuco->checkState() == Qt::Checked)
+        {
+            CameraCalibration::charucoCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+        }
+        else
+        {
+            CameraCalibration::chessBoardCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+        }
+        _width= _vect_images[0].size().width;
+        _height = _vect_images[0].size().height;
+        ui->label_pathfile->setText(filepath);
+        refreshPrintMatrix();
     }
-    else
-    {
-        CameraCalibration::calibrateFromImages(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH(), CameraCalibration::MODE_CALIBRATION::Chessboard);
-    }
-    */
 }
 
+void CameraParamDialog::on_btn_printimages_clicked()
+{
+    bool is_visible = ui->print_images->isVisible();
+    ui->print_images->setVisible(!is_visible);
+}
 
 void CameraParamDialog::on_btn_cameramatrix_clicked()
 {
-
+    bool is_visible = ui->print_cameramatrix->isVisible();
+    ui->print_cameramatrix->setVisible(!is_visible);
 }
 
 void CameraParamDialog::on_btn_distcoeff_clicked()
 {
-
+    bool is_visible = ui->print_distcoeffs->isVisible();
+    ui->print_distcoeffs->setVisible(!is_visible);
 }
 
 void CameraParamDialog::on_btn_rvecs_clicked()
 {
-
+    bool is_visible = ui->print_rvecs->isVisible();
+    ui->print_rvecs->setVisible(!is_visible);
 }
 
 void CameraParamDialog::on_btn_tvecs_clicked()
 {
-
+    bool is_visible = ui->print_tvecs->isVisible();
+    ui->print_tvecs->setVisible(!is_visible);
 }
 
 void CameraParamDialog::on_btn_openImages_clicked()
 {
     QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
-
 
     for(QString filepath : filepaths)
     {
@@ -103,7 +142,7 @@ void CameraParamDialog::on_btn_openImages_clicked()
 
             QListWidgetItem* item = new QListWidgetItem(ui->list_imgcalib);
             ui->list_imgcalib->addItem(item);
-            QLabel* label = new QLabel(QFileInfo(filepath).fileName());
+            QLabel* label = new QLabel(QFileInfo(filepath).fileName(), ui->list_imgcalib);
             item->setSizeHint(label->minimumSizeHint());
             ui->list_imgcalib->setItemWidget(item, label);
 
@@ -116,22 +155,46 @@ void CameraParamDialog::on_btn_openImages_clicked()
 
 void CameraParamDialog::on_btn_apply_clicked()
 {
+    if(_current_img != -1)
+    {
+        cv::Mat tmp = _vect_images.at(_current_img).clone();
+        CameraCalibration::applyUndistorded(tmp, tmp, _camera_matrix, _dist_coeffs);
+        CVQTInterface::toQImage(tmp, _img_selection);
+        refreshImages();
+    }
 
 }
 
 void CameraParamDialog::on_btn_reset_clicked()
 {
-    refreshImages();
+    if(_current_img != -1)
+    {
+        cv::Mat tmp = _vect_images.at(_current_img);
+        CVQTInterface::toQImage(tmp, _img_selection);
+        refreshImages();
+    }
 }
 
 void CameraParamDialog::on_list_imgcalib_currentRowChanged(int currentRow)
 {
     QImage img;
+    if(currentRow >= _vect_images.size() || currentRow < 0 )
+    {
+        return;
+    }
     _current_img = currentRow;
     cv::Mat tmp = _vect_images.at(_current_img);
-    if (!tmp.empty())
-        CVQTInterface::toQImage(tmp, _img_selection);
-    on_btn_reset_clicked();
-
+    CVQTInterface::toQImage(tmp, _img_selection);
+    refreshImages();
 
 }
+
+void CameraParamDialog::on_btn_clear_clicked()
+{
+    _current_img = -1;
+    _vect_images.clear();
+    ui->list_imgcalib->clear();
+    _img_selection.fill(0);
+    refreshImages();
+}
+

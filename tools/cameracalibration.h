@@ -44,8 +44,19 @@ public:
 public:
 
     static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,std::string path_camera_file);
+    static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,std::string path_camera_file,
+                                     cv::Mat& camera_matrix,
+                                     cv::Mat& dist_coeffs,
+                                     std::vector<cv::Mat>& rvecs,
+                                     std::vector<cv::Mat>& tvecs);
 
     static int charucoCalibration(const std::vector<cv::Mat>& sources_images, std::string path_camera_file);
+    static int charucoCalibration(const std::vector<cv::Mat> &sources_images, std::string path_camera_file,
+                                  cv::Mat& camera_matrix,
+                                  cv::Mat& dist_coeffs,
+                                  std::vector<cv::Mat>& rvecs,
+                                  std::vector<cv::Mat>& tvecs);
+
 
     /**
      * @brief Find a special calibration for one image.
@@ -56,11 +67,15 @@ public:
      */
     static void calibrateFromImages(const std::vector<cv::Mat>& sources_images, std::string path_camera_file, MODE_CALIBRATION behaviour = Chessboard);
 
+    static void applyUndistorded( const cv::Mat& source, cv::Mat& out,
+                                  cv::Mat& camera_matrix,
+                                  cv::Mat& dist_coeffs);
+
     static void applyUndistordedFromFile(const std::string file_path, const cv::Mat& source, cv::Mat& out);
 
-    static bool loadCameraParemeters(const std::string file_path, cv::Mat& camera_matrix,  cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs);
+    static bool loadCameraParemeters(const std::string file_path, int& width, int& height, cv::Mat& camera_matrix,  cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs);
 
-    static bool saveCameraParameters(const std::string file_path, const cv::Mat &camera_matrix,  const cv::Mat &dist_coeffs, const std::vector<cv::Mat> &rvecs, const std::vector<cv::Mat> &tvecs );
+    static bool saveCameraParameters(const std::string file_path, const int width, const int height, const cv::Mat &camera_matrix,  const cv::Mat &dist_coeffs, const std::vector<cv::Mat> &rvecs, const std::vector<cv::Mat> &tvecs );
 
 
 };

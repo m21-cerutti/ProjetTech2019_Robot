@@ -27,6 +27,8 @@ private:
 
     void refreshImages();
 
+    void refreshPrintMatrix();
+
 private slots:
 
     void resizeEvent(QResizeEvent *event);
@@ -51,18 +53,22 @@ private slots:
 
     void on_list_imgcalib_currentRowChanged(int currentRow);
 
+    void on_btn_clear_clicked();
+
+    void on_btn_printimages_clicked();
+
 private:
-    std::string _path_camera = DEFAULT_FILE_CAMERA_PATH;
 
     QImage _img_selection;
 
     //Intrinsic camera parameters
+    int _width, _height;
     cv::Mat _camera_matrix;
     cv::Mat _dist_coeffs;
     std::vector<cv::Mat> _rvecs;
     std::vector<cv::Mat> _tvecs;
 
-    int _current_img;
+    int _current_img = -1;
     std::vector<cv::Mat> _vect_images;
 
     Ui::CameraParamDialog *ui;

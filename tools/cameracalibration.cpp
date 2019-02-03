@@ -5,6 +5,22 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
 {
     using namespace cv;
 
+    //Parameters to save
+    Mat camera_matrix = Mat::zeros(3, 3, CV_64F);
+    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
+    std::vector<Mat> rvecs;
+    std::vector<Mat> tvecs;
+    camera_matrix.ptr<float>(0)[0] = 1;
+    camera_matrix.ptr<float>(1)[1] = 1;
+
+    return chessBoardCalibration(sources_images, path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
+}
+
+int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images, std::string path_camera_file,
+                                             cv::Mat& camera_matrix, cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs)
+{
+    using namespace cv;
+
     Mat gray;
     std::vector<std::vector<Point3f>> object_points;
     std::vector<std::vector<Point2f>> image_points;
@@ -45,31 +61,41 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
         }
     }
     //END FIND CHESSBOARD
-
-    //Parameters to save
-    Mat camera_matrix = Mat::zeros(3, 3, CV_64F);
-    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
-    std::vector<Mat> rvecs;
-    std::vector<Mat> tvecs;
-    camera_matrix.ptr<float>(0)[0] = 1;
-    camera_matrix.ptr<float>(1)[1] = 1;
+    ProjectDebuger::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
 
     //Calibration
     calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs, 0, TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 60, DBL_EPSILON) );
 
     //Save
-    saveCameraParameters( path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
+    saveCameraParameters( path_camera_file, sources_images[0].size().width, sources_images[0].size().height, camera_matrix, dist_coeffs, rvecs, tvecs);
 
     return nb_rejected;
 }
 
-int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_images, std::string path_camera_file)
+int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
+                                          std::string path_camera_file)
+{
+    cv::Mat camera_matrix = cv::Mat(3, 3, CV_64F);
+    cv::Mat dist_coeffs = cv::Mat::zeros(8, 1, CV_64F);
+    std::vector<cv::Mat> rvecs;
+    std::vector<cv::Mat> tvecs;
+    camera_matrix.ptr<float>(0)[0] = 1;
+    camera_matrix.ptr<float>(1)[1] = 1;
+
+
+   return charucoCalibration(sources_images,path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
+}
+
+
+int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,std::string path_camera_file,
+                                          cv::Mat& camera_matrix,
+                                          cv::Mat& dist_coeffs,
+                                          std::vector<cv::Mat>& rvecs,
+                                          std::vector<cv::Mat>& tvecs)
 {
     using namespace cv;
 
     Mat gray;
-    Mat camera_matrix = Mat(3, 3, CV_64F);
-    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
 
     std::vector<std::vector<cv::Point2f>> allCharucoCorners;
     std::vector<std::vector<int>> allCharucoIds;
@@ -123,16 +149,16 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
 
             //ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess++), gray);
 
-
-
             aruco::interpolateCornersCharuco(corners, ids, gray, board, charucoCorners, charucoIds);
 
             // if at least one charuco corner detected
-            if(charucoIds.size() > 0){
+            if(charucoIds.size() > 4){
                 nb_sucess++;
 
                 cv::aruco::drawDetectedCornersCharuco(gray, charucoCorners, charucoIds, cv::Scalar(255, 0, 0));
                 ProjectDebuger::showMatrice("Charuco"+std::to_string(nb_sucess++), gray);
+                allCharucoCorners.push_back(charucoCorners);
+                allCharucoIds.push_back(charucoIds);
             }
             else
             {
@@ -146,24 +172,16 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
             //ProjectDebuger::showMatrice("IMG_rejected_"+std::to_string(nb_rejected), gray);
         }
     }
+    ProjectDebuger::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
     //END FIND CHARUCO
 
-    /*
-    //Parameters to save
-    Mat camera_matrix = Mat(3, 3, CV_64F);
-    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
-    std::vector<Mat> rvecs;
-    std::vector<Mat> tvecs;
-    camera_matrix.ptr<float>(0)[0] = 1;
-    camera_matrix.ptr<float>(1)[1] = 1;
-
     //Calibration
-    double repError = cv::aruco::calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, imgSize, cameraMatrix, distCoeffs, rvecs, tvecs, calibrationFlags);
+    double repError = cv::aruco::calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs, 0);
 
     //Save
-    saveCameraParameters( path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
-*/
-    return 0;
+    saveCameraParameters( path_camera_file, sources_images[0].size().width, sources_images[0].size().height, camera_matrix, dist_coeffs, rvecs, tvecs);
+
+    return nb_rejected;
 }
 
 void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_images, std::string path_camera_file, MODE_CALIBRATION behaviour)
@@ -189,15 +207,25 @@ void CameraCalibration::calibrateFromImages(const std::vector<cv::Mat> &sources_
     }
 }
 
+void CameraCalibration::applyUndistorded(const cv::Mat &source, cv::Mat &out,
+                                         cv::Mat &camera_matrix, cv::Mat &dist_coeffs)
+{
+    using namespace cv;
+    cv::Mat undistorded;
+    undistort(source, undistorded, camera_matrix, dist_coeffs);
+    undistorded.copyTo(out);
+}
+
 
 void CameraCalibration::applyUndistordedFromFile(const std::string file_path, const cv::Mat &source, cv::Mat &out)
 {
     using namespace cv;
 
+    int width, height;
     Mat camera_matrix, dist_coeffs;
     std::vector<cv::Mat> rvecs;
     std::vector<cv::Mat> tvecs;
-    if(!loadCameraParemeters(file_path, camera_matrix, dist_coeffs, rvecs, tvecs))
+    if(!loadCameraParemeters(file_path, width, height, camera_matrix, dist_coeffs, rvecs, tvecs))
         return;
 
     cv::Mat undistorded;
@@ -207,7 +235,7 @@ void CameraCalibration::applyUndistordedFromFile(const std::string file_path, co
 }
 
 
-bool CameraCalibration::loadCameraParemeters(const std::string file_path, cv::Mat& camera_matrix, cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs)
+bool CameraCalibration::loadCameraParemeters(const std::string file_path, int& width, int& height, cv::Mat& camera_matrix, cv::Mat& dist_coeffs, std::vector<cv::Mat>& rvecs, std::vector<cv::Mat>& tvecs)
 {
     using namespace cv;
 
@@ -220,6 +248,8 @@ bool CameraCalibration::loadCameraParemeters(const std::string file_path, cv::Ma
     std::string date;
     fs["calibration_date"] >> date;
     std::cout << "Calibration date : " <<  date;
+    fs["width"] >> width;
+    fs["height"] >> height;
     fs["camera_matrix"] >> camera_matrix;
     fs["dist_coeffs"] >> dist_coeffs;
     fs["rvecs"] >> rvecs;
@@ -230,7 +260,7 @@ bool CameraCalibration::loadCameraParemeters(const std::string file_path, cv::Ma
     return true;
 }
 
-bool CameraCalibration::saveCameraParameters(const std::string file_path,
+bool CameraCalibration::saveCameraParameters(const std::string file_path, const int width, const int height,
                                              const cv::Mat& camera_matrix,
                                              const  cv::Mat& dist_coeffs,
                                              const std::vector<cv::Mat>& rvecs,
@@ -245,8 +275,10 @@ bool CameraCalibration::saveCameraParameters(const std::string file_path,
     }
 
     time_t rawtime; time(&rawtime);
-    std::string date =  asctime(localtime(&rawtime));
+    std::string date =  asctime(localtime(&rawtime));;
     fs << "calibration_date" << date;
+    fs << "width" << width;
+    fs << "height" << height;
     fs << "camera_matrix" << camera_matrix;
     fs << "dist_coeffs" << dist_coeffs;
     fs << "rvecs" << rvecs;

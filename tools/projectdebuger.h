@@ -28,14 +28,11 @@ public:
             for(int j=0; j<source.cols; j++)
             {
                 print += std::to_string(source.at<T>(i,j));
-                if(j != source.rows-1)
+                if(j < source.cols-1)
                     print += ", ";
-                else
-                {
-                    print += "]";
-                    print += "\n";
-                }
             }
+            print += "]";
+            print += "\n";
         }
         return print;
     }
