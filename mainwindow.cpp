@@ -326,6 +326,6 @@ void MainWindow::on_actionChessboard_debug_triggered()
     // open image
     if(!filename.isEmpty())
     {
-        VideoAnalysis::videoCalibration(filename.toStdString());
+        VideoAnalysis::videoChessDebug(filename.toStdString());
     }
 }

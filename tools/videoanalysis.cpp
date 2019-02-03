@@ -1,7 +1,7 @@
 #include "videoanalysis.h"
 
 
-void VideoAnalysis::videoCalibration(std::string path_video)
+void VideoAnalysis::videoChessDebug(std::string path_video)
 {
     using namespace cv;
     VideoCapture cap(path_video);
