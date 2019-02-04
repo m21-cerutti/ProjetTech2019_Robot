@@ -5,12 +5,14 @@
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
 #include "tools/cameracalibration.h"
-#include "tools/imageanalyser.h"
+#include "tools/imagefilter.h"
 
-//Debug
-#include "tools/projectdebuger.h"
 
-class VideoAnalysis
+#include "tools/projectutilities.h"
+
+#define DELAY_DEBUG_VIDEO 1
+
+class VideoAnalyser
 {
 public:
 
@@ -21,13 +23,13 @@ public:
         VideoCapture cap(path_video);
         if ( !cap.isOpened() )
         {
-            ProjectDebuger::messageDebug("Cannot open the video file.", true);
+            ProjectUtilities::messageDebug("Cannot open the video file.", true);
             return;
         }
 
         double fps = cap.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
-        ProjectDebuger::messageDebug("Start video "+ path_video, false);
-        ProjectDebuger::messageDebug("FPS : "+std::to_string(fps), false);
+        ProjectUtilities::messageDebug("Start video "+ path_video, false);
+        ProjectUtilities::messageDebug("FPS : "+std::to_string(fps), false);
         namedWindow("Video_reader", CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
         while(true)
         {
@@ -35,6 +37,7 @@ public:
             if (!cap.read(frame))
             {
                 std::cout<<"\n Cannot read the video file. \n";
+                ProjectUtilities::messageDebug("Cannot read the video file.", true);
                 break;
             }
             func(frame, frame);
@@ -49,7 +52,11 @@ public:
 
     static void videoChessDebug(std::string path_video);
 
-    static void stereoVideo(std::string path_video_left, std::string path_video_right);
+    static void stereoVideoExtraction(std::string path_video_left,
+                                      std::string path_video_right,
+                                      int start_frame, int nb_frames,
+                                      std::vector<cv::Mat>& output_left, std::vector<cv::Mat> &output_right,
+                                      bool choose = false);
 
 
 };

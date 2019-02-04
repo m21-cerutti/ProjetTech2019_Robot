@@ -2,7 +2,7 @@
 #define SGBMPARAMDIALOG_H
 
 #include <QDialog>
-#include "tools/imageanalyser.h"
+#include "tools/stereoanalyser.h"
 #include "tools/cvqtinterface.h"
 
 
@@ -23,6 +23,8 @@ public:
     cv::Mat getMatResult() const;
 
     double getTimeResult() const;
+
+    cv::Ptr<cv::StereoSGBM> getSGBMState();
 
 private:
 

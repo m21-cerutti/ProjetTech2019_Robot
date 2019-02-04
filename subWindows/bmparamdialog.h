@@ -2,7 +2,7 @@
 #define BMPARAMDIALOG_H
 
 #include <QDialog>
-#include "tools/imageanalyser.h"
+#include "tools/stereoanalyser.h"
 #include "tools/cvqtinterface.h"
 
 namespace Ui {
@@ -21,6 +21,8 @@ public:
     cv::Mat getMatResult() const;
 
     double getTimeResult() const;
+
+    cv::Ptr<cv::StereoBM>  getBMState() const;
 
 private:
 

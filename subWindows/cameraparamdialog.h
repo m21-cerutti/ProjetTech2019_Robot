@@ -5,9 +5,9 @@
 #include <QFileDialog>
 #include <QListWidgetItem>
 
-#include "tools/projectdebuger.h"
+#include "tools/projectutilities.h"
 #include "tools/cvqtinterface.h"
-#include "tools/imageanalyser.h"
+#include "tools/imagefilter.h"
 #include "tools/cameracalibration.h"
 
 namespace Ui {
@@ -62,7 +62,7 @@ private:
     QImage _img_selection;
 
     //Intrinsic camera parameters
-    int _width, _height;
+    cv::Size _img_size;
     cv::Mat _camera_matrix;
     cv::Mat _dist_coeffs;
     std::vector<cv::Mat> _rvecs;

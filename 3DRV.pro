@@ -36,25 +36,29 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    tools/imageanalyser.cpp \
     subWindows/sgbmparamdialog.cpp \
     subWindows/bmparamdialog.cpp \
     tools/cameracalibration.cpp \
     tools/cvqtinterface.cpp \
-    tools/projectdebuger.cpp \
     subWindows/cameraparamdialog.cpp \
-    tools/videoanalysis.cpp
+    tools/projectutilities.cpp \
+    tools/stereoanalyser.cpp \
+    tools/projectfiles.cpp \
+    tools/imagefilter.cpp \
+    tools/videoanalyser.cpp
 
 HEADERS += \
         mainwindow.h \
-    tools/imageanalyser.h \
     subWindows/sgbmparamdialog.h \
     subWindows/bmparamdialog.h \
     tools/cameracalibration.h \
     tools/cvqtinterface.h \
-    tools/projectdebuger.h \
     subWindows/cameraparamdialog.h \
-    tools/videoanalysis.h
+    tools/projectutilities.h \
+    tools/stereoanalyser.h \
+    tools/projectfiles.h \
+    tools/imagefilter.h \
+    tools/videoanalyser.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -42,8 +42,8 @@ void MainWindow::refreshImages()
     {
         //Refresh source
         ui->imageLabelSrc->setPixmap(QPixmap::fromImage(_image_src.scaled((int)(ui->boxSrc->width()*0.9),
-                                                                         (int)(ui->boxSrc->height()*0.9),
-                                                                         Qt::AspectRatioMode::KeepAspectRatio)));
+                                                                          (int)(ui->boxSrc->height()*0.9),
+                                                                          Qt::AspectRatioMode::KeepAspectRatio)));
 
         //Refresh destination
         QImage img;
@@ -122,7 +122,7 @@ void MainWindow::on_btnGauss_clicked()
     }
 
     double time;
-    time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeGaussianBlur, _image_mat, _image_mat);
+    time = ProjectUtilities::computeEfficiency(ImageFilter::computeGaussianBlur, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("GaussianBlur", time);
@@ -137,7 +137,7 @@ void MainWindow::on_btnSobel_clicked()
     }
 
     double time;
-    time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeGradient, _image_mat, _image_mat);
+    time = ProjectUtilities::computeEfficiency(ImageFilter::computeGradient, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Sobel", time);
@@ -153,7 +153,7 @@ void MainWindow::on_btnLaplacian_clicked()
     }
 
     double time;
-    time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeLaplacian, _image_mat, _image_mat);
+    time = ProjectUtilities::computeEfficiency(ImageFilter::computeLaplacian, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Laplacian", time);
@@ -212,12 +212,12 @@ void MainWindow::on_actionSobel_triggered()
     on_btnSobel_clicked();
 }
 
-void MainWindow::on_actionSimple_triggered()
+void MainWindow::on_actionDisparityBM_triggered()
 {
     on_btnBMDisparity_clicked();
 }
 
-void MainWindow::on_actionAdvanced_triggered()
+void MainWindow::on_actionDisparitySGBM_triggered()
 {
     on_btnSGBMDisparity_clicked();
 }
@@ -240,7 +240,7 @@ void MainWindow::on_actionApplyFromFile_triggered()
     // open image
     if(!filename.isEmpty())
     {
-        CameraCalibration::applyUndistordedFromFile(filename.toStdString(), _image_mat, _image_mat);
+        CameraCalibration::applyUndistorded(_image_mat, _image_mat, filename.toStdString());
         //Refresh window
         refreshImages();
     }
@@ -258,13 +258,13 @@ void MainWindow::on_actionCalibrate_triggered()
         QImage img;
         if(img.load(filename)){
 
-           cv::Mat tmp;
-           CVQTInterface::toMatCV(img, tmp);
-           vect_images.push_back(tmp);
+            cv::Mat tmp;
+            CVQTInterface::toMatCV(img, tmp);
+            vect_images.push_back(tmp);
         }
     }
 
-    CameraCalibration::calibrateFromImages(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH());
+    CameraCalibration::chessBoardCalibration(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH());
     //double time;
     //time = ProjectDebuger::computeEfficiency();
 
@@ -272,35 +272,6 @@ void MainWindow::on_actionCalibrate_triggered()
     refreshImages();
     showEfficiency("Calibration CHESS", 0);
 }
-
-/*-
-void MainWindow::on_actionCharucoCalibrate_triggered()
-{
-    resetBeforeOperationCheck();
-
-    QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    std::vector<cv::Mat> vect_images;
-    for(QString filename : filenames)
-    {
-        QImage img;
-        if(img.load(filename)){
-
-           cv::Mat tmp;
-           CVQTInterface::toMatCV(img, tmp);
-           vect_images.push_back(tmp);
-        }
-    }
-
-    CameraCalibration::calibrateFromImages(vect_images, CameraCalibration::DEFAULT_CAMERA_PATH(), CameraCalibration::MODE_CALIBRATION::Charuco);
-    //double time;
-    //time = ProjectDebuger::computeEfficiency();
-
-    //Refresh window
-    refreshImages();
-    showEfficiency("Calibration CHARUCO", 0);
-}
-*/
 
 void MainWindow::on_actionCalibration_triggered()
 {
@@ -315,7 +286,7 @@ void MainWindow::on_actionOpen_video_triggered()
     // open image
     if(!filename.isEmpty())
     {
-        VideoAnalysis::filterVideo(filename.toStdString(), ImageAnalyser::computeGradient);
+        VideoAnalyser::filterVideo(filename.toStdString(), ImageFilter::computeGradient);
     }
 }
 
@@ -326,17 +297,105 @@ void MainWindow::on_actionChessboard_debug_triggered()
     // open image
     if(!filename.isEmpty())
     {
-        VideoAnalysis::videoChessDebug(filename.toStdString());
+        VideoAnalyser::videoChessDebug(filename.toStdString());
     }
 }
 
-void MainWindow::on_actionStereoVideo_triggered()
+void MainWindow::on_actionStereoCalibration_triggered()
 {
     QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
 
     // open image
     if(filepaths.size() == 2)
     {
-        VideoAnalysis::stereoVideo(filepaths.at(0).toStdString(), filepaths.at(1).toStdString());
+        std::vector<cv::Mat> vect_images_r, vect_images_l;
+        VideoAnalyser::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images_r, vect_images_l, true);
+
+        CameraCalibration::stereoCalibration("stereo_calibration.xml", vect_images_r, vect_images_l, "l_calibration.xml", "r_calibration.xml");
+    }
+}
+
+void MainWindow::on_actionExtractImages_triggered()
+{
+    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    // open image
+    if(filepaths.size() == 2)
+    {
+        std::vector<cv::Mat> vect_images;
+        VideoAnalyser::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images, vect_images, true);
+    }
+}
+
+void MainWindow::on_actionDepthMap_triggered()
+{
+
+    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    // open image
+    if(filepaths.size() == 2)
+    {
+        std::vector<cv::Mat> vect_images_r, vect_images_l;
+        VideoAnalyser::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
+
+        cv::Mat Q, reproj, disparity;
+        cv::Ptr<cv::StereoSGBM> sgbmState;
+
+
+        QImage disp_q;
+        cv::hconcat(vect_images_r.at(0), vect_images_l.at(0), disparity);
+        CVQTInterface::toQImage(disparity, disp_q);
+        SGBMParamDialog dial(disp_q);
+        if(dial.exec() != QDialog::Rejected)
+        {
+            sgbmState = dial.getSGBMState();
+
+            for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
+            {
+                StereoAnalyser::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
+                ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+                StereoAnalyser::depthMap( disparity, Q, reproj);
+
+                //ProjectUtilities::messageDebug(ProjectUtilities::matToString<double>(reproj), false);
+                ProjectUtilities::showMatrice(std::to_string(i), reproj);
+            }
+        }
+    }
+}
+
+
+
+void MainWindow::on_actionBM_triggered()
+{
+    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    // open image
+    if(filepaths.size() == 2)
+    {
+        std::vector<cv::Mat> vect_images_r, vect_images_l;
+        VideoAnalyser::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
+
+        cv::Mat Q, reproj, disparity;
+        cv::Ptr<cv::StereoBM> bmState;
+
+
+        QImage disp_q;
+        cv::hconcat(vect_images_r.at(0), vect_images_l.at(0), disparity);
+        CVQTInterface::toQImage(disparity, disp_q);
+        BMParamDialog dial(disp_q);
+        if(dial.exec() != QDialog::Rejected)
+        {
+            bmState = dial.getBMState();
+
+            for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
+            {
+                StereoAnalyser::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
+                ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+                StereoAnalyser::depthMap( disparity, Q, reproj);
+
+                //ProjectUtilities::messageDebug(ProjectUtilities::matToString<double>(reproj), false);
+                ProjectUtilities::showMatrice(std::to_string(i), reproj);
+            }
+        }
     }
 }

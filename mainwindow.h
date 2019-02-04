@@ -12,11 +12,11 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "tools/projectdebuger.h"
+#include "tools/projectutilities.h"
 #include "tools/cvqtinterface.h"
-#include "tools/imageanalyser.h"
+#include "tools/imagefilter.h"
 #include "tools/cameracalibration.h"
-#include "tools/videoanalysis.h"
+#include "tools/videoanalyser.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"
 #include "subWindows/cameraparamdialog.h"
@@ -70,9 +70,9 @@ private slots:
 
     void on_actionOrigin_triggered();
 
-    void on_actionAdvanced_triggered();
+    void on_actionDisparityBM_triggered();
 
-    void on_actionSimple_triggered();
+    void on_actionDisparitySGBM_triggered();
 
     void on_actionLaplacian_triggered();
 
@@ -84,15 +84,19 @@ private slots:
 
     void on_actionCalibrate_triggered();
 
-    //void on_actionCharucoCalibrate_triggered();
-
     void on_actionCalibration_triggered();
 
     void on_actionOpen_video_triggered();
 
     void on_actionChessboard_debug_triggered();
 
-    void on_actionStereoVideo_triggered();
+    void on_actionStereoCalibration_triggered();
+
+    void on_actionDepthMap_triggered();
+
+    void on_actionExtractImages_triggered();
+
+    void on_actionBM_triggered();
 
 private:
 

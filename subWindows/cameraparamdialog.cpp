@@ -39,24 +39,24 @@ void CameraParamDialog::refreshPrintMatrix()
 {
     QString text;
     text += "width: ";
-    text += QString::number(_width);
+    text += QString::number(_img_size.width);
     text +="\nheight: ";
-    text +=QString::number(_height);
+    text +=QString::number(_img_size.height);
     text += "\n";
     ui->print_images->setText(text);
-    ui->print_cameramatrix->setText(QString::fromStdString(ProjectDebuger::matToString<double>(_camera_matrix)));
-    ui->print_distcoeffs->setText(QString::fromStdString(ProjectDebuger::matToString<double>(_dist_coeffs)));
+    ui->print_cameramatrix->setText(QString::fromStdString(ProjectUtilities::matToString<double>(_camera_matrix)));
+    ui->print_distcoeffs->setText(QString::fromStdString(ProjectUtilities::matToString<double>(_dist_coeffs)));
     std::string rvecs_print;
     for(cv::Mat mat : _rvecs)
     {
-        rvecs_print+= ProjectDebuger::matToString<double>(mat) +"\n*********\n";
+        rvecs_print+= ProjectUtilities::matToString<double>(mat) +"\n*********\n";
     }
     ui->print_rvecs->setText(QString::fromStdString(rvecs_print));
 
     std::string tvecs_print;
     for(cv::Mat mat : _tvecs)
     {
-        tvecs_print+= ProjectDebuger::matToString<double>(mat) +"\n*********\n";
+        tvecs_print+= ProjectUtilities::matToString<double>(mat) +"\n*********\n";
     }
     ui->print_tvecs->setText(QString::fromStdString(tvecs_print));
 }
@@ -68,7 +68,7 @@ void CameraParamDialog::on_btn_openCamera_clicked()
     // open image
     if(!filepath.isEmpty())
     {
-        CameraCalibration::loadCameraParemeters(filepath.toStdString(), _width, _height, _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+        ProjectFiles::loadIntrinsicCamera(filepath.toStdString(), _img_size, _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
         refreshPrintMatrix();
     }
 
@@ -94,8 +94,7 @@ void CameraParamDialog::on_btn_calibrate_clicked()
         {
             CameraCalibration::chessBoardCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
         }
-        _width= _vect_images[0].size().width;
-        _height = _vect_images[0].size().height;
+        _img_size = _vect_images[0].size();
         ui->label_pathfile->setText(filepath);
         refreshPrintMatrix();
     }

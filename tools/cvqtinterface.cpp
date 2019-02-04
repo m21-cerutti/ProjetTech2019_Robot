@@ -39,7 +39,7 @@ void CVQTInterface::toQImage(const cv::Mat &in, QImage &out)
     default:
     {
         out = QImage();
-        ProjectDebuger::messageDebug("Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4.", true);
+        ProjectUtilities::messageDebug("Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4.", true);
         break;
     }
     }

@@ -14,7 +14,7 @@
 #include <QDebug>
 #endif //isComputer
 
-class ProjectDebuger
+class ProjectUtilities
 {
 public:
 

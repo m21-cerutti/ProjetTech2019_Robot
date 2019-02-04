@@ -23,8 +23,8 @@ void BMParamDialog::refreshImages()
 {
     //refresh
     ui->imgView->setPixmap(QPixmap::fromImage(_img_dst.scaled(ui->boxImg->width()*0.9,
-                                                             ui->boxImg->height()*0.9,
-                                                             Qt::AspectRatioMode::KeepAspectRatio)));
+                                                              ui->boxImg->height()*0.9,
+                                                              Qt::AspectRatioMode::KeepAspectRatio)));
     ui->labelTime->setText("Time(ms): "+ QString::number((_time)));
 }
 
@@ -48,7 +48,7 @@ void BMParamDialog::applyDisparity()
     //Conversion and application of Disparity
     CVQTInterface::toMatCV(_img_src, _mat_dst);
 
-    this->_time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeBMDisparity, _mat_dst, _mat_dst, bmState);
+    this->_time = ProjectUtilities::computeEfficiency(StereoAnalyser::computeBMDisparity, _mat_dst, _mat_dst, bmState);
 
     //View the result
     CVQTInterface::toQImage(_mat_dst, _img_dst);
@@ -81,6 +81,16 @@ cv::Mat BMParamDialog::getMatResult() const
 double BMParamDialog::getTimeResult() const
 {
     return _time;
+}
+
+cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const
+{
+    //bgm parameters
+    int numDisparities = ui->numDisparities_slider->value();
+    int blockSize = ui->blockSize_slider->value();
+
+    cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
+    return bmState;
 }
 
 void BMParamDialog::on_numDisparities_slider_valueChanged(int value)

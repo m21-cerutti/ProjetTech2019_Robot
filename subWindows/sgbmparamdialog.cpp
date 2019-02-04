@@ -39,6 +39,48 @@ void SGBMParamDialog::refreshModifs()
 
 void SGBMParamDialog::applyDisparity()
 {
+
+    cv::Ptr<cv::StereoSGBM> sgbmState = getSGBMState();
+
+
+    //Conversion and application of Disparity
+    CVQTInterface::toMatCV(_img_src, _mat_dst);
+    _time = ProjectUtilities::computeEfficiency(StereoAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
+
+    //View the result
+    CVQTInterface::toQImage(_mat_dst, _img_dst);
+}
+
+void SGBMParamDialog::resizeEvent(QResizeEvent *event)
+{
+    refreshImages();
+}
+
+void SGBMParamDialog::on_btnShow_clicked()
+{
+    //Apply disparity even if not in real time
+    applyDisparity();
+    refreshImages();
+}
+
+void SGBMParamDialog::on_btnReset_clicked()
+{
+    _img_dst = _img_src;
+    refreshImages();
+}
+
+cv::Mat SGBMParamDialog::getMatResult() const
+{
+    return _mat_dst;
+}
+
+double SGBMParamDialog::getTimeResult() const
+{
+    return _time;
+}
+
+cv::Ptr<cv::StereoSGBM> SGBMParamDialog::getSGBMState()
+{
     //bgm parameters
     int minDisparity = ui->minDisparity_slider->value();;
     int numDisparities = ui->numDisparities_slider->value();
@@ -74,42 +116,7 @@ void SGBMParamDialog::applyDisparity()
                                    speckleWindowSize,
                                    speckleRange,
                                    mode);
-
-
-    //Conversion and application of Disparity
-    CVQTInterface::toMatCV(_img_src, _mat_dst);
-    _time = ProjectDebuger::computeEfficiency(ImageAnalyser::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
-
-    //View the result
-    CVQTInterface::toQImage(_mat_dst, _img_dst);
-}
-
-void SGBMParamDialog::resizeEvent(QResizeEvent *event)
-{
-    refreshImages();
-}
-
-void SGBMParamDialog::on_btnShow_clicked()
-{
-    //Apply disparity even if not in real time
-    applyDisparity();
-    refreshImages();
-}
-
-void SGBMParamDialog::on_btnReset_clicked()
-{
-    _img_dst = _img_src;
-    refreshImages();
-}
-
-cv::Mat SGBMParamDialog::getMatResult() const
-{
-    return _mat_dst;
-}
-
-double SGBMParamDialog::getTimeResult() const
-{
-    return _time;
+    return sgbmState;
 }
 
 void SGBMParamDialog::on_minDisparity_slider_valueChanged(int value)

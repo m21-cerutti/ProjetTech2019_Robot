@@ -43,10 +43,7 @@ Carte de profondeur
 Rapport
 
 Idées:
-Fenetre de choix de parametre
 
-Main opencv video avec 
-VideoStereoAnalyser class
 Ferai l'analyse vidéo avec des commandes qui permmetrai d'ouvrir des fenetre Qt si nécessaire.
 1)Calibration de chaque caméra à partir d'un set d'image
 2)Correction de distorsion

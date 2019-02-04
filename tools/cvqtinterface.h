@@ -5,7 +5,7 @@
 #include <cv.h>
 #include <opencv2/opencv.hpp>
 
-#include "tools/projectdebuger.h"
+#include "tools/projectutilities.h"
 
 class CVQTInterface
 {
