@@ -350,11 +350,12 @@ Les fichiers sauvegardé et utilisé plus haut sont d'ailleurs en annexe.
 
 \subsection{Difficultés rencontrés}
 
-Les difficultés rencontré ont été diverses. Du fait déjà que j'ai étais seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les interfaces qui était secondaire par rapport à la qualité d'analyse. Cette meme qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètre optionnel dans OpenCv, mais néanmoins important. Mais grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
+Les difficultés rencontré ont été diverses. Du fait déjà que j'ai été seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les interfaces qui était secondaire par rapport à la qualité d'analyse. Cette même qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètres optionnels dans OpenCv, mais néanmoins important. Parfopis meme, c'était difficile de savoir ce que l'on attendait comme résultat. Mais grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
 
 \subsection{Critique et améliorations potentielles}
 
 L'amélioration de l'interface pour la vidéo et les cartes de profondeur améliorerait la visualisation des résultats. Plus que une amélioration du système de base, ce qu'il faut est une refonte pour pouvoir accueillir la visualisation de stéréo, ce qui n'a pas forcément été bien pris en compte dès le début du projet du fait des images stéréo rassemblé en une seul image.
+Il manque d'ailleurs les performances pour la carte de profondeur et la calibration.
 
 \begin{comment}
 \section{Semestre 6}
@@ -493,5 +494,55 @@ Implémenter des tests unitaires et de performances.\\
 Améliorer l'interface pour prendre en compte l'affichage de calibration.\\
 (Filtre pour les cartes de disparité)\\
 \\\\
+
+
+
+Debug :  Starting chessboard stereo calibration. 
+
+Debug :  0 images rejected. 
+
+Debug :  Calibration finish with left :1.006599 of error. 
+
+Debug :  And right :0.278724 of error. 
+
+Debug :  Saving calibration in l_calibration.xml and r_calibration.xml... 
+
+Debug :  Starting save intrinsic camera. 
+
+Debug :  File done. Date : Wed Feb  6 18:49:30 2019
+ 
+
+Debug :  Starting save intrinsic camera. 
+
+Debug :  File done. Date : Wed Feb  6 18:49:30 2019
+ 
+
+Debug :  Starting load intrinsic camera. 
+
+Debug :  Calibration date : Wed Feb  6 18:49:30 2019
+ 
+
+Debug :  Read camera file sucessfull. 
+
+Debug :  Starting load intrinsic camera. 
+
+Debug :  Calibration date : Wed Feb  6 18:49:30 2019
+ 
+
+Debug :  Read camera file sucessfull. 
+
+Debug :  Starting Calibration. 
+
+Debug :  Read intrasic... 
+
+Debug :  Starting stereo calibration. 
+
+Debug :  Stereo calibrate... 
+
+Debug :  Calibration finish with 4.994794 of error. 
+
+Debug :  Starting Rectification. 
+
+Debug :  Done Rectification. 
 
 \end{document}

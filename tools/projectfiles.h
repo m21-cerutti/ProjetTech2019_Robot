@@ -88,6 +88,7 @@ public:
      * @param P1
      * @param P2
      * @param Q
+     * @see cv::stereoCalibrate and cv::setreoRectify
      * @return
      */
     static bool loadCameraStereoParameters(const std::string file_path,
@@ -108,7 +109,7 @@ public:
 
     /**
      * @brief Save the stereo calibration.
-     * @param file_path
+     * @param file_path the path for saving stereo calibration.
      * @param camera_matrix_l
      * @param dist_coeffs_l
      * @param camera_matrix_r
@@ -123,7 +124,8 @@ public:
      * @param P1
      * @param P2
      * @param Q
-     * @return
+     * @see cv::stereoCalibrate and cv::setreoRectify
+     * @return true if suceeded, false otherwise.
      */
     static bool saveCameraStereoParameters(const std::string file_path,
                                            const cv::Mat &camera_matrix_l,

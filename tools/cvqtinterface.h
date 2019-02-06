@@ -7,6 +7,9 @@
 
 #include "tools/projectutilities.h"
 
+/**
+ * @brief The CVQTInterface class gather all function of conversion.
+ */
 class CVQTInterface
 {
 public:

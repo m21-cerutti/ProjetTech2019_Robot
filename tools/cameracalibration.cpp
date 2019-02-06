@@ -147,7 +147,7 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
         std::vector<std::vector<cv::Point2f>> corners, rejected;
 
         cv::aruco::detectMarkers(gray, dictionary, corners, ids, detectorParams, rejected);
-        //cv::aruco::refineDetectedMarkers(gray, board, corners, ids, rejected);
+        cv::aruco::refineDetectedMarkers(gray, board, corners, ids, rejected);
 
         // if at least one marker detected
         if (ids.size() > 0) {

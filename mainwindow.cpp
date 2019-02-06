@@ -265,12 +265,6 @@ void MainWindow::on_actionCalibrate_triggered()
     }
 
     CameraCalibration::chessBoardCalibration(vect_images, "quick_calibration.xml");
-    //double time;
-    //time = ProjectDebuger::computeEfficiency();
-
-    //Refresh window
-    refreshImages();
-    showEfficiency("Calibration CHESS", 0);
 }
 
 void MainWindow::on_actionCalibration_triggered()
@@ -355,7 +349,7 @@ void MainWindow::on_actionDepthMap_triggered()
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoAnalyser::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
-                StereoAnalyser::depthMap( disparity, Q, reproj);
+                StereoAnalyser::computeDepthMap( disparity, Q, reproj);
                 ProjectUtilities::showMatrice(std::to_string(i), reproj);
             }
         }
@@ -389,7 +383,7 @@ void MainWindow::on_actionBM_triggered()
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoAnalyser::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
-                StereoAnalyser::depthMap( disparity, Q, reproj);
+                StereoAnalyser::computeDepthMap( disparity, Q, reproj);
                 ProjectUtilities::showMatrice(std::to_string(i), reproj);
             }
         }
