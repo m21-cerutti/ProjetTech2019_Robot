@@ -188,6 +188,35 @@ Le dossier "subWindows" contient les classes de sous fenêtres à la fenêtre pr
 %Photo résultat pire-mieux
 
 \newpage
+\subsection{Analyseur vidéo}
+
+\begin{lstlisting}[style=NoStyle, caption ={Debug trace VideoCapture SEGFAULT}]
+1   av_buffer_unref                                                             0x7fffe0161451 
+2   av_frame_unref                                                              0x7fffe016d60e 
+3   ??                                                                          0x7ffff27945e8 
+4   ??                                                                          0x7ffff27947e0 
+5   cvCreateFileCapture_FFMPEG                                                  0x7ffff27949f9 
+6   ??                                                                          0x7ffff279713f 
+7   cvCreateFileCaptureWithPreference                                           0x7ffff277d17d 
+8   cv::VideoCapture::open(cv::String const&, int)                              0x7ffff277e1b0 
+9   cv::VideoCapture::VideoCapture(cv::String const&)                           0x7ffff277e2be 
+10  VideoAnalyser::stereoVideoExtraction                 videoanalyser.cpp  89  0x5555555910fd 
+11  MainWindow::on_actionStereoCalibration_triggered     mainwindow.cpp     312 0x555555564589 
+12  MainWindow::qt_static_metacall                       moc_mainwindow.cpp 191 0x555555591f87 
+13  MainWindow::qt_metacall                              moc_mainwindow.cpp 226 0x5555555920aa 
+14  QMetaObject::activate(QObject *, int, int, void * *)                        0x7ffff0b1b784 
+15  QAction::triggered(bool)                                                    0x7ffff13cc1c2 
+16  QAction::activate(QAction::ActionEvent)                                     0x7ffff13cebb0 
+17  ??                                                                          0x7ffff153e1ca 
+18  ??                                                                          0x7ffff1545854 
+19  QMenu::mouseReleaseEvent(QMouseEvent *)                                     0x7ffff1546826 
+20  QWidget::event(QEvent *)                                                    0x7ffff141a278 
+... <More>                                                                                     
+\end{lstlisting}
+
+On peut voire ici que sur les machines du Cremi, la bibliothèque FFMPEG est soit mal installé, soit pas à jour. Sachant que sur les machines personnelles, le code marche très bien, et que seul un administrateur peut résoudre ce problème, il a été décider de l'ignorer pour l'instant et d'en informer les professeurs.
+
+\newpage
 \subsection{Carte de profondeur}
 
 %Photo résultat pire-mieux

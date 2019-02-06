@@ -2,7 +2,6 @@ l3-rvc
 .
 |-- 3DRV.pro
 |-- cmdHierachie
-|-- ImageAnalyserTest.pro
 |-- main.cpp
 |-- maintests.cpp
 |-- mainwindow.cpp
@@ -19,6 +18,9 @@ l3-rvc
 |   |-- bmparamdialog.cpp
 |   |-- bmparamdialog.h
 |   |-- bmparamdialog.ui
+|   |-- cameraparamdialog.cpp
+|   |-- cameraparamdialog.h
+|   |-- cameraparamdialog.ui
 |   |-- sgbmparamdialog.cpp
 |   |-- sgbmparamdialog.h
 |   `-- sgbmparamdialog.ui
@@ -27,11 +29,15 @@ l3-rvc
     |-- cameracalibration.h
     |-- cvqtinterface.cpp
     |-- cvqtinterface.h
-    |-- imageanalyser.cpp
-    |-- imageanalyser.h
-    |-- imageanalysertests.cpp
-    |-- imageanalysertests.h
-    |-- projectdebuger.cpp
-    `-- projectdebuger.h
+    |-- imagefilter.cpp
+    |-- imagefilter.h
+    |-- projectfiles.cpp
+    |-- projectfiles.h
+    |-- projectutilities.cpp
+    |-- projectutilities.h
+    |-- stereoanalyser.cpp
+    |-- stereoanalyser.h
+    |-- videoanalyser.cpp
+    `-- videoanalyser.h
 
-5 directories, 35 files
+5 directories, 41 files

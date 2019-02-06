@@ -86,11 +86,11 @@ double BMParamDialog::getTimeResult() const
 cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const
 {
     //bgm parameters
-    int numDisparities = ui->numDisparities_slider->value();
-    int blockSize = ui->blockSize_slider->value();
+    int num_disparities = ui->numDisparities_slider->value();
+    int block_size = ui->blockSize_slider->value();
 
-    cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
-    return bmState;
+    cv::Ptr<cv::StereoBM> bm_state = cv::StereoBM::create(num_disparities, block_size);
+    return bm_state;
 }
 
 void BMParamDialog::on_numDisparities_slider_valueChanged(int value)

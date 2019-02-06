@@ -10,34 +10,59 @@ namespace Ui {
 class SGBMParamDialog;
 }
 
+/**
+ * @brief The SGBMParamDialog class is a QT dialog in order to see and try parameters for disparity map with SGBM algorithm.
+ */
 class SGBMParamDialog : public QDialog
 {
     Q_OBJECT
 
 public:
 
+    /**
+     * @brief Constructor
+     * @param src QImage to transform in disparity map using SGBM algorithm.
+     * @param parent optionnal parameter for a parent widget.
+     */
     explicit SGBMParamDialog(QImage &src, QWidget *parent = nullptr);
-
     ~SGBMParamDialog();
 
+    /**
+     * @brief getMatResult
+     * @return the result matrice after transformation.
+     */
     cv::Mat getMatResult() const;
 
+    /**
+     * @brief getTimeResult
+     * @return  the approximative time of execute the algorithm.
+     */
     double getTimeResult() const;
 
+    /**
+     * @brief getSGBMState Fonction using ui for parameters
+     * @return BM parameters for a future reuse.
+     */
     cv::Ptr<cv::StereoSGBM> getSGBMState();
 
 private:
 
-    ///Refresh standart, do not apply disparity
+    /**
+     * @brief refreshImages refresh the images.
+     */
     void refreshImages();
 
-    ///Fonction using ui for parameters
+    /**
+     * @brief applyDisparity apply to the UI
+     */
     void applyDisparity();
 
 public slots:
 
-    ///Refresh and check for disparity, use refreshImages.
-    /// Call this when parameters value changed.
+    /**
+     * @brief Refresh and check for disparity, use refreshImages.
+     * Call this when parameters value changed.
+     */
     void refreshModifs();
 
 private slots:
@@ -51,6 +76,7 @@ private slots:
     ///Reset to the origin Image.
     void on_btnReset_clicked();
 
+    ///Sliders and check box parameters
     void on_minDisparity_slider_valueChanged(int value);
 
     void on_numDisparities_slider_valueChanged(int value);

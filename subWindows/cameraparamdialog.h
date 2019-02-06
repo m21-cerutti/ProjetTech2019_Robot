@@ -14,25 +14,40 @@ namespace Ui {
 class CameraParamDialog;
 }
 
+/**
+ * @brief The CameraParamDialog class is a QT dialog in order to see and try camera calibration.
+ * Also permit a better visualisation of matrice and easy qualitative test on sets of images.
+ */
 class CameraParamDialog : public QDialog
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Constructor
+     * @param parent optionnal parameter for a parent widget.
+     */
     explicit CameraParamDialog(QWidget *parent = 0);
-
     ~CameraParamDialog();
 
 private:
 
+    /**
+     * @brief refreshImages refresh the images.
+     */
     void refreshImages();
 
+    /**
+     * @brief refreshPrintMatrix refresh the matrix.
+     */
     void refreshPrintMatrix();
 
 private slots:
 
+    ///Resize principally the images
     void resizeEvent(QResizeEvent *event);
 
+    ///Interactions user
     void on_btn_openCamera_clicked();
 
     void on_btn_calibrate_clicked();
@@ -59,15 +74,17 @@ private slots:
 
 private:
 
+    ///The selected image for preview
     QImage _img_selection;
 
-    //Intrinsic camera parameters
+    ///Intrinsic camera parameters
     cv::Size _img_size;
     cv::Mat _camera_matrix;
     cv::Mat _dist_coeffs;
     std::vector<cv::Mat> _rvecs;
     std::vector<cv::Mat> _tvecs;
 
+    ///Set management of images
     int _current_img = -1;
     std::vector<cv::Mat> _vect_images;
 

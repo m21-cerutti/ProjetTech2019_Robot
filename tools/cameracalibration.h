@@ -26,38 +26,38 @@
 #define CHARU_HEIGHT 6
 #define MIN_MARKERS 4
 
-#define DEFAULT_FILE_CAMERA_PATH "calib_default_camera.xml"
+#define DEFAULT_FILE_CAMERA_L"calib_default_camera_l.xml"
+#define DEFAULT_FILE_CAMERA_R "calib_default_camera_r.xml"
+#define DEFAULT_FILE_STEREO "calib_stereo.xml"
 
+
+/**
+ * @brief The CameraCalibration class, gather all the functions about camera calibration.
+ */
 class CameraCalibration
 {
 
-    ///Constants
-public:
-
-    static std::string DEFAULT_CAMERA_PATH(){return DEFAULT_FILE_CAMERA_PATH;}
-
-
     ///Functions
-
 public:
 
     /**
-     * @brief chessBoardCalibration
-     * @param sources_images
-     * @param path_camera_file
-     * @return
+     * @brief Do the chessbard calibration for one camera.
+     * @param sources_images the images for calibration.
+     * @param path_camera_file the path to save the calibration.
+     * @return The number of images rejected for calibration.
      */
     static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
 
     /**
-     * @brief chessBoardCalibration
-     * @param sources_images
-     * @param path_camera_file
-     * @param camera_matrix
-     * @param dist_coeffs
-     * @param rvecs
-     * @param tvecs
-     * @return
+     * @brief Do the chessbard calibration for one camera.
+     * @param sources_images the images for calibration.
+     * @param path_camera_file the path to save the calibration.
+     * @param camera_matrix Output 3x3 floating-point camera matrix.
+     * @param dist_coeffs Output vector of distortion coefficients.
+     * @param rvecs Output vector of rotation vectors estimated for each pattern view.
+     * @param tvecs Output vector of translation vectors estimated for each pattern view.
+     * @see cv::calibrateCamera for more information.
+     * @return The number of images rejected for calibration.
      */
     static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,
                                      const std::string path_camera_file,
@@ -67,26 +67,25 @@ public:
                                      std::vector<cv::Mat>& tvecs);
 
     /**
-     * @brief charucoCalibration
-     * @param sources_images
-     * @param path_camera_file
-     * @param camera_matrix
-     * @param dist_coeffs
-     * @param rvecs
-     * @param tvecs
-     * @return
+     * @brief Do the charuco calibration for one camera.
+     * Not very effective, use chessBoardCalibration instead.
+     * @param sources_images the images for calibration.
+     * @param path_camera_file the path to save the calibration.
+     * @return The number of images rejected for calibration.
      */
     static int charucoCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
 
     /**
-     * @brief charucoCalibration
-     * @param sources_images
-     * @param path_camera_file
-     * @param camera_matrix
-     * @param dist_coeffs
-     * @param rvecs
-     * @param tvecs
-     * @return
+     * @brief Do the charuco calibration for one camera.
+     * Not very effective, use chessBoardCalibration instead.
+     * @param sources_images the images for calibration.
+     * @param path_camera_file the path to save the calibration.
+     * @param camera_matrix Output 3x3 floating-point camera matrix.
+     * @param dist_coeffs Output vector of distortion coefficients.
+     * @param rvecs Output vector of rotation vectors estimated for each pattern view.
+     * @param tvecs Output vector of translation vectors estimated for each pattern view.
+     * @see cv::calibrateCamera for more information.
+     * @return The number of images rejected for calibration.
      */
     static int charucoCalibration(const std::vector<cv::Mat> &sources_images,
                                   const std::string path_camera_file,
@@ -117,13 +116,24 @@ public:
                                  const std::string file_path);
 
 
+    /**
+     * @brief stereoChessboard
+     * @param sources_images_left
+     * @param sources_images_right
+     * @param path_camera_l
+     * @param path_camera_r
+     * @param object_points
+     * @param left_img_points
+     * @param right_img_points
+     * @return
+     */
     static int stereoChessboard(const std::vector<cv::Mat>& sources_images_left,
                                 const std::vector<cv::Mat> &sources_images_right,
                                 const std::string path_camera_l,
                                 const std::string path_camera_r,
-                                 std::vector<std::vector<cv::Point3f> > &object_points,
-                                 std::vector<std::vector<cv::Point2f> > &left_img_points,
-                                 std::vector<std::vector<cv::Point2f> > &right_img_points);
+                                std::vector<std::vector<cv::Point3f> > &object_points,
+                                std::vector<std::vector<cv::Point2f> > &left_img_points,
+                                std::vector<std::vector<cv::Point2f> > &right_img_points);
 
 
     /**
@@ -136,7 +146,8 @@ public:
      * @param path_camera_r
      */
     static void stereoCalibration(const std::string path_file,
-                                  const std::vector<cv::Mat>& sources_images_left, const std::vector<cv::Mat> &sources_images_right,
+                                  const std::vector<cv::Mat>& sources_images_left,
+                                  const std::vector<cv::Mat> &sources_images_right,
                                   const std::string path_camera_l,
                                   const std::string path_camera_r);
 

@@ -14,6 +14,9 @@
 
 #include "tools/projectutilities.h"
 
+/**
+ * @brief The ImageFilter class
+ */
 class ImageFilter
 {
 
