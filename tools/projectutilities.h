@@ -18,6 +18,12 @@ class ProjectUtilities
 {
 public:
 
+
+    /**
+     * @brief Convert a matrix to a formatted string.
+     * @param source the matrix to convert.
+     * @return the result string.
+     */
     template<typename T>
     static std::string matToString(const cv::Mat& source)
     {
@@ -38,14 +44,14 @@ public:
     }
 
     /**
-     * @brief messageDebug
-     * @param message
+     * @brief Personnal system of debugging.
+     * @param message the message to display.
      */
     static void messageDebug(std::string message, bool error = true);
 
     /**
-     * @brief show the matrix, without Qt
-     * @param name the name of the windows cv
+     * @brief show the matrix.
+     * @param name the name of the windows cv to refresh or create.
      * @param mat the matrix to display
      */
     static void showMatrice(std::string name, const cv::Mat& mat);

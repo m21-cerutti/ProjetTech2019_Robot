@@ -6,25 +6,33 @@
 
 #include "tools/projectutilities.h"
 
+/**
+ * @brief The ProjectFiles class gather all functions about saves ahnd load of files.
+ */
 class ProjectFiles
 {
 public:
 
-
+    /**
+     * @brief Get a particular matrix parameter in a file. Need to be known.
+     * @param file_path the path of the file.
+     * @param name_parameter the name of the desired parameter.
+     * @param out the matrix needed.
+     * @return true if suceeded, false otherwise.
+     */
     static bool getMatrixCalibrationFileStorage(const std::string file_path,
                                                 const std::string name_parameter,
                                                 cv::Mat& out);
 
     /**
-     * @brief loadCameraParemeters
-     * @param file_path
-     * @param width
-     * @param height
-     * @param camera_matrix
-     * @param dist_coeffs
-     * @param rvecs
-     * @param tvecs
-     * @return
+     * @brief Load the intrinsic camera parameters.
+     * @param file_path the path of the file.
+     * @param img_size Output image size.
+     * @param camera_matrix Output camera matrix.
+     * @param dist_coeffs Output distorsion coefficients.
+     * @param rvecs Output vector of rotation vectors estimated for each pattern view.
+     * @param tvecs Output vector of translation vectors estimated for each pattern view.
+     * @return true if suceeded, false otherwise.
      */
     static bool loadIntrinsicCamera(const std::string file_path,
                                     cv::Size &img_size,
@@ -34,12 +42,12 @@ public:
                                     std::vector<cv::Mat>& tvecs);
 
     /**
-     * @brief loadIntrinsicCamera
-     * @param file_path
-     * @param img_size
-     * @param camera_matrix
-     * @param dist_coeffs
-     * @return
+     * @brief Load the intrinsic camera parameters.
+     * @param file_path the path of the file.
+     * @param img_size Output image size.
+     * @param camera_matrix Output camera matrix.
+     * @param dist_coeffs Output distorsion coefficients.
+     * @return true if suceeded, false otherwise.
      */
     static bool loadIntrinsicCamera(const std::string file_path,
                                     cv::Size &img_size,
@@ -47,15 +55,13 @@ public:
                                     cv::Mat& dist_coeffs);
 
     /**
-     * @brief saveCameraParameters
-     * @param file_path
-     * @param width
-     * @param height
-     * @param camera_matrix
-     * @param dist_coeffs
-     * @param rvecs
-     * @param tvecs
-     * @return
+     * @brief Save the intrinsic camera parameters.
+     * @param img_size Input image size.
+     * @param camera_matrix Input camera matrix.
+     * @param dist_coeffs Input distorsion coefficients.
+     * @param rvecs Input vector of rotation vectors estimated for each pattern view.
+     * @param tvecs Input vector of translation vectors estimated for each pattern view.
+     * @return true if suceeded, false otherwise.
      */
     static bool saveIntrinsicCamera(const std::string file_path,
                                     const cv::Size img_size,
@@ -66,10 +72,12 @@ public:
 
 
     /**
-     * @brief loadExtrinsicCameraStereo
+     * @brief Load the stereo calibration.
      * @param file_path
-     * @param camera_matrix
-     * @param dist_coeffs
+     * @param camera_matrix_l
+     * @param dist_coeffs_l
+     * @param camera_matrix_r
+     * @param dist_coeffs_r
      * @param img_size
      * @param R
      * @param F
@@ -99,7 +107,7 @@ public:
                                            cv::Mat &Q);
 
     /**
-     * @brief saveExtrinsicCameraStereo
+     * @brief Save the stereo calibration.
      * @param file_path
      * @param camera_matrix_l
      * @param dist_coeffs_l

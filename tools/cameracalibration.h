@@ -24,9 +24,9 @@
 #define MARKER_SIZE 0.01
 #define CHARU_WIDHT 9
 #define CHARU_HEIGHT 6
-#define MIN_MARKERS 4
+#define MIN_MARKERS 2
 
-#define DEFAULT_FILE_CAMERA_L"calib_default_camera_l.xml"
+#define DEFAULT_FILE_CAMERA_L "calib_default_camera_l.xml"
 #define DEFAULT_FILE_CAMERA_R "calib_default_camera_r.xml"
 #define DEFAULT_FILE_STEREO "calib_stereo.xml"
 
@@ -117,14 +117,14 @@ public:
 
 
     /**
-     * @brief stereoChessboard
-     * @param sources_images_left
-     * @param sources_images_right
-     * @param path_camera_l
-     * @param path_camera_r
-     * @param object_points
-     * @param left_img_points
-     * @param right_img_points
+     * @brief Do the stereo find chessboard, more restrictive than individual.
+     * @param sources_images_left the left source matrix.
+     * @param sources_images_right the right source matrix.
+     * @param path_camera_l the path for save the calibration of left camera.
+     * @param path_camera_r the path for save the calibration of right camera.
+     * @param object_points Output array of theorical Point3f.
+     * @param left_img_points Output array of Point2f for left correspondence.
+     * @param right_img_points Output array of Point2f for right correspondence.
      * @return
      */
     static int stereoChessboard(const std::vector<cv::Mat>& sources_images_left,
@@ -137,13 +137,12 @@ public:
 
 
     /**
-     * @brief stereoCalibration
-     * @param path_file
-     * @param object_points
-     * @param left_img_points
-     * @param right_img_points
-     * @param path_camera_l
-     * @param path_camera_r
+     * @brief Do the stereo calibration.
+     * @param path_file the path for saving the calibration.
+     * @param sources_images_left the source left image.
+     * @param sources_images_right the source right image.
+     * @param path_camera_l the path for saving left calibration.
+     * @param path_camera_r the path for saving right calibration.
      */
     static void stereoCalibration(const std::string path_file,
                                   const std::vector<cv::Mat>& sources_images_left,

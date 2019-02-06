@@ -51,6 +51,17 @@
                 {Î}{{\^{I}}}1
                 {|}{|}1  
 }
+
+\lstdefinestyle{NoStyle}{
+    language={},
+  	backgroundcolor=\color{backgroundColour},
+    numberstyle=\tiny\color{mGray},
+    basicstyle=\footnotesize,
+    numbers=left,
+    numbersep=5pt,
+  	frame=single,
+}
+
 \lstdefinestyle{CMakeStyle}{
     language={},
   	backgroundcolor=\color{backgroundColour},
@@ -119,7 +130,7 @@
 
 	On passera cependant par plusieurs étapes.
 	\\\\
-	D'abord la création de nos fonctions d'analyse et une interface graphique à partir de la bibliothèque OpenCv et Qt respectivement. OpenCv implémente notamment des algorithmes pour faire les filtres, les cartes de disparité et les cartes de profondeur nécessaires à l'analyse d'images pour l'intelligence artificielle, et Qt un système d'interface complet pour pouvoir créer une interface permettant de tester nos fonctions d'analyse d'images.\\
+	D'abord la création de nos fonctions d'analyse ainsi que d'une interface graphique à partir de la bibliothèque OpenCv et Qt respectivement. OpenCv implémente notamment des algorithmes pour faire les filtres, les cartes de disparité et les cartes de profondeur nécessaires à l'analyse d'images pour l'intelligence artificielle, et Qt un système d'interface complet pour pouvoir tester nos fonctions d'analyse d'images.\\
 \\\\
 	Ensuite la création sous Unity d'une simulation avec les différents paramètres permettant de créer les comportements par défaut du robot et testant les différents algorithmes. Elle devra prévoir les spécificités du matériel et les tests pour différents environnements et situations.\\
 	
@@ -129,27 +140,30 @@
 \section{Analyse de l’existant}
 
 Les consignes sont de s'appuyer sur la bibliothèque d'OpenCv 3.2.0
-et Qt supérieur à 4.8 afin d'assurer une compatibilité avec les ordinateurs du Cremi. \\
-Du fait de la communauté de OpenCv et de Qt, de nombreux tutoriels sont disponibles en ligne afin de nous permettre d'assurer les fonctionnalités demandé, à savoir le traitement et l'analyse d'image et la création d'une interface pour tester le résultat.\\
-
-Nous avons aussi comme matériel un robot avec une caméra stéréoscopique mis à la disposition des élèves avec bien sur des contraintes de disponibilité.
-
+et Qt supérieur à 4.8 afin d'assurer une compatibilité avec les ordinateurs du Cremi.\\
+Du fait de la communauté de OpenCv et de Qt, de nombreux tutoriels sont disponibles en ligne afin de nous permettre d'assurer les fonctionnalités demandé, à savoir l'analyse d'image et la création d'une interface pour tester le résultat.\\
+Nous avons aussi comme matériel un robot avec une caméra stéréoscopique mis à la disposition des élèves avec bien sûr des contraintes de disponibilité.
 
 \section{Besoins}
 
 Comme notre programme de traitement d'image sera utilisé dans un système embarqué, la performance de notre code est critique, ainsi que la mémoire utilisé.\\
-Il faudra aussi pour la portabilité sur le robot exactement savoir les parties de bibliothèque OpenCv à importer.\\
-
-Pour analyser l'environnement du Robot, il faut assurer la gestion de ces caméra stéréoscopique et le traitement des images qui seront transmis à l'unité de contrôle.\\
-
-Il faut aussi une interface qui permettra de tester, quantifier les performances, et s'assurer qualitativement du bon déroulement de l'implémentation des fonctionnalités.\\
-Cela amène en plus à des fonctions de conversions d'images pour passer du format de OpenCv à Qt. \\
+Il faudra donc pour la portabilité sur le robot exactement savoir les parties de bibliothèque OpenCv à importer.\\
+Pour analyser l'environnement du Robot, il faut assurer de la gestion de ces caméra stéréoscopique et le traitement des images qui seront transmis à l'unité de contrôle.\\
+Il faudra aussi tester, quantifier les performances, et s'assurer qualitativement du bon déroulement de l'implémentation des fonctionnalités.\\
+Il faudra aussi s'assurer de la compatibilité entre le matériel et les bibliothèques.\\
 
 %------------------%
 \newpage
 \part{Architecture}
 
 \section{Vue Global et conventions}
+
+Il a été choisi pour les fonctions d'analyse d'image de privilégier les fonctions statiques, afin d’être facilement implémentable plus tard dans les algorithmes d'intelligence artificiel. Cela a aussi le mérite de limiter les allouements de mémoires, en ayant en paramètre que ce qui est nécessaire.\\
+Cela a cependant des inconvénients au niveau de la maintenabilité en cas de changements de paramètres dans les fonctions, qui peut donc se révéler lourde.\\
+
+Au niveau des dossiers, "tools" rassemble les classes et fonctions concernant le débuguage, la conversion, et le traitement d'images.
+Le dossier "subWindows" contient les classes de sous fenêtres à la fenêtre principal de l'interface.\\
+La hiérarchie des fichiers est en annexe.\\
 
 La convention de nommage adopté est la suivante :\\
 
@@ -161,14 +175,34 @@ La convention de nommage adopté est la suivante :\\
    Fichiers	& \textit{nameclass.*}\\
  \end{tabular}\\
 
-La hiérarchie des fichiers est en annexe.\\
-Le dossier "tools" rassemble les classes concernant le débuguage, la conversion, et le traitement d'images.
-Le dossier "subWindows" contient les classes de sous fenêtres à la fenêtre principal de l'interface.
+et la documentation est faite avec doxygen.\\
 
 \newpage
-\section{Interface Qt}
+\section{Débogage et performances}
+
+Il faut prévoir le débuguage à la fois sur ordinateur, et sur les robots. C'est pourquoi dans certaines des fonctions, elles peuvent fonctionner sans l'environnement Qt.
+Le principal besoin de celles-ci est de permettre un débogage facile, et de calculer les performances des différents algorithmes.\\
+
+Voire la documentation de ProjectUtilities.\\
+
+\newpage
+\section{Interface}
 
 %Photo interface et sous fenetres
+L'interface permet à la fois de tester les fonctions implémenté avec leur paramètres que de vérifier qualitativement de la performance des résultats.
+
+La fenêtre principale permet de tester les filtres de base et d'accéder à des sous menus spéciaux en fonction des besoins des développements.\\
+
+A l'heure actuelle, il y a 3 sous menus, deux pour les tests des algorithmes de carte de disparité, et une pour les tests de calibration de caméra individuelles.\\
+
+Par contre comme les systèmes Qt et OpenCv sur les images ne sont pas compatibles, des fonctions de conversion ont été créé (CVQTInterface).
+
+Une sous-fenêtre pour la calibration stéréo aurait été appréciabl e mais par manque de temps pour l'adaptation d'un système compatible vidéo CV-Qt, et certains problèmes qui seront rappelé dans l'analyse vidéo, un simple système de fenêtre OpenCv pour la visualisation et l'extraction d'image a été implémenté.\\
+Le système affiche deux vu simultané avec la vidéo de l’œil gauche et la vidéo de l’œil droit. Avec SPACEBAR nous pouvons accepté les vidéos et un débug s'affiche, ou les rejeter avec ESCAPE.
+On peut désactiver le système manuel, setter la frame de début, et le nombre de frame qui peut être optionnel.\\
+
+Des améliorations devront être fait notamment sur ce dernier point pour pas surchargé la mémoire et pouvoir arrêter en cours de calibration si il s’avère qu'il y a trop d'images.
+Un système de choix et de sauvegarde de sets d'images serait aussi appréciable. 
 
 \newpage
 \section{Bibliothèque d'analyse}
@@ -177,50 +211,106 @@ Le dossier "subWindows" contient les classes de sous fenêtres à la fenêtre pr
 
 %Photo performances
 
+Ce sont les premières fonctions qui ont été implémenté après l'interface principal. Se sont des fonctions qui seront utilisé plus tard  afin d' analyser les sets d'image que la caméra.
+
+Voici le résultat de chaque :
+
+applyGray
+
+separateImage
+
+computeGaussianBlur
+
+computeGradient
+
+computeLaplacian
+
+fillBlank
+
+
 \newpage
 \subsection{Carte de disparité}
 
 %Photo résultat pire-mieux
+
+Les cartes de disparité dépendent fortement de paramètres externes à la caméra, la luminosité, la netteté des contours, la focal de la caméra, les couleurs, il devient donc très difficile de choisir les paramètres sans un œil humain, pour avoir un résultat minimal. Il a fallu donc implémenté un système de visualisation pour s'assurer du résultat de ces fonctions.\\
+
+Voici les résultats obtenu avec leur paramètres :
+    computeBMDisparityStereo
+    computeSGBMDisparityStereo
 
 \newpage
 \subsection{Calibration Caméra}
 
 %Photo résultat pire-mieux
 
+Pour la calibration, vu les sets d'images qui ont été fourni deux choix s'offrait : la calibration grâce à un damier d'échiquier (chessBoard), et/ou par damier couplé avec un système d'identifiant à la manière des Qr code (Charuco). 
+Les deux ont été implémentés avec plus ou moins de succès afin de comparer les résultats.
+Avec une grande surprise, les résultats de calibration semble plus prometteur avec le système ChessBoard que Charuco.
+Du fait de la distorsion supposé des caméras sans calibration, on peut faire l’hypothèse que l'identification des Id Aruco n'en devient que plus complexe, c'est pourquoi, du fait du manque de temps et aussi de la compatibilité avec la fonction stereoCalibrate de OpenCv, il a été privilégier d'utiliser la solution du ChessBoard plutôt que Charuco, qui même après une première calibration avec ChessBoard, n'affinait pas les résultats et même divergé.
+
+Résultat après calibration :
+chess
+charuco
+
 \newpage
 \subsection{Analyseur vidéo}
 
-\begin{lstlisting}[style=NoStyle, caption ={Debug trace VideoCapture SEGFAULT}]
-1   av_buffer_unref                                                             0x7fffe0161451 
-2   av_frame_unref                                                              0x7fffe016d60e 
-3   ??                                                                          0x7ffff27945e8 
-4   ??                                                                          0x7ffff27947e0 
-5   cvCreateFileCapture_FFMPEG                                                  0x7ffff27949f9 
-6   ??                                                                          0x7ffff279713f 
-7   cvCreateFileCaptureWithPreference                                           0x7ffff277d17d 
-8   cv::VideoCapture::open(cv::String const&, int)                              0x7ffff277e1b0 
-9   cv::VideoCapture::VideoCapture(cv::String const&)                           0x7ffff277e2be 
-10  VideoAnalyser::stereoVideoExtraction                 videoanalyser.cpp  89  0x5555555910fd 
-11  MainWindow::on_actionStereoCalibration_triggered     mainwindow.cpp     312 0x555555564589 
-12  MainWindow::qt_static_metacall                       moc_mainwindow.cpp 191 0x555555591f87 
-13  MainWindow::qt_metacall                              moc_mainwindow.cpp 226 0x5555555920aa 
-14  QMetaObject::activate(QObject *, int, int, void * *)                        0x7ffff0b1b784 
-15  QAction::triggered(bool)                                                    0x7ffff13cc1c2 
-16  QAction::activate(QAction::ActionEvent)                                     0x7ffff13cebb0 
-17  ??                                                                          0x7ffff153e1ca 
-18  ??                                                                          0x7ffff1545854 
-19  QMenu::mouseReleaseEvent(QMouseEvent *)                                     0x7ffff1546826 
-20  QWidget::event(QEvent *)                                                    0x7ffff141a278 
-... <More>                                                                                     
-\end{lstlisting}
+Il a été choisi d'utiliser les fonctions OpenCv pour lire et extraire les frames de la vidéo afin de ne pas surcharger le robot de codes de bibliothèque et aussi pour améliorer les futures performances du robot qui ne demanderait pas d'éventuelles conversion pour une interface graphique.\\
 
-On peut voire ici que sur les machines du Cremi, la bibliothèque FFMPEG est soit mal installé, soit pas à jour. Sachant que sur les machines personnelles, le code marche très bien, et que seul un administrateur peut résoudre ce problème, il a été décider de l'ignorer pour l'instant et d'en informer les professeurs.
+Des problèmes techniques sont néanmoins survenu avec seulement la lecture de vidéo dés le début de l’implémentation de fonctions d'analyse vidéo.\\
+
+Voici d'ailleurs le backtrace reçu avec un segmentation fault.\\
+
+\begin{tabular}{ l l l }
+
+av\_buffer\_unref 									& 							& 0x7fffe0161451 \\
+av\_frame\_unref 									& 							& 0x7fffe016d60e \\
+??				 									& 							& 0x7ffff27945e8 \\
+??													& 							& 0x7ffff27947e0 \\
+cvCreateFileCapture\_FFMPEG	 						& 							& 0x7ffff27949f9 \\
+?? 													& 							& 0x7ffff279713f \\
+cv::VideoCapture::open(cv::String const\&, int) 	& 							& 0x7ffff277e1b0\\
+cv::VideoCapture::VideoCapture(cv::String const\&) 	& 							& 0x7ffff277e2be\\
+VideoAnalyser::stereoVideoExtraction 				& videoanalyser.cpp(89) 	& 0x5555555910fd\\
+MainWindow::on\_actionStereoCalibration\_triggered	& mainwindow.cpp(312)		& 0x555555564589\\
+MainWindow::qt\_static\_metacall  					& moc\_mainwindow.cpp(191)	& 0x555555591f87 \\
+MainWindow::qt\_metacall  							& moc\_mainwindow.cpp(226) 	& 0x5555555920aa \\
+QMetaObject::activate(QObject *, int, int, void * *)& 							& 0x7ffff0b1b784 \\
+QAction::triggered(bool)  							& & 0x7ffff13cc1c2 \\
+QAction::activate(QAction::ActionEvent) 			& & 0x7ffff13cebb0 \\
+??  												& & 0x7ffff153e1ca \\
+??  												& & 0x7ffff1545854 \\
+QMenu::mouseReleaseEvent(QMouseEvent *) 			& & 0x7ffff1546826 \\
+QWidget::event(QEvent *) 							& & 0x7ffff141a278 \\
+... <More>      									& & \\                                                                     
+ \end{tabular}\\
+ 
+On peut voire ici que sur les machines du Cremi, la bibliothèque FFMPEG est soit mal installé, soit pas à jour. Sachant que sur les machines personnelles, le code marche très bien, et que seul un administrateur peut résoudre ce problème, il a été donc décider de l'ignorer pour l'instant et d'en informer les professeurs.
+
+Ensuite, par manque de temps mais aussi du fait de l'inconnu par rapport au système d'extraction d'image par la caméra, seul les fonctions de Debug et d'extraction furent implémentés, sachant que l'on aurait pu améliorer le code avec une analyse progressive dans une boucle de capture vidéo. 
 
 \newpage
-\subsection{Carte de profondeur}
+\subsection{Stéréo et carte de profondeur}
 
 %Photo résultat pire-mieux
+    depthMap
+    
+Pour pouvoir faire la carte de profondeur, il a fallu tout d'abord la calibration de caméra en stéréo.
+Cela a nécessité notamment des surcharges de fonctions pour pouvoir directement utiliser deux images au lieu de une seul et de la scinder, par exemple lors de la création de la carte de disparité. Seulement il a fallu aussi faire une fonction spécial de calibration, car l'implémentation à partir de la calibration individuel des caméras devenait beaucoup trop complexe, sachant que les images de calibration devait être mis en rapport et réutilisé lors de la détermination des paramètres extrinsèque en stéréo.
+Point de vue performance il y aurait aussi des améliorations à faire sur celle-ci sachant que passé les 40 images, l'attente devient longue (environ 2 min).
 
+Ainsi en récupérant les données qu'elle avait produite, et grâce au système d'extraction de vidéo, des résultats ont pu être fourni. 
+Une analyse plus poussé des résultats sont cependant nécessaires pour analyser extraire les points sur un repère 3D.
+
+    \newpage
+\subsection{Fichiers et sauvegarde}
+
+Basé sur le système déjà existant de FileStorage d'OpenCv, les calibration mono et stéréo ont été sauvegardé en format XML, du fait de l'utilisation répandu de celui-ci.
+Les fichiers sauvegardé et utilisé plus haut sont d'ailleurs en annexe.
+
+%------------------%
+    
 \begin{comment}
 \newpage
 \section{Simulation}
@@ -260,11 +350,11 @@ On peut voire ici que sur les machines du Cremi, la bibliothèque FFMPEG est soi
 
 \subsection{Difficultés rencontrés}
 
-Pas assez de bras
+Les difficultés rencontré ont été diverses. Du fait déjà que j'ai étais seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les interfaces qui était secondaire par rapport à la qualité d'analyse. Cette meme qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètre optionnel dans OpenCv, mais néanmoins important. Mais grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
 
 \subsection{Critique et améliorations potentielles}
 
-Améliorer l'interface et les tests.
+L'amélioration de l'interface pour la vidéo et les cartes de profondeur améliorerait la visualisation des résultats. Plus que une amélioration du système de base, ce qu'il faut est une refonte pour pouvoir accueillir la visualisation de stéréo, ce qui n'a pas forcément été bien pris en compte dès le début du projet du fait des images stéréo rassemblé en une seul image.
 
 \begin{comment}
 \section{Semestre 6}
