@@ -188,18 +188,28 @@ Voire la documentation de ProjectUtilities.\\
 \newpage
 \section{Interface}
 
-%Photo interface et sous fenetres
+
 L'interface permet à la fois de tester les fonctions implémenté avec leur paramètres que de vérifier qualitativement de la performance des résultats.
 
 La fenêtre principale permet de tester les filtres de base et d'accéder à des sous menus spéciaux en fonction des besoins des développements.\\
 
+\includegraphics[width=\linewidth]{img/interface.png}
+
 A l'heure actuelle, il y a 3 sous menus, deux pour les tests des algorithmes de carte de disparité, et une pour les tests de calibration de caméra individuelles.\\
+
+\includegraphics[width=\linewidth]{img/bm.png}\\
+
+\includegraphics[width=\linewidth]{img/sgbm.png}\\
+
+\includegraphics[width=\linewidth]{img/calib.png}\\
 
 Par contre comme les systèmes Qt et OpenCv sur les images ne sont pas compatibles, des fonctions de conversion ont été créé (CVQTInterface).
 
 Une sous-fenêtre pour la calibration stéréo aurait été appréciabl e mais par manque de temps pour l'adaptation d'un système compatible vidéo CV-Qt, et certains problèmes qui seront rappelé dans l'analyse vidéo, un simple système de fenêtre OpenCv pour la visualisation et l'extraction d'image a été implémenté.\\
 Le système affiche deux vu simultané avec la vidéo de l’œil gauche et la vidéo de l’œil droit. Avec SPACEBAR nous pouvons accepté les vidéos et un débug s'affiche, ou les rejeter avec ESCAPE.
 On peut désactiver le système manuel, setter la frame de début, et le nombre de frame qui peut être optionnel.\\
+
+\includegraphics[width=\linewidth]{img/video.png}
 
 Des améliorations devront être fait notamment sur ce dernier point pour pas surchargé la mémoire et pouvoir arrêter en cours de calibration si il s’avère qu'il y a trop d'images.
 Un système de choix et de sauvegarde de sets d'images serait aussi appréciable. 
@@ -215,29 +225,33 @@ Ce sont les premières fonctions qui ont été implémenté après l'interface p
 
 Voici le résultat de chaque :
 
-applyGray
-
-separateImage
-
 computeGaussianBlur
+
+\includegraphics[width=\linewidth]{img/blur.png}
 
 computeGradient
 
+\includegraphics[width=\linewidth]{img/gradient.png}
+
 computeLaplacian
 
-fillBlank
+\includegraphics[width=\linewidth]{img/laplacian.png}
 
 
 \newpage
 \subsection{Carte de disparité}
 
-%Photo résultat pire-mieux
-
 Les cartes de disparité dépendent fortement de paramètres externes à la caméra, la luminosité, la netteté des contours, la focal de la caméra, les couleurs, il devient donc très difficile de choisir les paramètres sans un œil humain, pour avoir un résultat minimal. Il a fallu donc implémenté un système de visualisation pour s'assurer du résultat de ces fonctions.\\
 
 Voici les résultats obtenu avec leur paramètres :
-    computeBMDisparityStereo
-    computeSGBMDisparityStereo
+
+\includegraphics[width=\linewidth]{img/bm.png}
+
+computeBMDisparityStereo
+    
+\includegraphics[width=\linewidth]{img/sgbm.png}
+    
+computeSGBMDisparityStereo
 
 \newpage
 \subsection{Calibration Caméra}
@@ -248,10 +262,6 @@ Pour la calibration, vu les sets d'images qui ont été fourni deux choix s'offr
 Les deux ont été implémentés avec plus ou moins de succès afin de comparer les résultats.
 Avec une grande surprise, les résultats de calibration semble plus prometteur avec le système ChessBoard que Charuco.
 Du fait de la distorsion supposé des caméras sans calibration, on peut faire l’hypothèse que l'identification des Id Aruco n'en devient que plus complexe, c'est pourquoi, du fait du manque de temps et aussi de la compatibilité avec la fonction stereoCalibrate de OpenCv, il a été privilégier d'utiliser la solution du ChessBoard plutôt que Charuco, qui même après une première calibration avec ChessBoard, n'affinait pas les résultats et même divergé.
-
-Résultat après calibration :
-chess
-charuco
 
 \newpage
 \subsection{Analyseur vidéo}
@@ -293,12 +303,23 @@ Ensuite, par manque de temps mais aussi du fait de l'inconnu par rapport au syst
 \newpage
 \subsection{Stéréo et carte de profondeur}
 
-%Photo résultat pire-mieux
-    depthMap
     
 Pour pouvoir faire la carte de profondeur, il a fallu tout d'abord la calibration de caméra en stéréo.
 Cela a nécessité notamment des surcharges de fonctions pour pouvoir directement utiliser deux images au lieu de une seul et de la scinder, par exemple lors de la création de la carte de disparité. Seulement il a fallu aussi faire une fonction spécial de calibration, car l'implémentation à partir de la calibration individuel des caméras devenait beaucoup trop complexe, sachant que les images de calibration devait être mis en rapport et réutilisé lors de la détermination des paramètres extrinsèque en stéréo.
 Point de vue performance il y aurait aussi des améliorations à faire sur celle-ci sachant que passé les 40 images, l'attente devient longue (environ 2 min).
+
+
+Extrait de résultat de calibration stéréo :
+
+Debug :  Calibration finish with left :1.006599 of error. 
+
+Debug :  And right :0.278724 of error. 
+
+Debug :  Calibration finish with 4.994794 of error. 
+
+\includegraphics[width=\linewidth]{img/d_bm.png}
+
+\includegraphics[width=\linewidth]{img/d_sgbm.png}
 
 Ainsi en récupérant les données qu'elle avait produite, et grâce au système d'extraction de vidéo, des résultats ont pu être fourni. 
 Une analyse plus poussé des résultats sont cependant nécessaires pour analyser extraire les points sur un repère 3D.
@@ -350,12 +371,12 @@ Les fichiers sauvegardé et utilisé plus haut sont d'ailleurs en annexe.
 
 \subsection{Difficultés rencontrés}
 
-Les difficultés rencontré ont été diverses. Du fait déjà que j'ai été seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les interfaces qui était secondaire par rapport à la qualité d'analyse. Cette même qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètres optionnels dans OpenCv, mais néanmoins important. Parfopis meme, c'était difficile de savoir ce que l'on attendait comme résultat. Mais grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
+Les difficultés rencontré ont été diverses. Du fait déjà que j'ai été seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les interfaces qui était secondaire par rapport à la qualité d'analyse. Cette même qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètres optionnels dans OpenCv, mais néanmoins important. Parfois même, c'était difficile de savoir ce que l'on attendait comme résultat. Mais grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
 
 \subsection{Critique et améliorations potentielles}
 
 L'amélioration de l'interface pour la vidéo et les cartes de profondeur améliorerait la visualisation des résultats. Plus que une amélioration du système de base, ce qu'il faut est une refonte pour pouvoir accueillir la visualisation de stéréo, ce qui n'a pas forcément été bien pris en compte dès le début du projet du fait des images stéréo rassemblé en une seul image.
-Il manque d'ailleurs les performances pour la carte de profondeur et la calibration.
+Il manque d'ailleurs les performances pour la carte de profondeur et la calibration, il y a aussi une incohérence avec les couleurs lors du choix de la carte de disparité sur computeDepthMap.
 
 \begin{comment}
 \section{Semestre 6}
@@ -374,6 +395,22 @@ Il manque d'ailleurs les performances pour la carte de profondeur et la calibrat
 \section{Hiérarchie du projet}
 \lstinputlisting[]{hierarchie.txt}
 
+\newpage
+\section{Files}
+
+\subsection{Left calibration}
+
+\lstinputlisting{results/l_calibration.xml}
+
+\newpage
+\subsection{Right calibration}
+
+\lstinputlisting{results/r_calibration.xml}
+
+\newpage
+\subsection{Stereo calibration}
+
+\lstinputlisting{results/stereo_calibration.xml}
 
 \newpage
 \section{Rapports}
@@ -385,7 +422,7 @@ Fonctionnalités de base déjà présentes à ce moment :\\
 	-Mise en place d'une bibliothèque graphique d'analyse adaptant les fonctions d'OpenCv.\\
 	-Ouverture de dialogues particulier pour les cartes de disparité.\\
 	-Filtres de flou Gaussien, de Laplacien, et de séparation d'image pour les cartes de disparité implémenté.\\
-	-Fonction de débuguage d'image pour l'affichage OpenCv crée.\\
+	-Fonction de débogage d'image pour l'affichage OpenCv crée.\\
 
 
 \subsection{Rapport 05 novembre 2018}
@@ -481,7 +518,7 @@ Pistes d'améliorations:\\
 -résultats\\
 -problème\\
 -pas de code dans rapport\\
--Erreur récurentes (?)\\
+-Erreur récurrentes (?)\\
 -Rigueur sur le code, moins sur la théorie\\
 -Rapport pas un bilan d'activité\\
 \\
@@ -495,54 +532,5 @@ Améliorer l'interface pour prendre en compte l'affichage de calibration.\\
 (Filtre pour les cartes de disparité)\\
 \\\\
 
-
-
-Debug :  Starting chessboard stereo calibration. 
-
-Debug :  0 images rejected. 
-
-Debug :  Calibration finish with left :1.006599 of error. 
-
-Debug :  And right :0.278724 of error. 
-
-Debug :  Saving calibration in l_calibration.xml and r_calibration.xml... 
-
-Debug :  Starting save intrinsic camera. 
-
-Debug :  File done. Date : Wed Feb  6 18:49:30 2019
- 
-
-Debug :  Starting save intrinsic camera. 
-
-Debug :  File done. Date : Wed Feb  6 18:49:30 2019
- 
-
-Debug :  Starting load intrinsic camera. 
-
-Debug :  Calibration date : Wed Feb  6 18:49:30 2019
- 
-
-Debug :  Read camera file sucessfull. 
-
-Debug :  Starting load intrinsic camera. 
-
-Debug :  Calibration date : Wed Feb  6 18:49:30 2019
- 
-
-Debug :  Read camera file sucessfull. 
-
-Debug :  Starting Calibration. 
-
-Debug :  Read intrasic... 
-
-Debug :  Starting stereo calibration. 
-
-Debug :  Stereo calibrate... 
-
-Debug :  Calibration finish with 4.994794 of error. 
-
-Debug :  Starting Rectification. 
-
-Debug :  Done Rectification. 
 
 \end{document}
