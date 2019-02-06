@@ -96,10 +96,10 @@ public:
 
     /**
      * @brief Undistord using the camera calibration.
-     * @param source
-     * @param out
-     * @param camera_matrix
-     * @param dist_coeffs
+     * @param source the source matrix.
+     * @param out the output matrix.
+     * @param camera_matrix the input camera matrix calibration.
+     * @param dist_coeffs the input distorsion coefficients calibration.
      */
     static void applyUndistorded( const cv::Mat& source,
                                   cv::Mat& out,
