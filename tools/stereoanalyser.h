@@ -18,8 +18,8 @@ public:
 
     /**
      * @brief Make disparity map with BM algorithm
-     * @param src the matrice to compute with left and right image
-     * @param out the output matrice.
+     * @param src the matrix to compute with left and right image
+     * @param out the output matrix.
      * @param bmState he parameters initialised for computing
      *     PRESET
      *     nbdisparities
@@ -39,8 +39,8 @@ public:
 
     /**
      * @brief Make disparity map with SGBM algorithm
-     * @param src the matrice to compute with left and right image
-     * @param out the output matrice.
+     * @param src the matrix to compute with left and right image
+     * @param out the output matrix.
      * @param sgbmState the parameters initialised for computing
      *     preFilterCap
      *     fullDP

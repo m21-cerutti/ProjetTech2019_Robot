@@ -95,7 +95,7 @@ public:
                                   std::vector<cv::Mat>& tvecs);
 
     /**
-     * @brief applyUndistorded
+     * @brief Undistord using the camera calibration.
      * @param source
      * @param out
      * @param camera_matrix
@@ -107,10 +107,10 @@ public:
                                   cv::Mat& dist_coeffs);
 
     /**
-     * @brief applyUndistordedFromFile
-     * @param file_path
-     * @param source
-     * @param out
+     * @brief Undistord using the camera calibration.
+     * @param file_path the camera calibration path.
+     * @param source the source matrix.
+     * @param out the output matrix.
      */
     static void applyUndistorded(const cv::Mat& source, cv::Mat& out,
                                  const std::string file_path);

@@ -27,7 +27,7 @@ void MainWindow::chooseImage(){
     // open image
     if(_image_src.load(filename)){
 
-        //Create default matrice
+        //Create default matrix
         on_btnOrigin_clicked();
 
         //Refresh window

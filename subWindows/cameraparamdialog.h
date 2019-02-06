@@ -16,7 +16,7 @@ class CameraParamDialog;
 
 /**
  * @brief The CameraParamDialog class is a QT dialog in order to see and try camera calibration.
- * Also permit a better visualisation of matrice and easy qualitative test on sets of images.
+ * Also permit a better visualisation of matrix and easy qualitative test on sets of images.
  */
 class CameraParamDialog : public QDialog
 {

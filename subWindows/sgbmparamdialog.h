@@ -29,7 +29,7 @@ public:
 
     /**
      * @brief getMatResult
-     * @return the result matrice after transformation.
+     * @return the result matrix after transformation.
      */
     cv::Mat getMatResult() const;
 

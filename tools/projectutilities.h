@@ -44,16 +44,16 @@ public:
     static void messageDebug(std::string message, bool error = true);
 
     /**
-     * @brief show the matrice, without Qt
+     * @brief show the matrix, without Qt
      * @param name the name of the windows cv
-     * @param mat the matrice to display
+     * @param mat the matrix to display
      */
     static void showMatrice(std::string name, const cv::Mat& mat);
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.
      * @param func template for a function who take a source cv::Mat and an output cv::Mat, at least.
-     * @param src the source image matrice.
+     * @param src the source image matrix.
      * @param out output of the function.
      * @param argstereo optionnal argument for the fonction (especially stereo functions)
      * @return the time that have taken.
