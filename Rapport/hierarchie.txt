@@ -7,12 +7,103 @@ l3-rvc
 |-- mainwindow.cpp
 |-- mainwindow.h
 |-- mainwindow.ui
+|-- PRIORITES.txt
 |-- Rapport
+|   |-- Brouillons
+|   |   |-- 14_12_2018.txt
+|   |   |-- Calibration.txt
+|   |   |-- Procédure Matériel
+|   |   |-- rapport_05_11_2018.txt
+|   |   `-- rapport_05_12_2018.txt
 |   |-- hierarchie.txt
 |   |-- img
-|   |   `-- ubx-logo.png
+|   |   |-- blur.png
+|   |   |-- bm.png
+|   |   |-- calib.png
+|   |   |-- clib.png
+|   |   |-- d_bm.png
+|   |   |-- d_disp.png
+|   |   |-- debug_video.png
+|   |   |-- d_sgbm.png
+|   |   |-- filter_video.png
+|   |   |-- gradient.png
+|   |   |-- interface.png
+|   |   |-- laplacian.png
+|   |   |-- sgbm.png
+|   |   |-- ubx-logo.png
+|   |   `-- video.png
 |   |-- rapport.pdf
-|   `-- rapport.tex
+|   |-- rapport.tex
+|   |-- rendu
+|   |   |-- 3DRV.pro
+|   |   |-- cmdHierachie
+|   |   |-- index.txt
+|   |   |-- main.cpp
+|   |   |-- maintests.cpp
+|   |   |-- mainwindow.cpp
+|   |   |-- mainwindow.h
+|   |   |-- mainwindow.ui
+|   |   |-- PRIORITES.txt
+|   |   |-- Rapport
+|   |   |   |-- Brouillons
+|   |   |   |   |-- 14_12_2018.txt
+|   |   |   |   |-- Calibration.txt
+|   |   |   |   |-- rapport_05_11_2018.txt
+|   |   |   |   `-- rapport_05_12_2018.txt
+|   |   |   |-- hierarchie.txt
+|   |   |   |-- img
+|   |   |   |   |-- blur.png
+|   |   |   |   |-- bm.png
+|   |   |   |   |-- calib.png
+|   |   |   |   |-- clib.png
+|   |   |   |   |-- d_bm.png
+|   |   |   |   |-- d_disp.png
+|   |   |   |   |-- debug_video.png
+|   |   |   |   |-- d_sgbm.png
+|   |   |   |   |-- filter_video.png
+|   |   |   |   |-- gradient.png
+|   |   |   |   |-- interface.png
+|   |   |   |   |-- laplacian.png
+|   |   |   |   |-- sgbm.png
+|   |   |   |   |-- ubx-logo.png
+|   |   |   |   `-- video.png
+|   |   |   |-- rapport.pdf
+|   |   |   |-- rapport.tex
+|   |   |   `-- results
+|   |   |       |-- l_calibration.xml
+|   |   |       |-- r_calibration.xml
+|   |   |       `-- stereo_calibration.xml
+|   |   |-- README.md
+|   |   |-- subWindows
+|   |   |   |-- bmparamdialog.cpp
+|   |   |   |-- bmparamdialog.h
+|   |   |   |-- bmparamdialog.ui
+|   |   |   |-- cameraparamdialog.cpp
+|   |   |   |-- cameraparamdialog.h
+|   |   |   |-- cameraparamdialog.ui
+|   |   |   |-- sgbmparamdialog.cpp
+|   |   |   |-- sgbmparamdialog.h
+|   |   |   `-- sgbmparamdialog.ui
+|   |   `-- tools
+|   |       |-- cameracalibration.cpp
+|   |       |-- cameracalibration.h
+|   |       |-- cvqtinterface.cpp
+|   |       |-- cvqtinterface.h
+|   |       |-- imagefilter.cpp
+|   |       |-- imagefilter.h
+|   |       |-- projectfiles.cpp
+|   |       |-- projectfiles.h
+|   |       |-- projectutilities.cpp
+|   |       |-- projectutilities.h
+|   |       |-- stereoanalyser.cpp
+|   |       |-- stereoanalyser.h
+|   |       |-- videoanalyser.cpp
+|   |       `-- videoanalyser.h
+|   |-- rendu.txt
+|   `-- results
+|       |-- l_calibration.xml
+|       |-- r_calibration.xml
+|       `-- stereo_calibration.xml
 |-- README.md
 |-- subWindows
 |   |-- bmparamdialog.cpp
@@ -40,4 +131,4 @@ l3-rvc
     |-- videoanalyser.cpp
     `-- videoanalyser.h
 
-5 directories, 41 files
+13 directories, 117 files

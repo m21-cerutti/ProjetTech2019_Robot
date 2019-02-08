@@ -175,7 +175,7 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
 
     //Calibration
     double rmserror = cv::aruco::calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, sources_images[0].size(),
-            camera_matrix, dist_coeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+            camera_matrix, dist_coeffs, rvecs, tvecs, CV_CALIB_FIX_INTRINSIC);
 
     ProjectUtilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
 

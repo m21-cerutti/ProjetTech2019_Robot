@@ -373,7 +373,7 @@ void MainWindow::on_actionBM_triggered()
 
 
         QImage disp_q;
-        cv::hconcat(vect_images_r.at(0), vect_images_l.at(0), disparity);
+        cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
         CVQTInterface::toQImage(disparity, disp_q);
         BMParamDialog dial(disp_q);
         if(dial.exec() != QDialog::Rejected)
