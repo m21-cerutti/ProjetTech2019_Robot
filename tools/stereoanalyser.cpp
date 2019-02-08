@@ -57,4 +57,5 @@ void StereoAnalyser::computeSGBMDisparityStereo(const cv::Mat &src_left, const c
 void StereoAnalyser::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &image_3d)
 {
     cv::reprojectImageTo3D(disparity, image_3d, Q, true, CV_32F);
+    cv::normalize(image_3d, image_3d, 0, 255, CV_MINMAX, CV_8UC1);
 }

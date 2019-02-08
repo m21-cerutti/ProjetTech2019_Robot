@@ -53,3 +53,18 @@ Ferai l'analyse vidéo avec des commandes qui permmetrai d'ouvrir des fenetre Qt
 4)setereoCalibrate
 5)stereoRectify
 6)reprojectImageTo3D
+
+
+Pour prochain cours
+
+rajout de BM parameters
+Améliorer le code inutile (parametre de save)
+Factoriser (fenetre parent + traitement et données ensemble)
+Améliorer Rapport (enlever xml)
+Voire pour undistord depth
+Extracteur video save set
+Interface video selection set
+Depth map = only z, not xy
+Normalise depth map
+
+
