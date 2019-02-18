@@ -24,6 +24,47 @@ bool ProjectFiles::getMatrixCalibrationFileStorage(const std::string file_path, 
     return true;
 }
 
+bool ProjectFiles::saveSetImages(const std::string prefix_folder, const std::vector<cv::Mat> images_left, const std::vector<cv::Mat> images_right)
+{
+    using namespace cv;
+
+    std::string folder_cmd = "mkdir -p "+prefix_folder;
+    if (std::system(folder_cmd.c_str()) == 0)
+    {
+
+        ProjectUtilities::messageDebug("Create folder done.", false);
+    }
+    else
+    {
+        ProjectUtilities::messageDebug("Error create folder.", true);
+    }
+
+    ProjectUtilities::messageDebug( "Starting save intrinsic camera.", false);
+
+    if(images_left.size() != images_right.size())
+    {
+        ProjectUtilities::messageDebug("Not the same number of images.", true);
+        return false;
+    }
+
+    for(int i =0; i < images_left.size(); i++ )
+    {
+        imwrite(prefix_folder+std::to_string(i)+"_left.png", images_left[i]);
+        imwrite(prefix_folder+std::to_string(i)+"_right.png", images_right[i]);
+    }
+
+    time_t rawtime; time(&rawtime);
+    std::string date =  asctime(localtime(&rawtime));
+    ProjectUtilities::messageDebug("Set done. Date : " + date, false);
+    return true;
+}
+
+bool ProjectFiles::loadSetImages(const std::string prefix, std::vector<cv::Mat> images_left, std::vector<cv::Mat> images_right)
+{
+    using namespace cv;
+    return true;
+}
+
 bool ProjectFiles::loadIntrinsicCamera(const std::string file_path,
                                        cv::Size &img_size,
                                        cv::Mat& camera_matrix,

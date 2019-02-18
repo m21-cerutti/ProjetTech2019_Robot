@@ -316,8 +316,9 @@ void MainWindow::on_actionExtractImages_triggered()
     // open image
     if(filepaths.size() == 2)
     {
-        std::vector<cv::Mat> vect_images;
-        VideoAnalyser::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images, vect_images, true);
+        std::vector<cv::Mat> vect_images_left, vect_images_right;
+        VideoAnalyser::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 25, vect_images_left, vect_images_right, true);
+        ProjectFiles::saveSetImages( "./setTest/stereo", vect_images_left, vect_images_right);
     }
 }
 
@@ -349,6 +350,7 @@ void MainWindow::on_actionDepthMap_triggered()
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoAnalyser::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
+                ProjectUtilities::showMatrice("disparity_"+std::to_string(i), disparity);
                 StereoAnalyser::computeDepthMap( disparity, Q, reproj);
                 ProjectUtilities::showMatrice(std::to_string(i), reproj);
             }
@@ -371,7 +373,6 @@ void MainWindow::on_actionBM_triggered()
         cv::Mat Q, reproj, disparity;
         cv::Ptr<cv::StereoBM> bmState;
 
-
         QImage disp_q;
         cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
         CVQTInterface::toQImage(disparity, disp_q);
@@ -383,7 +384,8 @@ void MainWindow::on_actionBM_triggered()
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoAnalyser::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
-                StereoAnalyser::computeDepthMap( disparity, Q, reproj);
+                ProjectUtilities::showMatrice("disparity_"+std::to_string(i), disparity);
+                StereoAnalyser::computeDepthMap(disparity, Q, reproj);
                 ProjectUtilities::showMatrice(std::to_string(i), reproj);
             }
         }

@@ -39,11 +39,7 @@ void BMParamDialog::refreshModifs()
 
 void BMParamDialog::applyDisparity()
 {
-    //bgm parameters
-    int numDisparities = ui->numDisparities_slider->value();
-    int blockSize = ui->blockSize_slider->value();
-
-    cv::Ptr<cv::StereoBM> bmState = cv::StereoBM::create(numDisparities, blockSize);
+    cv::Ptr<cv::StereoBM> bmState = getBMState();
 
     //Conversion and application of Disparity
     CVQTInterface::toMatCV(_img_src, _mat_dst);
@@ -89,7 +85,26 @@ cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const
     int num_disparities = ui->numDisparities_slider->value();
     int block_size = ui->blockSize_slider->value();
 
+
+
     cv::Ptr<cv::StereoBM> bm_state = cv::StereoBM::create(num_disparities, block_size);
+    /*
+    bm_state->setPreFilterCap();
+    bm_state->setPreFilterSize();
+    bm_state->setPreFilterType();
+    bm_state->setROI1();
+    bm_state->setROI2();
+    bm_state->setSmallerBlockSize();
+    bm_state->setTextureThreshold();
+    bm_state->setUniquenessRatio();
+    bm_state->setBlockSize();
+    bm_state->setDisp12MaxDiff();
+    bm_state->setMinDisparity();
+    bm_state->setNumDisparities();
+    bm_state->setSpeckleRange();
+    bm_state->setSpeckleWindowSize();
+    */
+
     return bm_state;
 }
 
