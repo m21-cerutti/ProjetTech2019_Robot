@@ -16,7 +16,7 @@
 #include "tools/cvqtinterface.h"
 #include "tools/imagefilter.h"
 #include "tools/cameracalibration.h"
-#include "tools/videoanalyser.h"
+#include "tools/videoextractor.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"
 #include "subWindows/cameraparamdialog.h"
@@ -97,6 +97,12 @@ private slots:
     void on_actionExtractImages_triggered();
 
     void on_actionBM_triggered();
+
+    void on_actionBM_2_triggered();
+
+    void on_actionSGBM_triggered();
+
+    void on_actionCalibrationStereo_triggered();
 
 private:
 

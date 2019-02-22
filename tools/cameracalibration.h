@@ -147,8 +147,8 @@ public:
     static void stereoCalibration(const std::string path_file,
                                   const std::vector<cv::Mat>& sources_images_left,
                                   const std::vector<cv::Mat> &sources_images_right,
-                                  const std::string path_camera_l,
-                                  const std::string path_camera_r);
+                                  const std::string path_camera_file_l,
+                                  const std::string path_camera_file_r);
 
 
 };

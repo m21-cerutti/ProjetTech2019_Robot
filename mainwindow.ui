@@ -334,11 +334,12 @@
    </widget>
    <widget class="QMenu" name="menuCameraCalibration">
     <property name="title">
-     <string>CameraCalibration</string>
+     <string>Came&amp;raCalibration</string>
     </property>
     <addaction name="actionCalibrate"/>
     <addaction name="actionApplyFromFile"/>
     <addaction name="actionCalibration"/>
+    <addaction name="actionCalibrationStereo"/>
    </widget>
    <widget class="QMenu" name="menuFilter">
     <property name="title">
@@ -352,34 +353,37 @@
    </widget>
    <widget class="QMenu" name="menuDisparity_map">
     <property name="title">
-     <string>Disparity map</string>
+     <string>Disparity &amp;map</string>
     </property>
     <addaction name="actionDisparityBM"/>
     <addaction name="actionDisparitySGBM"/>
    </widget>
    <widget class="QMenu" name="menuVideo">
     <property name="title">
-     <string>Video</string>
+     <string>&amp;Video</string>
     </property>
     <addaction name="actionOpen_video"/>
     <addaction name="actionChessboard_debug"/>
     <addaction name="actionExtractImages"/>
     <addaction name="actionStereoCalibration"/>
-   </widget>
-   <widget class="QMenu" name="menuStereo">
-    <property name="title">
-     <string>Stereo</string>
-    </property>
+    <addaction name="separator"/>
     <addaction name="actionDepthMap"/>
     <addaction name="actionBM"/>
+   </widget>
+   <widget class="QMenu" name="menuDepthMap">
+    <property name="title">
+     <string>DepthMap</string>
+    </property>
+    <addaction name="actionBM_2"/>
+    <addaction name="actionSGBM"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuFilter"/>
    <addaction name="menuDisparity_map"/>
    <addaction name="menuCameraCalibration"/>
+   <addaction name="menuDepthMap"/>
    <addaction name="menuVideo"/>
-   <addaction name="menuStereo"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -409,12 +413,12 @@
   </action>
   <action name="actionDisparityBM">
    <property name="text">
-    <string>DisparityBM</string>
+    <string>&amp;DisparityBM</string>
    </property>
   </action>
   <action name="actionDisparitySGBM">
    <property name="text">
-    <string>DisparitySGBM</string>
+    <string>D&amp;isparitySGBM</string>
    </property>
   </action>
   <action name="actionGaussian">
@@ -434,47 +438,62 @@
   </action>
   <action name="actionCalibrate">
    <property name="text">
-    <string>Quick calibrate</string>
+    <string>&amp;Quick calibrate</string>
    </property>
   </action>
   <action name="actionApplyFromFile">
    <property name="text">
-    <string>UndistordFromFile</string>
+    <string>&amp;UndistordFromFile</string>
    </property>
   </action>
   <action name="actionCalibration">
    <property name="text">
-    <string>Calibration menu</string>
+    <string>&amp;Calibration menu</string>
    </property>
   </action>
   <action name="actionOpen_video">
    <property name="text">
-    <string>Filter Gradient</string>
+    <string>&amp;Filter Gradient</string>
    </property>
   </action>
   <action name="actionChessboard_debug">
    <property name="text">
-    <string>Chessboard debug</string>
+    <string>&amp;Chessboard debug</string>
    </property>
   </action>
   <action name="actionStereoCalibration">
    <property name="text">
-    <string>StereoCalibration</string>
+    <string>&amp;StereoCalibrationVideo</string>
    </property>
   </action>
   <action name="actionDepthMap">
    <property name="text">
-    <string>DepthMap SGBM</string>
+    <string>&amp;DepthMap SGBM</string>
    </property>
   </action>
   <action name="actionExtractImages">
    <property name="text">
-    <string>ExtractImages</string>
+    <string>&amp;ExtractImages</string>
    </property>
   </action>
   <action name="actionBM">
    <property name="text">
-    <string>Depth map BM</string>
+    <string>Depth &amp;map BM</string>
+   </property>
+  </action>
+  <action name="actionBM_2">
+   <property name="text">
+    <string>BM</string>
+   </property>
+  </action>
+  <action name="actionSGBM">
+   <property name="text">
+    <string>SGBM</string>
+   </property>
+  </action>
+  <action name="actionCalibrationStereo">
+   <property name="text">
+    <string>CalibrationStereo</string>
    </property>
   </action>
  </widget>

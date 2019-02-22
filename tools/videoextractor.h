@@ -15,7 +15,7 @@
 /**
  * @brief The VideoAnalyser class gather all  funtions dealing with video.
  */
-class VideoAnalyser
+class VideoExtractor
 {
 public:
 

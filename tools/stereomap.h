@@ -13,7 +13,7 @@
 /**
  * @brief The StereoAnalyser class gather all stereo function analyser after calibration.
  */
-class StereoAnalyser
+class StereoMap
 {
 
 public:

@@ -66,5 +66,14 @@ Extracteur video save set
 Interface video selection set
 Depth map = only z, not xy
 Normalise depth map
+Transformer en objet
+
+Question 
+
+C'est mieux static ?
+
+
+
+Prévoir portage C++ sur Windows
 
 

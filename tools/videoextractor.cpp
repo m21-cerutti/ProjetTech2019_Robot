@@ -1,7 +1,7 @@
-#include "videoanalyser.h"
+#include "videoextractor.h"
 
 
-void VideoAnalyser::videoChessDebug(std::string path_video)
+void VideoExtractor::videoChessDebug(std::string path_video)
 {
     using namespace cv;
     VideoCapture cap(path_video);
@@ -54,7 +54,7 @@ void VideoAnalyser::videoChessDebug(std::string path_video)
     return;
 }
 
-void VideoAnalyser::stereoVideoExtraction(std::string path_video_left, std::string path_video_right,
+void VideoExtractor::stereoVideoExtraction(std::string path_video_left, std::string path_video_right,
                                           int start_frame,
                                           int nb_frames,
                                           std::vector<cv::Mat> &output_left,

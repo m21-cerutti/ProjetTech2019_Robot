@@ -27,8 +27,19 @@ void ProjectUtilities::showMatrice(std::string name, const cv::Mat &mat)
         messageDebug("Matrice empty.", true);
         return;
     }
+
+    cv::Mat tmp;
+    if(mat.depth() != CV_8U)
+    {
+        cv::normalize(mat, tmp, 0, 255, CV_MINMAX, CV_8UC1);
+    }
+    else
+    {
+        tmp = mat;
+    }
+
     namedWindow(name, cv::WINDOW_NORMAL);
-    cv::imshow(name, mat);
+    cv::imshow(name, tmp);
     #endif
 }
 

@@ -2,7 +2,7 @@
 #define SGBMPARAMDIALOG_H
 
 #include <QDialog>
-#include "tools/stereoanalyser.h"
+#include "tools/stereomap.h"
 #include "tools/cvqtinterface.h"
 
 

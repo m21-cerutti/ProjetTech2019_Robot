@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 QT_CONFIG -= no-pkg-config
 CONFIG += link_pkgconfig
@@ -42,10 +42,12 @@ SOURCES += \
     tools/cvqtinterface.cpp \
     subWindows/cameraparamdialog.cpp \
     tools/projectutilities.cpp \
-    tools/stereoanalyser.cpp \
     tools/projectfiles.cpp \
     tools/imagefilter.cpp \
-    tools/videoanalyser.cpp
+    tools/stereomap.cpp \
+    tools/videoextractor.cpp \
+    analyser/servermaster.cpp \
+    analyser/ia.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,10 +57,12 @@ HEADERS += \
     tools/cvqtinterface.h \
     subWindows/cameraparamdialog.h \
     tools/projectutilities.h \
-    tools/stereoanalyser.h \
     tools/projectfiles.h \
     tools/imagefilter.h \
-    tools/videoanalyser.h
+    tools/stereomap.h \
+    tools/videoextractor.h \
+    analyser/servermaster.h \
+    analyser/ia.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

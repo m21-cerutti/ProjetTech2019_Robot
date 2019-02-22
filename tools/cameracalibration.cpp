@@ -304,8 +304,8 @@ int CameraCalibration::stereoChessboard(const std::vector<cv::Mat> &sources_imag
 void CameraCalibration::stereoCalibration(const std::string path_file_stereo,
                                           const std::vector<cv::Mat> &sources_images_left,
                                           const std::vector<cv::Mat> &sources_images_right,
-                                          const std::string path_camera_l,
-                                          const std::string path_camera_r)
+                                          const std::string path_camera_file_l,
+                                          const std::string path_camera_file_r)
 {
     using namespace cv;
 
@@ -318,14 +318,14 @@ void CameraCalibration::stereoCalibration(const std::string path_file_stereo,
 
     stereoChessboard(sources_images_left,
                      sources_images_right,
-                     path_camera_l,
-                     path_camera_r,
+                     path_camera_file_l,
+                     path_camera_file_r,
                      object_points,
                      left_img_points,
                      right_img_points);
 
-    ProjectFiles::loadIntrinsicCamera(path_camera_l, img_size, camera_matrix_l, dist_coeffs_l);
-    ProjectFiles::loadIntrinsicCamera(path_camera_r, img_size, camera_matrix_r, dist_coeffs_r);
+    ProjectFiles::loadIntrinsicCamera(path_camera_file_l, img_size, camera_matrix_l, dist_coeffs_l);
+    ProjectFiles::loadIntrinsicCamera(path_camera_file_r, img_size, camera_matrix_r, dist_coeffs_r);
 
     ProjectUtilities::messageDebug("Starting Calibration.",false);
     ProjectUtilities::messageDebug("Read intrasic...",false);

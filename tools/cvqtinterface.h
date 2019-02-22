@@ -1,6 +1,8 @@
 #ifndef INTERFACECVQT_H
 #define INTERFACECVQT_H
 
+#include <QDir>
+#include <QFileInfoList>
 #include <QImage>
 #include <cv.h>
 #include <opencv2/opencv.hpp>
@@ -13,6 +15,9 @@
 class CVQTInterface
 {
 public:
+
+    static void getSetImagesStereo(const QString folder_path, std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images);
+
 
     /**
     * @brief convert cv::Mat img to QImage img
