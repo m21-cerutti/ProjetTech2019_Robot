@@ -27,7 +27,7 @@ void ServerMaster::StartServer()
 
 }
 
-void ServerMaster::incomingConnection(int socketDescriptor)
+void ServerMaster::incomingConnection(qintptr socketDescriptor)
 {
     qDebug() << socketDescriptor << " Connecting...";
     ClientConnection *thread = new ClientConnection(socketDescriptor, this);

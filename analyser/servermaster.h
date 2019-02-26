@@ -26,7 +26,7 @@ public :
     void StartServer();
 
 private slots :
-    void incomingConnection(int socketDescriptor);
+    void incomingConnection(qintptr socketDescriptor);
 
 private :
     IARobot& analyser;

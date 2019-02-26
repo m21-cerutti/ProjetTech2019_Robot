@@ -18,7 +18,7 @@ void ClientConnection::run()
     }
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),Qt::DirectConnection);
-    connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()),Qt::DirectConnection);
+    connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 
     qDebug() << socketDescriptor << " Client connected";
 
