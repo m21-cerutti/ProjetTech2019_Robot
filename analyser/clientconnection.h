@@ -11,7 +11,7 @@ class ClientConnection: public QThread
 {
     Q_OBJECT
 public:
-    explicit ClientConnection(int iID, QObject *parent = nullptr);
+    explicit ClientConnection(int ID, QObject *parent = nullptr);
     void run();
 
 signals:

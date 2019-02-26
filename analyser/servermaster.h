@@ -15,23 +15,17 @@
 
 #define PORT 5260
 
-
-
-
 class ServerMaster : public QTcpServer
 {
     Q_OBJECT
 
 public :
 
-    ServerMaster(IARobot analyser, QObject *parent = nullptr);
+    ServerMaster(IARobot& analyser, QObject *parent = nullptr);
 
     void StartServer();
 
 private slots :
-
-
-protected:
     void incomingConnection(int socketDescriptor);
 
 private :

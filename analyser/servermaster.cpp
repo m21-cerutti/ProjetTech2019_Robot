@@ -4,23 +4,27 @@ ServerMaster::ServerMaster(IARobot &_analyser, QObject *parent):
     QTcpServer(parent),
     analyser(_analyser)
 {
-    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
-    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
-        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost)
-             qDebug() << address.toString();
-    }
+
 }
 
 void ServerMaster::StartServer()
 {
-    if(!this->listen(QHostAddress::AnyIPv4, 5260))
-    {
-        qDebug() << "Could not start server";
+    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if ((address.protocol() == QAbstractSocket::IPv4Protocol)&& address != localhost){
+            if(!this->listen(address, PORT))
+            {
+                qDebug() << "Could not start server with " <<address.toString();
+            }
+            else
+            {
+                qDebug() << "Listening on "<< this->serverAddress().toString() <<":"<<PORT<< "...";
+                break;
+            }
+        }
     }
-    else
-    {
-        qDebug() << "Listening...";
-    }
+
+
 }
 
 void ServerMaster::incomingConnection(int socketDescriptor)

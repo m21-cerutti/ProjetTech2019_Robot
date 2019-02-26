@@ -8,12 +8,12 @@
 #include <time.h>
 
 //If unity simulation
-#define SIMULATION true
+#define SIMULATION
 
 //Not set on robot
-#define IS_COMPUTER true
+#define IS_COMPUTER
 
-#if IS_COMPUTER false
+#ifdef IS_COMPUTER
 #include <QDebug>
 #endif //IS_COMPUTER
 
