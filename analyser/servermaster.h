@@ -7,6 +7,7 @@
 #include <QtNetwork/QTcpSocket>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QAbstractSocket>
+#include <QtNetwork/QNetworkInterface>
 
 #include "tools/projectutilities.h"
 #include "analyser/iarobot.h"

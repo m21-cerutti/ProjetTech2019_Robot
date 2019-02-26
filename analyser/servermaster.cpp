@@ -1,15 +1,19 @@
 #include "servermaster.h"
 
-ServerMaster::ServerMaster(IARobot analyser, QObject *parent):
+ServerMaster::ServerMaster(IARobot &_analyser, QObject *parent):
     QTcpServer(parent),
-    analyser(analyser)
+    analyser(_analyser)
 {
-
+    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost)
+             qDebug() << address.toString();
+    }
 }
 
 void ServerMaster::StartServer()
 {
-    if(!this->listen(QHostAddress::Any, 5260))
+    if(!this->listen(QHostAddress::AnyIPv4, 5260))
     {
         qDebug() << "Could not start server";
     }
