@@ -72,7 +72,8 @@ SOURCES += \
     tools/stereomap.cpp \
     tools/videoextractor.cpp \
     analyser/servermaster.cpp \
-    analyser/ia.cpp
+    analyser/clientconnection.cpp \
+    analyser/iarobot.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -87,7 +88,8 @@ HEADERS += \
     tools/stereomap.h \
     tools/videoextractor.h \
     analyser/servermaster.h \
-    analyser/ia.h
+    analyser/clientconnection.h \
+    analyser/iarobot.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

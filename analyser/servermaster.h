@@ -9,7 +9,8 @@
 #include <QtNetwork/QAbstractSocket>
 
 #include "tools/projectutilities.h"
-#include "analyser/ia.h"
+#include "analyser/iarobot.h"
+#include "analyser/clientconnection.h"
 
 #define PORT 5260
 
@@ -22,28 +23,19 @@ class ServerMaster : public QTcpServer
 
 public :
 
-    enum Cmd
-    {
-        WAIT,
-        ACK,
-        MOVE
-    };
+    ServerMaster(IARobot analyser, QObject *parent = nullptr);
 
-    ServerMaster(IA& analyser);
-    ~ServerMaster();
-
-    void sendInstructions(int i);
+    void StartServer();
 
 private slots :
 
-    void first_connexion() ;
-    void read();
 
-
+protected:
+    void incomingConnection(int socketDescriptor);
 
 private :
-
-    QTcpSocket *clientConnection;
+    IARobot& analyser;
+    QTcpServer *server;
 };
 
 #endif // SERVER_H

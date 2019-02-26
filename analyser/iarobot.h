@@ -1,8 +1,7 @@
 #ifndef IA_H
 #define IA_H
 
-
-class IA
+class IARobot
 {
 public:
 
@@ -13,7 +12,7 @@ public:
         Move,
     };
 
-    IA();
+    IARobot();
 };
 
 #endif // IA_H

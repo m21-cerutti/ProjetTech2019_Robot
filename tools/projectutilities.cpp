@@ -2,7 +2,7 @@
 
 void ProjectUtilities::messageDebug(std::string message, bool error)
 {
-#ifdef isComputer
+#ifdef IS_COMPUTER
     if(error)
     {
         qWarning()<<"Error : " << message.c_str() << "\n";
@@ -21,7 +21,7 @@ void ProjectUtilities::messageDebug(std::string message, bool error)
 
 void ProjectUtilities::showMatrice(std::string name, const cv::Mat &mat)
 {
-    #ifdef isComputer
+    #ifdef IS_COMPUTER
     if(mat.empty())
     {
         messageDebug("Matrice empty.", true);

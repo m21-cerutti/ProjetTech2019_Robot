@@ -7,12 +7,15 @@
 
 #include <time.h>
 
-//Not set on robot
-#define isComputer
+//If unity simulation
+#define SIMULATION true
 
-#ifdef isComputer
+//Not set on robot
+#define IS_COMPUTER true
+
+#if IS_COMPUTER false
 #include <QDebug>
-#endif //isComputer
+#endif //IS_COMPUTER
 
 class ProjectUtilities
 {
