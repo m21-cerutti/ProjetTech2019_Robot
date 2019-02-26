@@ -6,9 +6,34 @@
 
 QT       += core gui network
 
-QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig
-PKGCONFIG += opencv
+win32{
+
+    INCLUDEPATH += D:\Library\opencv\build\include \
+                D:\Library\opencv\build\include\opencv \
+
+    DEPENDPATH += D:\Library\opencv\build\include \
+                D:\Library\opencv\build\include\opencv \
+
+    CONFIG(release, debug|release)
+    {
+        LIBS += -LD:\Library\opencv\build\x64\vc14\lib\ -lopencv_world320 \
+            #-lopencv_core320 -lopencv_highgui320 -lopencv_imgproc320 \
+    }
+
+    CONFIG(debug, debug|release)
+    {
+        LIBS += -LD:\Library\opencv\build\x64\vc14\lib\ -lopencv_world320d \
+            #-lopencv_core320d -lopencv_highgui320d -lopencv_imgproc320d \
+    }
+}
+
+unix:!mac{
+    QT_CONFIG -= no-pkg-config
+    CONFIG += link_pkgconfig
+    PKGCONFIG += opencv
+}
+
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,7 +42,7 @@ TEMPLATE = app
 
 # Import OpenCV
 #INCLUDEPATH += /usr/include/opencv
-#LIBS += -L//usr/lib/x86_64-linux-gnu -lopencv_core -lopencv_highgui
+#LIBS += -L\usr/lib/x86_64-linux-gnu -lopencv_core -lopencv_highgui
 
 
 # The following define makes your compiler emit warnings if you use
@@ -75,4 +100,5 @@ FORMS += \
     subWindows/bmparamdialog.ui \
     subWindows/cameraparamdialog.ui
 
-DISTFILES +=
+
+
