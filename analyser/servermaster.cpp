@@ -10,20 +10,15 @@ ServerMaster::ServerMaster(IARobot &_analyser, QObject *parent):
 void ServerMaster::StartServer()
 {
     const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
-    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
-        if ((address.protocol() == QAbstractSocket::IPv4Protocol)&& address != localhost){
-            if(!this->listen(address, PORT))
-            {
-                qDebug() << "Could not start server with " <<address.toString();
-            }
-            else
-            {
-                qDebug() << "Listening on "<< this->serverAddress().toString() <<":"<<PORT<< "...";
-                break;
-            }
-        }
-    }
 
+    if(!this->listen(localhost, PORT))
+    {
+        qDebug() << "Could not start server with " <<localhost.toString();
+    }
+    else
+    {
+        qDebug() << "Listening on "<< this->serverAddress().toString() <<":"<<PORT<< "...";
+    }
 
 }
 
