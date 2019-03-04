@@ -26,13 +26,51 @@ void ClientConnection::run()
     exec();
 }
 
+void ClientConnection::parseCommand(QByteArray data)
+{
+    if (data.isEmpty())
+    {
+        qWarning() << "No data.";
+    }
+
+    QList<QByteArray> cmd = data.split(';');
+
+    if (cmd[0].toStdString() == "echo")
+    {
+        qDebug() << socketDescriptor << "command: " << cmd[0];
+
+        //echo
+        cmd.removeFirst();
+        socket->write(cmd.join());
+    }
+    else if (cmd[0].toStdString() == "start")
+    {
+        qDebug() << socketDescriptor << "command: " << cmd[0];
+
+        QImage returnImage;
+        if(returnImage.loadFromData(cmd[1])) {
+            qDebug() << socketDescriptor << " image 1 ok. ";
+        }
+
+        socket->write("ok");
+    }
+    else
+    {
+        qDebug() << socketDescriptor << " Incorrect command: " << cmd[0];
+    }
+
+}
+
 void ClientConnection::readyRead()
 {
-    QByteArray Data = socket->readAll();
+    QByteArray data = socket->readAll();
 
-    qDebug() << socketDescriptor << " Data in: " << Data;
+    parseCommand(data);
 
-    socket->write(Data);
+    qDebug() << socketDescriptor << " Data in: " << data;
+
+    //echo primitive
+    //socket->write(data);
 }
 
 void ClientConnection::disconnected()

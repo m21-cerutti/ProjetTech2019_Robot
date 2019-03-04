@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network
+CONFIG += console
 
 win32{
 
