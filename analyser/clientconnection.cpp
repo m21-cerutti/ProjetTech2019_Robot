@@ -42,6 +42,9 @@ void ClientConnection::parseCommand(QByteArray data)
         //echo
         cmd.removeFirst();
         socket->write(cmd.join());
+
+        qDebug() << socketDescriptor << "resend: " << cmd;
+
     }
     else if (cmd[0].toStdString() == "start")
     {
@@ -64,10 +67,8 @@ void ClientConnection::parseCommand(QByteArray data)
 void ClientConnection::readyRead()
 {
     QByteArray data = socket->readAll();
-
+    //qDebug() << socketDescriptor << " Data in: " << data;
     parseCommand(data);
-
-    qDebug() << socketDescriptor << " Data in: " << data;
 
     //echo primitive
     //socket->write(data);
