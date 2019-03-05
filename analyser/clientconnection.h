@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QThread>
 #include <QTcpSocket>
+#include <QList>
+#include <QStringList>
+#include <QImage>
 
 #include "tools/projectutilities.h"
 
@@ -14,14 +17,15 @@ public:
     explicit ClientConnection(int ID, QObject *parent = nullptr);
     void run();
 
+private:
+    void parseCommand(QByteArray data);
+
 signals:
     void error(QTcpSocket::SocketError socketerror);
 
 public slots:
     void readyRead();
     void disconnected();
-
-public slots:
 
 private:
     QTcpSocket *socket;
