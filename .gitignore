@@ -10,3 +10,5 @@
 *.stash
 
 3DRV\.pro\.user\.f7d9bfb
+
+simulation/Build/
