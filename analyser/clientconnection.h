@@ -9,6 +9,7 @@
 #include <QImage>
 
 #include "tools/projectutilities.h"
+#include "analyser/iarobot.h"
 
 class ClientConnection: public QThread
 {
@@ -18,7 +19,7 @@ public:
     void run();
 
 private:
-    void parseCommand(QByteArray data);
+    void parseCommand();
 
 signals:
     void error(QTcpSocket::SocketError socketerror);
@@ -28,8 +29,12 @@ public slots:
     void disconnected();
 
 private:
+
     QTcpSocket *socket;
     int socketDescriptor;
+    quint32 size_package;
+    QByteArray buffer;
+    IARobot analyser;
 
 };
 

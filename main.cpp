@@ -10,8 +10,7 @@ int main(int argc, char *argv[])
 
 #ifdef SIMULATION
 
-    IARobot analyser = IARobot();
-    ServerMaster server(analyser);
+    ServerMaster server;
     server.StartServer();
 
 #else
