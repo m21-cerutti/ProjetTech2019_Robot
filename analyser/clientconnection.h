@@ -18,9 +18,6 @@ public:
     explicit ClientConnection(int ID, QObject *parent = nullptr);
     void run();
 
-private:
-    void parseCommand();
-
 signals:
     void error(QTcpSocket::SocketError socketerror);
 
@@ -28,12 +25,18 @@ public slots:
     void readyRead();
     void disconnected();
 
+private slots:
+    //Delete s
+    void analyse(char *s, int len);
+    void send(QString message);
+
 private:
 
     QTcpSocket *socket;
     int socketDescriptor;
-    quint32 size_package;
-    QByteArray buffer;
+
+    quint64 size_package;
+
     IARobot analyser;
 
 };
