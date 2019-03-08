@@ -113,14 +113,6 @@ void ClientConnection::parseCommand()
 
 void ClientConnection::readyRead()
 {
-<<<<<<< HEAD
-    QByteArray data = socket->readAll();
-    //qDebug() << socketDescriptor << " Data in: " << data;
-    parseCommand(data);
-
-    //echo primitive
-    //socket->write(data);
-=======
     //https://openclassrooms.com/forum/sujet/qt-sockets-connexion-client-33733
     QDataStream in(socket);
 
@@ -140,7 +132,6 @@ void ClientConnection::readyRead()
     in >> buffer;
 
     parseCommand();
->>>>>>> 133e16ae99a1d8a3f589c032afbc530398639a6a
 }
 
 void ClientConnection::disconnected()
