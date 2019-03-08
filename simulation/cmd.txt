@@ -1,0 +1,39 @@
+Format package
+int32; int16; data;\n
+";" is for reading
+
+Server
+
+//echo
+<size><0><message>\n
+
+//r_echo
+<size><1><message>\n
+
+//refresh
+<size><2><time_refresh>\n
+
+//req_img
+<size><3>\n
+
+//img
+<size><4><data>\n
+
+Client
+
+(echo+r_echo+refresh)
+
+//stereo
+<size><5><size_left><size_right><data_left><data_right>\n
+
+https://docs.microsoft.com/fr-fr/dotnet/api/system.bitconverter.getbytes?view=netframework-4.7.2#System_BitConverter_GetBytes_System_Int32_
+
+//https://openclassrooms.com/forum/sujet/qt-sockets-connexion-client-33733
+
+
+NetworkStream stream = new NetworkStream(socket)
+BinaryWriter writer = new BinaryWriter(stream)
+{
+    int myValue = 42;
+    writer.Write(IPAddress.HostToNetworkOrder(myValue));
+}

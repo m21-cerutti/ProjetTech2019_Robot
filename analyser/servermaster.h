@@ -10,7 +10,6 @@
 #include <QtNetwork/QNetworkInterface>
 
 #include "tools/projectutilities.h"
-#include "analyser/iarobot.h"
 #include "analyser/clientconnection.h"
 
 #define PORT 5260
@@ -21,7 +20,7 @@ class ServerMaster : public QTcpServer
 
 public :
 
-    ServerMaster(IARobot& analyser, QObject *parent = nullptr);
+    ServerMaster(QObject *parent = nullptr);
 
     void StartServer();
 
@@ -29,7 +28,6 @@ private slots :
     void incomingConnection(qintptr socketDescriptor);
 
 private :
-    IARobot& analyser;
     QTcpServer *server;
 };
 

@@ -1,8 +1,7 @@
 #include "servermaster.h"
 
-ServerMaster::ServerMaster(IARobot &_analyser, QObject *parent):
-    QTcpServer(parent),
-    analyser(_analyser)
+ServerMaster::ServerMaster(QObject *parent):
+    QTcpServer(parent)
 {
 
 }
@@ -18,6 +17,10 @@ void ServerMaster::StartServer()
             qDebug() << i <<": "<< address.toString();
         }
         i++;
+    }
+    else
+    {
+        qDebug() << "Listening on "<< this->serverAddress().toString() <<":"<<PORT<< "...";
     }
 
     int adresschoice;
@@ -41,7 +44,7 @@ void ServerMaster::StartServer()
 void ServerMaster::incomingConnection(qintptr socketDescriptor)
 {
     qDebug() << socketDescriptor << " Connecting...";
-    ClientConnection *thread = new ClientConnection(socketDescriptor, this);
+    ClientConnection *thread = new ClientConnection(socketDescriptor,this);
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
 }

@@ -1,6 +1,8 @@
 #ifndef IA_H
 #define IA_H
 
+#define REFRESH 30
+
 class IARobot
 {
 public:

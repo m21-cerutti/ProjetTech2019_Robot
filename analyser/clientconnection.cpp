@@ -17,7 +17,7 @@ void ClientConnection::run()
         return;
     }
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),Qt::DirectConnection);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 
     qDebug() << socketDescriptor << " Client connected";
@@ -26,52 +26,121 @@ void ClientConnection::run()
     exec();
 }
 
-void ClientConnection::parseCommand(QByteArray data)
+void ClientConnection::parseCommand()
 {
-    if (data.isEmpty())
+    if (buffer.isEmpty())
     {
         qWarning() << "No data.";
+        return;
     }
 
-    QList<QByteArray> cmd = data.split(';');
+    QDataStream buf(buffer);
 
-    if (cmd[0].toStdString() == "echo")
+    qDebug() << socketDescriptor << " Data in: " << buffer;
+
+    QByteArray copy = buffer.mid(0);
+    QList<QByteArray> list_commands = copy.split('\n');
+    for(QByteArray command: list_commands)
     {
-        qDebug() << socketDescriptor << "command: " << cmd[0];
+        bool is_complete = false;
 
-        //echo
-        cmd.removeFirst();
-        socket->write(cmd.join());
+        QList<QByteArray> cmd = command.split(';');
 
-        qDebug() << socketDescriptor << "resend: " << cmd;
-
-    }
-    else if (cmd[0].toStdString() == "start")
-    {
-        qDebug() << socketDescriptor << "command: " << cmd[0];
-
-        QImage returnImage;
-        if(returnImage.loadFromData(cmd[1])) {
-            qDebug() << socketDescriptor << " image 1 ok. ";
+        if(cmd[0]=="")
+        {
+            qDebug() << socketDescriptor << "Empty";
+            break;
+        }
+        else if (cmd[0].toStdString() == "echo")
+        {
+            if(cmd.length() == 2)
+            {
+                QString newcmd = "r_echo;" + QString(cmd[1]) +"\n";
+                socket->write(newcmd.toStdString().c_str());
+                is_complete = true;
+            }
+        }
+        else if (cmd[0].toStdString() == "r_echo")
+        {
+            if(cmd.length() == 2)
+            {
+                qDebug() << socketDescriptor << "Echo complete: " << cmd[1];
+                is_complete = true;
+            }
+        }
+        else if (cmd[0].toStdString() == "refresh")
+        {
+            if(cmd.length() == 2)
+            {
+                if (REFRESH != cmd[1].toInt())
+                {
+                    qDebug() << socketDescriptor << "refresh int size: " << cmd[1].length();
+                    QString newcmd = "refresh;" + QString::number(REFRESH) +"\n";
+                    socket->write(newcmd.toStdString().c_str());
+                }
+                is_complete = true;
+            }
+        }
+        else if (cmd[0].toStdString() == "stereo")
+        {
+            qDebug() << socketDescriptor << " large command: " << cmd[0];
+            if(cmd.length() == 7)
+            {
+                qDebug() << socketDescriptor << " large command complete: " << cmd[0];
+                is_complete = true;
+            }
+        }
+        else
+        {
+            qDebug() << socketDescriptor << " Incorrect command: " << cmd[0];
         }
 
-        socket->write("ok");
-    }
-    else
-    {
-        qDebug() << socketDescriptor << " Incorrect command: " << cmd[0];
-    }
+        if(is_complete)
+        {
+            buffer.remove(0, command.length()+1);
+        }
 
+        /*Netcat*/
+        /*
+        else
+        {
+            buffer.chop(1);
+        }
+        */
+
+    }
 }
 
 void ClientConnection::readyRead()
 {
+<<<<<<< HEAD
     QByteArray data = socket->readAll();
     //qDebug() << socketDescriptor << " Data in: " << data;
     parseCommand(data);
 
     //echo primitive
     //socket->write(data);
+=======
+    //https://openclassrooms.com/forum/sujet/qt-sockets-connexion-client-33733
+    QDataStream in(socket);
+
+    if (size_package == 0)
+    {
+        if (socket->bytesAvailable() < (int)sizeof(quint32))
+            return;
+
+        in >> size_package;
+    }
+
+    if (socket->bytesAvailable() < size_package)
+        return;
+
+    // Si on arrive jusqu'à cette ligne, on peut récupérer le message entier
+    QString messageRecu;
+    in >> buffer;
+
+    parseCommand();
+>>>>>>> 133e16ae99a1d8a3f589c032afbc530398639a6a
 }
 
 void ClientConnection::disconnected()
