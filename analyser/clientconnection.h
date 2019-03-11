@@ -27,7 +27,7 @@ public slots:
 
 private slots:
     //Delete s
-    void analyse(char *s, int len);
+    void analyse(char *cmd, int len);
     void send(QByteArray& package);
 
 private:
