@@ -1,29 +1,24 @@
 #include "clientconnection.h"
 
-ClientConnection::ClientConnection(int ID, QObject *parent) :
-    QThread(parent)
+ClientConnection::ClientConnection(QTcpSocket* _socket, QObject *parent) :
+    QObject(parent),
+    socket(_socket)
 {
-    this->socketDescriptor = ID;
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
+    connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 }
 
 void ClientConnection::run()
 {
-    // thread starts here
-    qDebug() << socketDescriptor << " Starting thread";
-    socket = new QTcpSocket();
-    if(!socket->setSocketDescriptor(this->socketDescriptor))
-    {
-        emit error(socket->error());
-        return;
-    }
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()), Qt::DirectConnection);
-    connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-
-    qDebug() << socketDescriptor << " Client connected";
+    qDebug() << " Client connected";
 
     // make this thread a loop
-    exec();
+    //exec();
+    while(socket->state() == QTcpSocket::ConnectedState)
+    {
+        socket->waitForReadyRead(30);
+    }
 }
 
 void ClientConnection::analyse(char *cmd, int len)
@@ -52,30 +47,72 @@ void ClientConnection::analyse(char *cmd, int len)
     }
     else if (cmd[0] == 't')
     {
-        qDebug() << "Size client is "<< QString(cmd+1).toInt();
+        int time_refresh = QString(cmd+1).toInt();
+        qDebug() << "Time refresh client is "<< time_refresh;
         if(REFRESH != QString(cmd+1).toInt())
         {
-            QString format = "t";
-            QByteArray new_cmd;
-            new_cmd.append(format);
+
             QByteArray integer;
             QDataStream stream(&integer, QIODevice::WriteOnly);
             stream << REFRESH;
+            QString format = "t";
+            QByteArray new_cmd;
+            new_cmd.append(format);
             new_cmd.append(integer);
             send(new_cmd);
+
         }
     }
     else if (cmd[0] == 's')
-    {/*
-        std::vector<char> image_data(cmd,)
-        QString(cmd+1).toInt()
-                int size_left;
-        cv::imdecode(cv::Mat(1, size_left, CV_8UC3, cmd+sizeof (int32_t)), CV_LOAD_IMAGE_UNCHANGED);
-    */
+    {
+        QString num_left = QString(cmd+1);
+        int size_left = num_left.toInt();
+        QString num_right = QString(cmd+num_left.length()+size_left+2);
+        int size_right = num_right.toInt();
+
+        int offset_left = num_left.length()+2;
+        int offset_right = num_left.length()+size_left+num_right.length()+3;
+
+        //qDebug() << "Size left is "<< size_left;
+        //qDebug() << "Size right is "<< size_right;
+        //qDebug() << "Offset left "<< offset_left;
+        //qDebug() << "Data :\n"<< cmd+offset_left;
+        //qDebug() << "Offset right "<< offset_right;
+        //qDebug() << "Data :\n"<<  cmd+offset_right;
+
+        /*
+        QImage img;
+        if(img.loadFromData((uchar*)(cmd+offset_left),size_left))
+        {
+            cv::Mat img_left;
+            CVQTInterface::toMatCV(img,img_left);
+            ProjectUtilities::showMatrice("left", img_left);
+        }
+        else
+        {
+            qWarning("No image");
+        }
+        */
+
+
+        cv::Mat tmp_l(1, size_left, CV_8UC3, cmd+offset_left);
+        cv::Mat img_left = cv::imdecode(tmp_l, CV_LOAD_IMAGE_UNCHANGED);
+
+
+        cv::Mat tmp_r(1, size_right, CV_8UC3, cmd+offset_right);
+        cv::Mat img_right = cv::imdecode(tmp_r, CV_LOAD_IMAGE_UNCHANGED);
+
+        analyser.update(img_left, img_right);
+        analyser.onDisplay();
+
+        QString format = "i";
+        QByteArray new_cmd;
+        new_cmd.append(format);
+        send(new_cmd);
     }
     else
     {
-        qDebug() << socketDescriptor << " Incorrect command: " << cmd[0];
+        qDebug() << " Incorrect command: " << cmd[0];
     }
 
     delete cmd;
@@ -85,16 +122,7 @@ void ClientConnection::send(QByteArray& package)
 {
     QDataStream out(socket);
     out.setByteOrder(QDataStream::BigEndian);
-    //Fait automatiquement
-    //out <<(int32_t) package.size();
     out << package;
-    /*
-    for(auto byte : package)
-    {
-        qDebug() << "in: <" << byte;
-    }
-     qDebug() << "Send : prefix <" << sizeof(int32_t) << "> "<<package.size();
-     */
 }
 
 void ClientConnection::readyRead()
@@ -111,20 +139,21 @@ void ClientConnection::readyRead()
 
             in >> size_package;
             qDebug() << "New size package : " <<size_package;
+            qDebug() << "Begin transfer...";
         }
 
         if (socket->bytesAvailable() < size_package)
         {
-            qDebug() << socket->bytesAvailable() <<"/" <<size_package<<" bytes.";
-            qDebug() << socket->bytesAvailable()/(double)size_package *100<<"%.";
+            //qDebug() << socket->bytesAvailable() <<"/" <<size_package<<" bytes.";
+            //qDebug() << socket->bytesAvailable()/(double)size_package *100<<"%.";
             return;
         }
-
-        char* command= new char[size_package+1];
+        qDebug() << "End transfer.";
+        char* command= new char[size_package];
         if(in.readRawData(command, size_package) > 0)
         {
             command[size_package]='\0';
-            emit analyse(command, size_package);
+            analyse(command, size_package);
         }
         else
         {
@@ -136,9 +165,8 @@ void ClientConnection::readyRead()
 
 void ClientConnection::disconnected()
 {
-    qDebug() << socketDescriptor << " Disconnected";
-    //socket->disconnectFromHost();
+    qDebug() << " Disconnected";
+    socket->disconnectFromHost();
     socket->close();
     socket->deleteLater();
-    quit();
 }

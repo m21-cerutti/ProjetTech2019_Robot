@@ -26,7 +26,7 @@ public :
     void StartServer();
 
 private slots :
-    void incomingConnection(qintptr socketDescriptor);
+    void newConnection();
 
 private :
     QTcpServer *server;

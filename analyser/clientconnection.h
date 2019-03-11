@@ -8,17 +8,20 @@
 #include <QStringList>
 #include <QImage>
 
+#include "tools/cvqtinterface.h"
 #include "tools/projectutilities.h"
 #include "analyser/iarobot.h"
 
-class ClientConnection: public QThread
+class ClientConnection: public QObject
 {
     Q_OBJECT
 public:
-    explicit ClientConnection(int ID, QObject *parent = nullptr);
+
+    explicit ClientConnection(QTcpSocket *socket, QObject *parent = nullptr);
     void run();
 
 signals:
+
     void error(QTcpSocket::SocketError socketerror);
 
 public slots:
@@ -33,10 +36,7 @@ private slots:
 private:
 
     QTcpSocket *socket;
-    int socketDescriptor;
-
     int32_t size_package = 0;
-
     IARobot analyser;
 
 };

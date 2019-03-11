@@ -33,15 +33,15 @@ void ServerMaster::StartServer()
     else
     {
         qDebug() << "Listening on "<< this->serverAddress().toString() <<":"<<PORT<< "...";
+        connect(this, SIGNAL(newConnection()), this, SLOT(newConnection()));
     }
-
-
 }
 
-void ServerMaster::incomingConnection(qintptr socketDescriptor)
+void ServerMaster::newConnection()
 {
-    qDebug() << socketDescriptor << " Connecting...";
-    ClientConnection *thread = new ClientConnection(socketDescriptor, this);
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    thread->start();
+    qDebug() << " Connecting...";
+    QTcpSocket* socket = nextPendingConnection();
+    ClientConnection *client = new ClientConnection(socket, this);
+    //connect(client, SIGNAL(finished()), client, SLOT(deleteLater()));
+    client->run();
 }
