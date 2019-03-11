@@ -26,7 +26,7 @@ void ClientConnection::run()
     exec();
 }
 
-void ClientConnection::analyse(char *s, int len)
+void ClientConnection::analyse(char *cmd, int len)
 {
     if (len == 0)
     {
@@ -34,72 +34,45 @@ void ClientConnection::analyse(char *s, int len)
         return;
     }
 
-    qDebug() <<"Command <"<< len <<">: " << s;
+    qDebug() <<"Command <"<< len <<">: " << cmd;
+    qDebug() <<"Type: " << cmd[0];
 
-    /*
-    if(cmd[0]=="")
+    if (cmd[0] == 'e')
     {
-        qDebug() << socketDescriptor << "Empty";
-        break;
+        QByteArray new_cmd;
+        new_cmd.append('r');
+        new_cmd.append(cmd, len);
+        //emit send(new_cmd);
+        qDebug()<<"Recho send " << QString(cmd+1);
+        socket->write(cmd);
+
     }
-    else if (cmd[0].toStdString() == "echo")
+    else if (cmd[0] == 'r')
     {
-        if(cmd.length() == 2)
-        {
-            QString newcmd = "r_echo;" + QString(cmd[1]) +"\n";
-            socket->writeData(newcmd.toStdString().c_str());
-            is_complete = true;
-        }
+
     }
-    else if (cmd[0].toStdString() == "r_echo")
+    else if (cmd[0] == 't')
     {
-        if(cmd.length() == 2)
-        {
-            qDebug() << socketDescriptor << "Echo complete: " << cmd[1];
-            is_complete = true;
-        }
+
     }
-    else if (cmd[0].toStdString() == "refresh")
+    else if (cmd[0] == 's')
     {
-        if(cmd.length() == 2)
-        {
-            if (REFRESH != cmd[1].toInt())
-            {
-                qDebug() << socketDescriptor << "refresh int size: " << cmd[1].length();
-                QString newcmd = "refresh;" + QString::number(REFRESH) +"\n";
-                socket->write(newcmd.toStdString().c_str());
-            }
-            is_complete = true;
-        }
-    }
-    else if (cmd[0].toStdString() == "stereo")
-    {
-        qDebug() << socketDescriptor << " large command: " << cmd[0];
-        if(cmd.length() == 7)
-        {
-            qDebug() << socketDescriptor << " large command complete: " << cmd[0];
-            is_complete = true;
-        }
+
     }
     else
     {
         qDebug() << socketDescriptor << " Incorrect command: " << cmd[0];
     }
-    */
 
-
-    delete s;
+    delete cmd;
 }
 
-void ClientConnection::send(QString message)
+void ClientConnection::send(QByteArray& package)
 {
-    QByteArray package;
-    QDataStream out(package);
-    out << (quint32) 0;
-    out << message;
-    out.device()->seek(0);
-    out << (quint32) (package.size() - sizeof(quint32));
-    socket->write(package);
+    QDataStream out(socket);
+    out.setByteOrder(QDataStream::BigEndian);
+    out <<(qint32) package.size();
+    out << package;
 }
 
 void ClientConnection::readyRead()
@@ -110,17 +83,17 @@ void ClientConnection::readyRead()
 
     if (size_package == 0)
     {
-        if (socket->bytesAvailable() < (int)sizeof(quint32))
+        if ((int)socket->bytesAvailable() < (int)sizeof(int32_t))
             return;
 
         in >> size_package;
-        qDebug() << "Need " <<size_package<<".";
+        qDebug() << "New size package : " <<size_package;
     }
 
     if (socket->bytesAvailable() < size_package)
     {
-        qDebug() << socket->bytesAvailable() <<"/" <<size_package<<".";
-        qDebug() << socket->bytesAvailable()/(double)size_package<<"of data has come.";
+        qDebug() << socket->bytesAvailable() <<"/" <<size_package<<" bytes.";
+        qDebug() << socket->bytesAvailable()/(double)size_package *100<<"%.";
         return;
     }
 
@@ -133,13 +106,14 @@ void ClientConnection::readyRead()
     {
         qWarning("Problem read data");
     }
-    qDebug() << "read data";
     size_package = 0;
 }
 
 void ClientConnection::disconnected()
 {
     qDebug() << socketDescriptor << " Disconnected";
+    //socket->disconnectFromHost();
+    socket->close();
     socket->deleteLater();
-    exit(0);
+    quit();
 }

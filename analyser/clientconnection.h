@@ -28,14 +28,14 @@ public slots:
 private slots:
     //Delete s
     void analyse(char *s, int len);
-    void send(QString message);
+    void send(QByteArray& package);
 
 private:
 
     QTcpSocket *socket;
     int socketDescriptor;
 
-    quint64 size_package;
+    int32_t size_package = 0;
 
     IARobot analyser;
 

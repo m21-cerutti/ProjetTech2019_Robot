@@ -1,3 +1,8 @@
+//FOR SERVER FIREWALL
+sudo iptables -A INPUT -p tcp -m tcp --dport 9999 -j ACCEPT
+//close
+iptables -D INPUT -p tcp -m tcp --dport 9999 -j ACCEPT
+
 Format package
 int32; int16; data;\n
 ";" is for reading
@@ -26,14 +31,10 @@ Client
 //stereo
 <size><5><size_left><size_right><data_left><data_right>\n
 
+
+
+#################
 https://docs.microsoft.com/fr-fr/dotnet/api/system.bitconverter.getbytes?view=netframework-4.7.2#System_BitConverter_GetBytes_System_Int32_
 
 //https://openclassrooms.com/forum/sujet/qt-sockets-connexion-client-33733
 
-
-NetworkStream stream = new NetworkStream(socket)
-BinaryWriter writer = new BinaryWriter(stream)
-{
-    int myValue = 42;
-    writer.Write(IPAddress.HostToNetworkOrder(myValue));
-}

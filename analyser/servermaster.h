@@ -12,7 +12,8 @@
 #include "tools/projectutilities.h"
 #include "analyser/clientconnection.h"
 
-#define PORT 5260
+#define DEBUG_NETWORK
+#define PORT 9999
 
 class ServerMaster : public QTcpServer
 {
