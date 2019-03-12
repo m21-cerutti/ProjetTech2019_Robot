@@ -27,12 +27,35 @@ void IARobot::onDisplay()
     if(dial.exec() != QDialog::Rejected)
     {
         bmState = dial.getBMState();
-        //ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
-        /*
+        bmState = dial.getBMState();
+        ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+
+        //qDebug()<<"Q\n"<< (Q.type()==CV_32F) << ProjectUtilities::matToString<double>(Q).c_str();
+
+
         StereoMap::computeBMDisparityStereo(img_left, img_right, disparity, bmState);
-        ProjectUtilities::showMatrice("disparity", disparity);
+
         StereoMap::computeDepthMap(disparity, Q, reproj);
-        ProjectUtilities::showMatrice("depth", reproj);
-        */
+
+        qDebug() <<">>>>>>>>>>>>>\n";
+        qDebug() << QString(ProjectUtilities::matToString<double>(reproj).c_str());
+        qDebug() << "End "<<">>>>>>>>>>>>>\n";
+
+        double min;
+        double max;
+
+        cv::minMaxIdx(reproj, &min, &max);
+        cv::Mat adjMap;
+        // expand your range to 0..255. Similar to histEq();
+        float scale = 255 / (max-min);
+        reproj.convertTo(adjMap, CV_8UC1, scale, -min*scale);
+
+        // this is great. It converts your grayscale image into a tone-mapped one,
+        // much more pleasing for the eye
+        // function is found in contrib module, so include contrib.hpp
+        // and link accordingly
+        cv::Mat falseColorsMap;
+        applyColorMap(adjMap, falseColorsMap, cv::COLORMAP_AUTUMN);
+        ProjectUtilities::showMatrice("3D", falseColorsMap);
     }
 }
