@@ -90,19 +90,20 @@ private slots:
 
     void on_actionChessboard_debug_triggered();
 
-    void on_actionStereoCalibration_triggered();
+    void on_actionCalibrationStereo_triggered();
 
-    void on_actionDepthMap_triggered();
+    void on_actionCalibrationStereoVideo_triggered();
 
     void on_actionExtractImages_triggered();
 
-    void on_actionBM_triggered();
+    void on_actionDepthBM_triggered();
 
-    void on_actionBM_2_triggered();
+    void on_actionDepthSGBM_triggered();
 
-    void on_actionSGBM_triggered();
+    void on_actionDepthBMVideo_triggered();
 
-    void on_actionCalibrationStereo_triggered();
+    void on_actionDepthSGBMVideo_triggered();
+
 
 private:
 
