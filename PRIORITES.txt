@@ -74,14 +74,23 @@ C'est mieux static ?
 
 Rendu 13 mars:
 BmDisparity
+
+Probleme undistord or remap ?
+Probleme format ?
+Probleme calibration ?
+
+//
+->
 CustomController
 Tracker
+
 //
 Calibration files
 Disparity parameter file
 Load
 Mettre #define propre
+//
 
-
+Unity mettre Q valeur théorique
 
 

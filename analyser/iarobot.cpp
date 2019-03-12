@@ -30,7 +30,7 @@ void IARobot::onDisplay()
         bmState = dial.getBMState();
         ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
 
-        //qDebug()<<"Q\n"<< (Q.type()==CV_32F) << ProjectUtilities::matToString<double>(Q).c_str();
+        qDebug()<<"Q"<< (Q.type()==CV_32F) <<"\n" << ProjectUtilities::matToString<double>(Q).c_str();
 
 
         StereoMap::computeBMDisparityStereo(img_left, img_right, disparity, bmState);

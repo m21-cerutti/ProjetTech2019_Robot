@@ -17,7 +17,7 @@
 #include <QDebug>
 
 //If unity simulation
-#define SIMULATION
+//#define SIMULATION
 
 #endif //IS_COMPUTER
 
