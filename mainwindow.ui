@@ -365,17 +365,17 @@
     <addaction name="actionOpen_video"/>
     <addaction name="actionChessboard_debug"/>
     <addaction name="actionExtractImages"/>
-    <addaction name="actionStereoCalibration"/>
+    <addaction name="actionCalibrationStereoVideo"/>
     <addaction name="separator"/>
-    <addaction name="actionDepthMap"/>
-    <addaction name="actionBM"/>
+    <addaction name="actionDepthSGBMVideo"/>
+    <addaction name="actionDepthBMVideo"/>
    </widget>
    <widget class="QMenu" name="menuDepthMap">
     <property name="title">
      <string>DepthMap</string>
     </property>
-    <addaction name="actionBM_2"/>
-    <addaction name="actionSGBM"/>
+    <addaction name="actionDepthBM"/>
+    <addaction name="actionDepthSGBM"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -461,12 +461,12 @@
     <string>&amp;Chessboard debug</string>
    </property>
   </action>
-  <action name="actionStereoCalibration">
+  <action name="actionCalibrationStereoVideo">
    <property name="text">
     <string>&amp;StereoCalibrationVideo</string>
    </property>
   </action>
-  <action name="actionDepthMap">
+  <action name="actionDepthSGBMVideo">
    <property name="text">
     <string>&amp;DepthMap SGBM</string>
    </property>
@@ -476,17 +476,17 @@
     <string>&amp;ExtractImages</string>
    </property>
   </action>
-  <action name="actionBM">
+  <action name="actionDepthBMVideo">
    <property name="text">
     <string>Depth &amp;map BM</string>
    </property>
   </action>
-  <action name="actionBM_2">
+  <action name="actionDepthBM">
    <property name="text">
     <string>BM</string>
    </property>
   </action>
-  <action name="actionSGBM">
+  <action name="actionDepthSGBM">
    <property name="text">
     <string>SGBM</string>
    </property>
