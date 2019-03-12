@@ -81,7 +81,7 @@ double SGBMParamDialog::getTimeResult() const
 
 cv::Ptr<cv::StereoSGBM> SGBMParamDialog::getSGBMState()
 {
-    //bgm parameters
+    //sgbgm parameters
     int minDisparity = ui->minDisparity_slider->value();;
     int numDisparities = ui->numDisparities_slider->value();
     int blockSize = ui->blockSize_slider->value();

@@ -34,15 +34,6 @@ public:
     static bool saveSetImages(const std::string prefix, const std::vector<cv::Mat> images_left, const std::vector<cv::Mat> images_right);
 
     /**
-      * @brief loadSetImages
-      * @param prefix
-      * @param images_left
-      * @param images_right
-      * @return
-      */
-     static bool loadSetImages(const std::string prefix, std::vector<cv::Mat> images_left, std::vector<cv::Mat> images_right);
-
-    /**
      * @brief Load the intrinsic camera parameters.
      * @param file_path the path of the file.
      * @param img_size Output image size.

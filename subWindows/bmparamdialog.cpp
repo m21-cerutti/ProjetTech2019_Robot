@@ -82,28 +82,46 @@ double BMParamDialog::getTimeResult() const
 cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const
 {
     //bgm parameters
-    int num_disparities = ui->numDisparities_slider->value();
-    int block_size = ui->blockSize_slider->value();
 
 
+    int preFilterCap = ui->preFilterCap_slider->value();
+    int PreFilterSize = ui->preFilterSize_slider->value();
+    int PreFilterType = ui->preFilterType_slider->value();
+    int ROI1_x = ui->ROI1_x_slider->value();
+    int ROI1_y = ui->ROI1_y_slider->value();
+    int ROI1_w = ui->ROI1_w_slider->value();
+    int ROI1_h = ui->ROI1_h_slider->value();
+    int ROI2_x = ui->ROI2_x_slider->value();
+    int ROI2_y = ui->ROI2_y_slider->value();
+    int ROI2_w = ui->ROI2_w_slider->value();
+    int ROI2_h = ui->ROI2_h_slider->value();
+    int SmallerBlockSize = ui->smallerBlockSize_slider->value();
+    int TextureThreshold = ui->textureThreshold_slider->value();
+    int uniquenessRatio = ui->uniquenessRatio_slider->value();
+    int blockSize = ui->blockSize_slider->value();
+    int disp12MaxDiff = ui->disp12_slider->value();
+    int minDisparity = ui->minDisparity_slider->value();
+    int numDisparities = ui->numDisparities_slider->value();
+    int speckleRange = ui->speckleRange_slider->value();
+    int speckleWindowSize = ui->speckleWindowsSize_slider->value();
 
-    cv::Ptr<cv::StereoBM> bm_state = cv::StereoBM::create(num_disparities, block_size);
-    /*
-    bm_state->setPreFilterCap();
-    bm_state->setPreFilterSize();
-    bm_state->setPreFilterType();
-    bm_state->setROI1();
-    bm_state->setROI2();
-    bm_state->setSmallerBlockSize();
-    bm_state->setTextureThreshold();
-    bm_state->setUniquenessRatio();
-    bm_state->setBlockSize();
-    bm_state->setDisp12MaxDiff();
-    bm_state->setMinDisparity();
-    bm_state->setNumDisparities();
-    bm_state->setSpeckleRange();
-    bm_state->setSpeckleWindowSize();
-    */
+    cv::Ptr<cv::StereoBM> bm_state = cv::StereoBM::create();
+
+    bm_state->setPreFilterCap(preFilterCap);
+    bm_state->setPreFilterSize(PreFilterSize);
+    bm_state->setPreFilterType(PreFilterType);
+    bm_state->setROI1(cv::Rect(ROI1_x,ROI1_y,ROI1_w,ROI1_h));
+    bm_state->setROI2(cv::Rect(ROI2_x,ROI2_y,ROI2_w,ROI2_h));
+    bm_state->setSmallerBlockSize(SmallerBlockSize);
+    bm_state->setTextureThreshold(TextureThreshold);
+    bm_state->setUniquenessRatio(uniquenessRatio);
+    bm_state->setBlockSize(blockSize);
+    bm_state->setDisp12MaxDiff(disp12MaxDiff);
+    bm_state->setMinDisparity(minDisparity);
+    bm_state->setNumDisparities(numDisparities);
+    bm_state->setSpeckleRange(speckleRange);
+    bm_state->setSpeckleWindowSize(speckleWindowSize);
+
 
     return bm_state;
 }
@@ -127,7 +145,111 @@ void BMParamDialog::on_blockSize_slider_valueChanged(int value)
     refreshModifs();
 }
 
+void BMParamDialog::on_minDisparity_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_disp12_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_preFilterCap_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_uniquenessRatio_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_speckleWindowsSize_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_speckleRange_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_preFilterSize_slider_valueChanged(int value)
+{
+    if ((value % 2) != 1) {
+        value -= 1;
+    }
+    ui->preFilterSize_slider->setValue(value);
+    refreshModifs();
+}
+
+void BMParamDialog::on_preFilterType_slider_valueChanged(int value)
+{
+    if(value == CV_STEREO_BM_NORMALIZED_RESPONSE)
+    {
+        ui->preFilterType_slider->setValue(CV_STEREO_BM_NORMALIZED_RESPONSE);
+    }
+    else if (value == CV_STEREO_BM_XSOBEL)
+    {
+        ui->preFilterType_slider->setValue(CV_STEREO_BM_XSOBEL);
+    }
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI1_x_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI1_y_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI1_w_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI1_h_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI2_x_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI2_y_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI2_w_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_ROI2_h_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_smallerBlockSize_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+void BMParamDialog::on_textureThreshold_slider_valueChanged(int value)
+{
+    refreshModifs();
+}
+
+
 void BMParamDialog::on_cbRealTime_toggled(bool checked)
 {
     refreshModifs();
 }
+

@@ -5,7 +5,7 @@ bool ProjectFiles::getMatrixCalibrationFileStorage(const std::string file_path, 
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting load matrix in file.", false);
+    ProjectUtilities::messageDebug( "Starting load matrix in file: " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
@@ -39,7 +39,7 @@ bool ProjectFiles::saveSetImages(const std::string prefix_folder, const std::vec
         ProjectUtilities::messageDebug("Error create folder.", true);
     }
 
-    ProjectUtilities::messageDebug( "Starting save intrinsic camera.", false);
+    ProjectUtilities::messageDebug( "Starting save set camera: " +prefix_folder, false);
 
     if(images_left.size() != images_right.size())
     {
@@ -59,12 +59,6 @@ bool ProjectFiles::saveSetImages(const std::string prefix_folder, const std::vec
     return true;
 }
 
-bool ProjectFiles::loadSetImages(const std::string prefix, std::vector<cv::Mat> images_left, std::vector<cv::Mat> images_right)
-{
-    using namespace cv;
-    return true;
-}
-
 bool ProjectFiles::loadIntrinsicCamera(const std::string file_path,
                                        cv::Size &img_size,
                                        cv::Mat& camera_matrix,
@@ -74,7 +68,7 @@ bool ProjectFiles::loadIntrinsicCamera(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting load intrinsic camera.", false);
+    ProjectUtilities::messageDebug( "Starting load intrinsic camera: " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
@@ -113,7 +107,7 @@ bool ProjectFiles::saveIntrinsicCamera(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting save intrinsic camera.", false);
+    ProjectUtilities::messageDebug( "Starting save intrinsic camera: " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
     if(!fs.isOpened()) {
@@ -154,7 +148,7 @@ bool ProjectFiles::loadCameraStereoParameters(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting load intrinsic camera.", false);
+    ProjectUtilities::messageDebug( "Starting load intrinsic camera : " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
@@ -205,7 +199,7 @@ bool ProjectFiles::saveCameraStereoParameters(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting stereo save extrinsic.", false);
+    ProjectUtilities::messageDebug( "Starting stereo save extrinsic : " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
     if(!fs.isOpened()) {

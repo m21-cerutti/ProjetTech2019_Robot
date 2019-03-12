@@ -99,6 +99,7 @@ private slots:
 
     void on_FullDP_cb_toggled(bool checked);
 
+    ///For aplying disparity in realtime.
     void on_cbRealTime_toggled(bool checked);
 
 private:

@@ -76,9 +76,45 @@ private slots:
     void on_btnReset_clicked();
 
     ///Sliders
+    void on_minDisparity_slider_valueChanged(int value);
+
     void on_numDisparities_slider_valueChanged(int value);
 
     void on_blockSize_slider_valueChanged(int value);
+
+    void on_disp12_slider_valueChanged(int value);
+
+    void on_preFilterCap_slider_valueChanged(int value);
+
+    void on_uniquenessRatio_slider_valueChanged(int value);
+
+    void on_speckleWindowsSize_slider_valueChanged(int value);
+
+    void on_speckleRange_slider_valueChanged(int value);
+
+    void on_preFilterSize_slider_valueChanged(int value);
+
+    void on_preFilterType_slider_valueChanged(int value);
+
+    void on_ROI1_x_slider_valueChanged(int value);
+
+    void on_ROI1_y_slider_valueChanged(int value);
+
+    void on_ROI1_w_slider_valueChanged(int value);
+
+    void on_ROI1_h_slider_valueChanged(int value);
+
+    void on_ROI2_x_slider_valueChanged(int value);
+
+    void on_ROI2_y_slider_valueChanged(int value);
+
+    void on_ROI2_w_slider_valueChanged(int value);
+
+    void on_ROI2_h_slider_valueChanged(int value);
+
+    void on_smallerBlockSize_slider_valueChanged(int value);
+
+    void on_textureThreshold_slider_valueChanged(int value);
 
     ///For aplying disparity in realtime.
     void on_cbRealTime_toggled(bool checked);

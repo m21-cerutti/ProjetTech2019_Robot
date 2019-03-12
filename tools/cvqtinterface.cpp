@@ -12,7 +12,7 @@ void CVQTInterface::getSetImagesStereo(const QString folder_path, std::vector<cv
     filter_right << QLatin1String("*_right.png");
 
     dir_left.setNameFilters(filter_left);
-    dir_right.setNameFilters(filter_left);
+    dir_right.setNameFilters(filter_right);
 
     QFileInfoList filelistinfo_left = dir_left.entryInfoList();
     QFileInfoList filelistinfo_right = dir_right.entryInfoList();

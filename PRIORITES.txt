@@ -72,8 +72,16 @@ Question
 
 C'est mieux static ?
 
+Rendu 13 mars:
+BmDisparity
+CustomController
+Tracker
+//
+Calibration files
+Disparity parameter file
+Load
+Mettre #define propre
 
 
-Prévoir portage C++ sur Windows
 
 
