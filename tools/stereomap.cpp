@@ -22,11 +22,12 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
 
     ///Disparity map
     bm_state->compute(left_mat, right_mat, disparity);
-    //cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
-    disparity.convertTo(disparity, CV_32F);
-
     ImageFilter::fillBlank(disparity, invert);
     cv::subtract(invert, disparity, disparity);
+
+    disparity.convertTo(disparity, CV_32F);
+
+
     disparity.copyTo(out);
 }
 
@@ -48,17 +49,23 @@ void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Ma
 
     ///Disparity map
     sgbm_state->compute(left_mat, right_mat, disparity);
-    //cv::normalize(disparity, disparity, 0, 255, CV_MINMAX, CV_8UC1);
-    disparity.convertTo(disparity, CV_32F);
-
     ImageFilter::fillBlank(disparity, invert);
     cv::subtract(invert, disparity, disparity);
+    disparity.convertTo(disparity, CV_32F);
+
+
     disparity.copyTo(out);
 }
 
 void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &image_3d)
 {
-    cv::Mat tmp;
-    disparity.convertTo(tmp, CV_32F, 1.0 / 16.0);
-    cv::reprojectImageTo3D(disparity, image_3d, Q, true, CV_32F);
+    cv::Mat disp, q_32;
+    Q.convertTo(q_32, CV_32FC1);
+    disparity.convertTo(disp, CV_32FC1, 1 / 16.);
+    cv::reprojectImageTo3D(disp, image_3d, q_32, true, CV_32FC1);
+
+    //cv::normalize(image_3d, image_3d, 0, 255, CV_MINMAX, CV_8UC1);
+    //cv::threshold( image_3d, image_3d, 0, 1, CV_THRESH_TRUNC );
+
+
 }
