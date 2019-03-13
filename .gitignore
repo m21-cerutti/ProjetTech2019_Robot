@@ -12,3 +12,11 @@
 3DRV\.pro\.user\.f7d9bfb
 
 simulation/Build/
+
+CMakeFiles/
+
+*.so
+
+Makefile
+
+CMakeCache\.txt

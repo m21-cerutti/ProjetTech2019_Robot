@@ -19,8 +19,6 @@ Calculer cartes de profondeur.
 (Filtre pour les cartes de disparité)
 
 
-
-
 Questions pour prof:
 
 Charuco ne prends pas tout les Ids

@@ -7,27 +7,6 @@
 QT       += core gui network
 CONFIG += console
 
-win32{
-
-    INCLUDEPATH += D:\Library\opencv\build\include \
-                D:\Library\opencv\build\include\opencv \
-
-    DEPENDPATH += D:\Library\opencv\build\include \
-                D:\Library\opencv\build\include\opencv \
-
-    CONFIG(release, debug|release)
-    {
-        LIBS += -LD:\Library\opencv\build\x64\vc14\lib\ -lopencv_world320 \
-            #-lopencv_core320 -lopencv_highgui320 -lopencv_imgproc320 \
-    }
-
-    CONFIG(debug, debug|release)
-    {
-        LIBS += -LD:\Library\opencv\build\x64\vc14\lib\ -lopencv_world320d \
-            #-lopencv_core320d -lopencv_highgui320d -lopencv_imgproc320d \
-    }
-}
-
 unix:!mac{
     QT_CONFIG -= no-pkg-config
     CONFIG += link_pkgconfig
@@ -60,37 +39,44 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    subWindows/sgbmparamdialog.cpp \
-    subWindows/bmparamdialog.cpp \
-    tools/cameracalibration.cpp \
-    tools/cvqtinterface.cpp \
-    subWindows/cameraparamdialog.cpp \
-    tools/projectutilities.cpp \
-    tools/projectfiles.cpp \
-    tools/imagefilter.cpp \
-    tools/stereomap.cpp \
-    tools/videoextractor.cpp \
-    analyser/servermaster.cpp \
-    analyser/clientconnection.cpp \
-    analyser/iarobot.cpp
+    src/analyser/clientconnection.cpp \
+    src/analyser/servermaster.cpp \
+    src/subWindows/bmparamdialog.cpp \
+    src/subWindows/cameraparamdialog.cpp \
+    src/subWindows/sgbmparamdialog.cpp \
+    src/tools/cameracalibration.cpp \
+    src/tools/cvqtinterface.cpp \
+    src/tools/imagefilter.cpp \
+    src/tools/projectfiles.cpp \
+    src/tools/projectutilities.cpp \
+    src/tools/stereomap.cpp \
+    src/tools/videoextractor.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/custom_controller.cpp \
+    src/analyser/iarobot.cpp \
+    src/tools/trackerobjectstereo.cpp
+
+INCLUDEPATH += include/
 
 HEADERS += \
-        mainwindow.h \
-    subWindows/sgbmparamdialog.h \
-    subWindows/bmparamdialog.h \
-    tools/cameracalibration.h \
-    tools/cvqtinterface.h \
-    subWindows/cameraparamdialog.h \
-    tools/projectutilities.h \
-    tools/projectfiles.h \
-    tools/imagefilter.h \
-    tools/stereomap.h \
-    tools/videoextractor.h \
-    analyser/servermaster.h \
-    analyser/clientconnection.h \
-    analyser/iarobot.h
+    include/analyser/clientconnection.h \
+    include/analyser/servermaster.h \
+    include/subWindows/bmparamdialog.h \
+    include/subWindows/cameraparamdialog.h \
+    include/subWindows/sgbmparamdialog.h \
+    include/tools/cameracalibration.h \
+    include/tools/cvqtinterface.h \
+    include/tools/imagefilter.h \
+    include/tools/projectfiles.h \
+    include/tools/projectutilities.h \
+    include/tools/stereomap.h \
+    include/tools/videoextractor.h \
+    include/mainwindow.h \
+    include/controller.h \
+    include/custom_controller.h \
+    include/analyser/iarobot.h \
+    include/tools/trackerobjectstereo.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -98,10 +84,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    mainwindow.ui \
-    subWindows/sgbmparamdialog.ui \
-    subWindows/bmparamdialog.ui \
-    subWindows/cameraparamdialog.ui
+    forms/subWindows/bmparamdialog.ui \
+    forms/subWindows/cameraparamdialog.ui \
+    forms/subWindows/sgbmparamdialog.ui \
+    forms/mainwindow.ui
 
 
 
