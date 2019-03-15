@@ -1,6 +1,6 @@
 #include "tools/trackerobjectstereo.h"
 
-
+/*
 TrackerObjectStereo::TrackerObjectStereo()
 {
     cv::Rect2d(BOX_X, BOX_Y, BOX_WIDTH, BOX_HEIGHT);
@@ -40,4 +40,4 @@ cv::Mat TrackerObjectStereo::getNewDirection(float pixel_min_move)
     old_rect = rect;
     return vect;
 }
-
+*/

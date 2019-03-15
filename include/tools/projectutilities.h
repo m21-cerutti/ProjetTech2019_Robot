@@ -8,7 +8,7 @@
 #include <time.h>
 
 //Not set on robot
-//#define IS_COMPUTER
+#define IS_COMPUTER
 
 //If unity simulation
 //#define SIMULATION

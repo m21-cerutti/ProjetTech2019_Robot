@@ -11,8 +11,8 @@
 #include "tools/projectutilities.h"
 
 //cm
-#define DEPTH_MAX 100
-#define DEPTH_MIN 0
+#define DEPTH_MAX 200
+#define DEPTH_MIN 10
 
 /**
  * @brief The StereoAnalyser class gather all stereo function analyser after calibration.

@@ -2,7 +2,7 @@
 #define TRACKEROBJECT_H
 
 
-#include <opencv2/tracking.hpp>
+//#include <opencv2/tracking.hpp>
 #include <opencv2/core/ocl.hpp>
 
 #include "tools/projectutilities.h"
@@ -11,7 +11,7 @@
 #define BOX_Y 0
 #define BOX_WIDTH 0.5
 #define BOX_HEIGHT 0.5
-
+/*
 class TrackerObjectStereo
 {
 public:
@@ -36,5 +36,5 @@ private:
     cv::Ptr<cv::Tracker> tracker;
 
 };
-
+*/
 #endif // TRACKEROBJECT_H

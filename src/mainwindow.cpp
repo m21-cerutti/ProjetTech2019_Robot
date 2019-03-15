@@ -416,8 +416,21 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 StereoMap::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map);
 
+                double min;
+                double max;
+                cv::minMaxIdx(depth_map, &min, &max);
+                cv::Mat adjMap;
+                // expand your range to 0..255. Similar to histEq();
+                float scale = 255 / (max-min);
+                depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
 
-                ProjectUtilities::showMatrice(std::to_string(i), depth_map);
+                // this is great. It converts your grayscale image into a tone-mapped one,
+                // much more pleasing for the eye
+                // function is found in contrib module, so include contrib.hpp
+                // and link accordingly
+                cv::Mat falseColorsMap;
+                applyColorMap(adjMap, falseColorsMap, cv::COLORMAP_HOT);
+                ProjectUtilities::showMatrice("false"+std::to_string(i), falseColorsMap);
             }
         }
     }
