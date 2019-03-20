@@ -70,7 +70,7 @@ void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Ma
     disparity.copyTo(out);
 }
 
-void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max)
+void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map)
 {
     using namespace cv;
     Mat image_3d;

@@ -40,6 +40,29 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 
     namedWindow(name, cv::WINDOW_NORMAL);
     cv::imshow(name, tmp);
-    #endif
+#else
+
+    using namespace cv;
+
+    std::string folder_cmd = "mkdir -p ./DEBUG_IMAGES_CERUTTI/"+name;
+    if (std::system(folder_cmd.c_str()) == 0)
+    {
+
+        Utilities::messageDebug("Create folder done.", false);
+    }
+    else
+    {
+        Utilities::messageDebug("Error create folder.", true);
+    }
+
+    Utilities::messageDebug( "Starting save image: " +name, false);
+
+    time_t rawtime; time(&rawtime);
+    std::string date =  asctime(localtime(&rawtime));
+    imwrite("./DEBUG_IMAGES_CERUTTI/"+name+"_"+date, mat);
+
+    Utilities::messageDebug("Image saved.", false);
+
+#endif
 }
 

@@ -10,18 +10,12 @@
 
 #include "tools/utilities.h"
 
-//cm
-#define DEPTH_MAX 200
-#define DEPTH_MIN 10
 
 /**
  * @brief The StereoAnalyser class gather all stereo function analyser after calibration.
  */
-class StereoMap
+namespace StereoMap
 {
-
-public:
-
 
     /**
      * @brief Make disparity map with BM algorithm
@@ -32,7 +26,7 @@ public:
      *     nbdisparities
      *     SADWindowsSize
      */
-    static void computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
+    void computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
 
     /**
      * @brief Make disparity map with BM algorithm.
@@ -44,7 +38,7 @@ public:
      *     nbdisparities
      *     SADWindowsSize
      */
-    static void computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
+    void computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state);
 
 
     /**
@@ -64,7 +58,7 @@ public:
      *     disp12MaxDiff
      *     SADWindowSize
      */
-    static void computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
+    void computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
     /**
      * @brief Make disparity map with SGBM algorithm.
@@ -84,7 +78,7 @@ public:
      *     disp12MaxDiff
      *     SADWindowSize
      */
-    static void computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
+    void computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state);
 
     /**
      * @brief Make the depth map.
@@ -92,7 +86,7 @@ public:
      * @param Q Input 4×4 disparity-to-depth mapping matrix.
      * @param image_3d the Output matrix.
      */
-    static void computeDepthMap(const cv::Mat& disparity, const cv::Mat& Q, cv::Mat& depth_map, float depth_min = DEPTH_MIN, float depth_max = DEPTH_MAX);
+    void computeDepthMap(const cv::Mat& disparity, const cv::Mat& Q, cv::Mat& depth_map);
 
 };
 

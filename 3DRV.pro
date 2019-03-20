@@ -53,8 +53,7 @@ SOURCES += \
     src/tools/calibration.cpp \
     src/tools/filters.cpp \
     src/tools/files.cpp \
-    src/tools/utilities.cpp \
-    src/tools/stereocamera.cpp
+    src/tools/utilities.cpp
 
 INCLUDEPATH += include/
 
@@ -73,8 +72,7 @@ HEADERS += \
     include/tools/calibration.h \
     include/tools/filters.h \
     include/tools/files.h \
-    include/tools/utilities.h \
-    include/tools/stereocamera.h
+    include/tools/utilities.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

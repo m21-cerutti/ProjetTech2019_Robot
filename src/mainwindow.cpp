@@ -289,6 +289,8 @@ void MainWindow::on_actionExtractImages_triggered()
 
 void MainWindow::on_actionDepthBM_triggered()
 {
+    using namespace cv;
+
     QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
 
     // open image
@@ -300,6 +302,13 @@ void MainWindow::on_actionDepthBM_triggered()
 
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoBM> bmState;
+
+        /*
+        initUndistortRectifyMap(left_cam_matrix, left_dist_coeffs, R1, P1, frame_size,CV_32FC1, left_undist_rect_map_x, left_undist_rect_map_y);
+        initUndistortRectifyMap(right_cam_matrix, right_dist_coeffs, R2, P2, frame_size, CV_32FC1, right_undist_rect_map_x, right_undist_rect_map_y);
+        cv::remap(left_frame, left_undist_rect, left_undist_rect_map_x, left_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, 0);
+        cv::remap(right_frame, right_undist_rect, right_undist_rect_map_x, right_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, 0);
+        */
 
         QImage disp_q;
         cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
