@@ -16,156 +16,6 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QCheckBox" name="cbDestination">
-        <property name="text">
-         <string>Source</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbResetBefore">
-        <property name="text">
-         <string>Reset before</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Commandes:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QPushButton" name="btnOrigin">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>O&amp;rigin</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnGauss">
-          <property name="text">
-           <string>GaussianBlur</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnSobel">
-          <property name="text">
-           <string>Sobel</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnLaplacian">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Laplacian</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnBMDisparity">
-          <property name="text">
-           <string>BMDisparity</string>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnSGBMDisparity">
-          <property name="text">
-           <string>SGBMDisparity</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::MinimumExpanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="leftMargin">
        <number>6</number>
@@ -188,6 +38,45 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="cbResetBefore">
+             <property name="text">
+              <string>Reset before</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="tristate">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbDestination">
+             <property name="text">
+              <string>Source</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <property name="leftMargin">
@@ -334,10 +223,8 @@
    </widget>
    <widget class="QMenu" name="menuCameraCalibration">
     <property name="title">
-     <string>Came&amp;raCalibration</string>
+     <string>Calibration</string>
     </property>
-    <addaction name="actionCalibrate"/>
-    <addaction name="actionApplyFromFile"/>
     <addaction name="actionCalibration"/>
     <addaction name="actionCalibrationStereo"/>
    </widget>
@@ -346,7 +233,6 @@
      <string>Filter</string>
     </property>
     <addaction name="actionOrigin"/>
-    <addaction name="actionGray"/>
     <addaction name="actionGaussian"/>
     <addaction name="actionSobel"/>
     <addaction name="actionLaplacian"/>
@@ -362,8 +248,6 @@
     <property name="title">
      <string>&amp;Video</string>
     </property>
-    <addaction name="actionOpen_video"/>
-    <addaction name="actionChessboard_debug"/>
     <addaction name="actionExtractImages"/>
     <addaction name="actionCalibrationStereoVideo"/>
     <addaction name="separator"/>
@@ -372,7 +256,7 @@
    </widget>
    <widget class="QMenu" name="menuDepthMap">
     <property name="title">
-     <string>DepthMap</string>
+     <string>Depth</string>
     </property>
     <addaction name="actionDepthBM"/>
     <addaction name="actionDepthSGBM"/>
@@ -380,10 +264,10 @@
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuFilter"/>
-   <addaction name="menuDisparity_map"/>
-   <addaction name="menuCameraCalibration"/>
-   <addaction name="menuDepthMap"/>
    <addaction name="menuVideo"/>
+   <addaction name="menuCameraCalibration"/>
+   <addaction name="menuDisparity_map"/>
+   <addaction name="menuDepthMap"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">

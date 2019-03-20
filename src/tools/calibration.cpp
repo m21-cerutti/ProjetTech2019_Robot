@@ -1,7 +1,6 @@
 #include "tools/calibration.h"
 
-int Calibration::stereoChessboard(const std::vector<cv::Mat> &sources_images_left,
-int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images, const std::string path_camera_file)
+int Calibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images, const std::string path_camera_file)
 {
     using namespace cv;
 
@@ -16,7 +15,7 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
     return chessBoardCalibration(sources_images, path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
 }
 
-int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images,
+int Calibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images,
                                              const std::string path_camera_file,
                                              cv::Mat& camera_matrix,
                                              cv::Mat& dist_coeffs,
@@ -28,7 +27,7 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
     std::vector<std::vector<Point3f>> object_points;
     std::vector<std::vector<Point2f>> image_points;
 
-    ProjectUtilities::messageDebug( "Starting chessboard calibration.", false);
+    Utilities::messageDebug( "Starting chessboard calibration.", false);
 
     //FIND CHESSBOARD
     //Initialisation
@@ -65,21 +64,21 @@ int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources
         }
     }
     //END FIND CHESSBOARD
-    ProjectUtilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
+    Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
 
     //Calibration
     double rmserror = calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs, 0, TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 60, DBL_EPSILON) );
 
-    ProjectUtilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
+    Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
 
     //Save
-    ProjectUtilities::messageDebug( "Saving calibration in "+path_camera_file+ "...", false);
-    ProjectFiles::saveIntrinsicCamera( path_camera_file, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
+    Utilities::messageDebug( "Saving calibration in "+path_camera_file+ "...", false);
+    Files::saveIntrinsicCamera( path_camera_file, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
 
     return nb_rejected;
 }
 
-int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
+int Calibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
                                           const std::string path_camera_file)
 {
     cv::Mat camera_matrix = cv::Mat(3, 3, CV_64F);
@@ -94,7 +93,7 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
 }
 
 
-int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
+int Calibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
                                           const std::string path_camera_file,
                                           cv::Mat& camera_matrix,
                                           cv::Mat& dist_coeffs,
@@ -105,7 +104,7 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
 
     Mat gray;
 
-    ProjectUtilities::messageDebug( "Starting charuco calibration.", false);
+    Utilities::messageDebug( "Starting charuco calibration.", false);
 
     std::vector<std::vector<cv::Point2f>> allCharucoCorners;
     std::vector<std::vector<int>> allCharucoIds;
@@ -170,23 +169,23 @@ int CameraCalibration::charucoCalibration(const std::vector<cv::Mat> &sources_im
             nb_rejected++;
         }
     }
-    ProjectUtilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
+    Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
     //END FIND CHARUCO
 
     //Calibration
     double rmserror = cv::aruco::calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, sources_images[0].size(),
             camera_matrix, dist_coeffs, rvecs, tvecs, CV_CALIB_FIX_INTRINSIC);
 
-    ProjectUtilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
+    Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
 
     //Save
-    ProjectUtilities::messageDebug( "Saving calibration in "+path_camera_file+ "...", false);
-    ProjectFiles::saveIntrinsicCamera( path_camera_file, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
+    Utilities::messageDebug( "Saving calibration in "+path_camera_file+ "...", false);
+    Files::saveIntrinsicCamera( path_camera_file, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
 
     return nb_rejected;
 }
 
-void CameraCalibration::applyUndistorded(const cv::Mat &source, cv::Mat &out,
+void Calibration::applyUndistorded(const cv::Mat &source, cv::Mat &out,
                                          cv::Mat &camera_matrix, cv::Mat &dist_coeffs)
 {
     using namespace cv;
@@ -196,13 +195,13 @@ void CameraCalibration::applyUndistorded(const cv::Mat &source, cv::Mat &out,
 }
 
 
-void CameraCalibration::applyUndistorded(const cv::Mat &source, cv::Mat &out, const std::string file_path)
+void Calibration::applyUndistorded(const cv::Mat &source, cv::Mat &out, const std::string file_path)
 {
     using namespace cv;
 
     Mat camera_matrix, dist_coeffs;
     cv::Size img_size;
-    if(!ProjectFiles::loadIntrinsicCamera(file_path, img_size, camera_matrix, dist_coeffs))
+    if(!Files::loadIntrinsicCamera(file_path, img_size, camera_matrix, dist_coeffs))
         return;
 
     cv::Mat undistorded;
@@ -211,7 +210,7 @@ void CameraCalibration::applyUndistorded(const cv::Mat &source, cv::Mat &out, co
     undistorded.copyTo(out);
 }
 
-int CameraCalibration::stereoChessboard(const std::vector<cv::Mat> &sources_images_left,
+int Calibration::stereoChessboard(const std::vector<cv::Mat> &sources_images_left,
                                         const std::vector<cv::Mat> &sources_images_right,
                                         const std::string path_camera_l,
                                         const std::string path_camera_r,
@@ -352,7 +351,7 @@ void Calibration::stereoCalibration(const std::string path_file_stereo,
     {
         cv::Mat tmp;
         undistort(img, tmp, camera_matrix_l, dist_coeffs_l);
-        ProjectUtilities::showMatrice("left_" + std::to_string(i), tmp);
+        Utilities::showMatrice("left_" + std::to_string(i), tmp);
         i++;
     }
     i=0;
@@ -360,7 +359,7 @@ void Calibration::stereoCalibration(const std::string path_file_stereo,
     {
         cv::Mat tmp;
         undistort(img, tmp, camera_matrix_r, dist_coeffs_r);
-        ProjectUtilities::showMatrice("right_" + std::to_string(i), tmp);
+        Utilities::showMatrice("right_" + std::to_string(i), tmp);
         i++;
     }
     */

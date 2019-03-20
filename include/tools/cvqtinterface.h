@@ -9,6 +9,8 @@
 
 #include "tools/utilities.h"
 
+#define DELAY_DEBUG_VIDEO 30
+
 /**
  * @brief The CVQTInterface class gather all function of conversion.
  */

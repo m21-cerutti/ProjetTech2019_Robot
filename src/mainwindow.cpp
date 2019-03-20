@@ -29,7 +29,7 @@ void MainWindow::chooseImage(){
     if(_image_src.load(filename)){
 
         //Create default matrix
-        on_btnOrigin_clicked();
+        on_actionOrigin_triggered();
 
         //Refresh window
         refreshImages();
@@ -58,7 +58,7 @@ void MainWindow::refreshImages()
 void MainWindow::resetBeforeOperationCheck()
 {
     if (ui->cbResetBefore->checkState() == Qt::Checked){
-        on_btnOrigin_clicked();
+        on_actionOrigin_triggered();
     }
 }
 
@@ -101,51 +101,7 @@ void MainWindow::on_cbDestination_stateChanged(int arg1)
     }
 }
 
-void MainWindow::on_btnOrigin_clicked()
-{
-    if (_image_src.isNull())
-    {
-        return;
-    }
-
-    //Convert
-    CVQTInterface::toMatCV(_image_src, _image_mat);
-
-    refreshImages();
-}
-
-void MainWindow::on_btnGauss_clicked()
-{
-    resetBeforeOperationCheck();
-    if (_image_src.isNull())
-    {
-        return;
-    }
-
-    double time;
-    time = Utilities::computeEfficiency(Filters::computeGaussianBlur, _image_mat, _image_mat);
-
-    refreshImages();
-    showEfficiency("GaussianBlur", time);
-}
-
-void MainWindow::on_btnSobel_clicked()
-{
-    resetBeforeOperationCheck();
-    if (_image_src.isNull())
-    {
-        return;
-    }
-
-    double time;
-    time = Utilities::computeEfficiency(Filters::computeGradient, _image_mat, _image_mat);
-
-    refreshImages();
-    showEfficiency("Sobel", time);
-}
-
-
-void MainWindow::on_btnLaplacian_clicked()
+void MainWindow::on_actionLaplacian_triggered()
 {
     resetBeforeOperationCheck();
     if (_image_src.isNull())
@@ -160,26 +116,37 @@ void MainWindow::on_btnLaplacian_clicked()
     showEfficiency("Laplacian", time);
 }
 
-void MainWindow::on_btnSGBMDisparity_clicked()
+void MainWindow::on_actionGaussian_triggered()
 {
     resetBeforeOperationCheck();
     if (_image_src.isNull())
     {
         return;
     }
-    QImage img;
-    CVQTInterface::toQImage(_image_mat, img);
-    SGBMParamDialog dial(img);
-    if(dial.exec() != QDialog::Rejected)
-    {
-        _image_mat = dial.getMatResult().clone();
-        double time = dial.getTimeResult();
-        refreshImages();
-        showEfficiency("SGBMDisparity", time);
-    }
+
+    double time;
+    time = Utilities::computeEfficiency(Filters::computeGaussianBlur, _image_mat, _image_mat);
+
+    refreshImages();
+    showEfficiency("GaussianBlur", time);
 }
 
-void MainWindow::on_btnBMDisparity_clicked()
+void MainWindow::on_actionSobel_triggered()
+{
+    resetBeforeOperationCheck();
+    if (_image_src.isNull())
+    {
+        return;
+    }
+
+    double time;
+    time = Utilities::computeEfficiency(Filters::computeGradient, _image_mat, _image_mat);
+
+    refreshImages();
+    showEfficiency("Sobel", time);
+}
+
+void MainWindow::on_actionDisparityBM_triggered()
 {
     resetBeforeOperationCheck();
     if (_image_src.isNull())
@@ -198,34 +165,36 @@ void MainWindow::on_btnBMDisparity_clicked()
     }
 }
 
-void MainWindow::on_actionLaplacian_triggered()
-{
-    on_btnLaplacian_clicked();
-}
-
-void MainWindow::on_actionGaussian_triggered()
-{
-    on_btnGauss_clicked();
-}
-
-void MainWindow::on_actionSobel_triggered()
-{
-    on_btnSobel_clicked();
-}
-
-void MainWindow::on_actionDisparityBM_triggered()
-{
-    on_btnBMDisparity_clicked();
-}
-
 void MainWindow::on_actionDisparitySGBM_triggered()
 {
-    on_btnSGBMDisparity_clicked();
+    resetBeforeOperationCheck();
+    if (_image_src.isNull())
+    {
+        return;
+    }
+    QImage img;
+    CVQTInterface::toQImage(_image_mat, img);
+    SGBMParamDialog dial(img);
+    if(dial.exec() != QDialog::Rejected)
+    {
+        _image_mat = dial.getMatResult().clone();
+        double time = dial.getTimeResult();
+        refreshImages();
+        showEfficiency("SGBMDisparity", time);
+    }
 }
 
 void MainWindow::on_actionOrigin_triggered()
 {
-    on_btnOrigin_clicked();
+    if (_image_src.isNull())
+    {
+        return;
+    }
+
+    //Convert
+    CVQTInterface::toMatCV(_image_src, _image_mat);
+
+    refreshImages();
 }
 
 void MainWindow::on_actionApplyFromFile_triggered()
@@ -274,28 +243,6 @@ void MainWindow::on_actionCalibration_triggered()
     dial.exec();
 }
 
-void MainWindow::on_actionOpen_video_triggered()
-{
-    QString filename = QFileDialog::getOpenFileName(this, "Open video file", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    // open image
-    if(!filename.isEmpty())
-    {
-        VideoExtractor::filterVideo(filename.toStdString(), Filters::computeGradient);
-    }
-}
-
-void MainWindow::on_actionChessboard_debug_triggered()
-{
-    QString filename = QFileDialog::getOpenFileName(this, "Open video file", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    // open image
-    if(!filename.isEmpty())
-    {
-        VideoExtractor::videoChessDebug(filename.toStdString());
-    }
-}
-
 
 void MainWindow::on_actionCalibrationStereo_triggered()
 {
@@ -319,7 +266,7 @@ void MainWindow::on_actionCalibrationStereoVideo_triggered()
     if(filepaths.size() == 2)
     {
         std::vector<cv::Mat> vect_images_l, vect_images_r ;
-        VideoExtractor::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images_r, vect_images_l, true);
+        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images_r, vect_images_l, true);
 
         Calibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
     }
@@ -334,7 +281,7 @@ void MainWindow::on_actionExtractImages_triggered()
     if(filepaths.size() == 2)
     {
         std::vector<cv::Mat> vect_images_left, vect_images_right;
-        VideoExtractor::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 25, vect_images_left, vect_images_right, true);
+        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 25, vect_images_left, vect_images_right, true);
         Files::saveSetImages( "./setTest/stereo", vect_images_left, vect_images_right);
     }
 }
@@ -368,6 +315,8 @@ void MainWindow::on_actionDepthBM_triggered()
                 StereoMap::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
 
                 StereoMap::computeDepthMap(disparity, Q, depth_map);
+
+                cv::threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
 
                 double min;
                 double max;
@@ -416,6 +365,8 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 StereoMap::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map);
 
+                cv::threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
+
                 double min;
                 double max;
                 cv::minMaxIdx(depth_map, &min, &max);
@@ -445,7 +396,7 @@ void MainWindow::on_actionDepthBMVideo_triggered()
     if(filepaths.size() == 2)
     {
         std::vector<cv::Mat> vect_images_l, vect_images_r;
-        VideoExtractor::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
+        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
 
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoBM> bmState;
@@ -479,7 +430,7 @@ void MainWindow::on_actionDepthSGBMVideo_triggered()
     if(filepaths.size() == 2)
     {
         std::vector<cv::Mat> vect_images_r, vect_images_l;
-        VideoExtractor::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
+        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
 
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoSGBM> sgbmState;

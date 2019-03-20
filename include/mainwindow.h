@@ -16,7 +16,6 @@
 #include "tools/cvqtinterface.h"
 #include "tools/filters.h"
 #include "tools/calibration.h"
-#include "tools/videoextractor.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"
 #include "subWindows/cameraparamdialog.h"
@@ -54,19 +53,7 @@ private slots:
 
     void on_actionQuit_triggered();
 
-    void on_btnOrigin_clicked();
-
-    void on_btnGauss_clicked();
-
-    void on_btnSobel_clicked();
-
-    void on_btnLaplacian_clicked();
-
     void on_cbDestination_stateChanged(int arg1);
-
-    void on_btnSGBMDisparity_clicked();
-
-    void on_btnBMDisparity_clicked();
 
     void on_actionOrigin_triggered();
 
@@ -85,10 +72,6 @@ private slots:
     void on_actionCalibrate_triggered();
 
     void on_actionCalibration_triggered();
-
-    void on_actionOpen_video_triggered();
-
-    void on_actionChessboard_debug_triggered();
 
     void on_actionCalibrationStereo_triggered();
 

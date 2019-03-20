@@ -54,8 +54,7 @@ SOURCES += \
     src/tools/filters.cpp \
     src/tools/files.cpp \
     src/tools/utilities.cpp \
-    include/tools/stereocamera.cpp \
-    include/stereocamera.cpp
+    src/tools/stereocamera.cpp
 
 INCLUDEPATH += include/
 
@@ -75,8 +74,7 @@ HEADERS += \
     include/tools/filters.h \
     include/tools/files.h \
     include/tools/utilities.h \
-    include/tools/stereocamera.h \
-    include/stereocamera.h
+    include/tools/stereocamera.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

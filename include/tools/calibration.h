@@ -37,16 +37,13 @@
 namespace Calibration
 {
 
-    ///Functions
-public:
-
     /**
      * @brief Do the chessbard calibration for one camera.
      * @param sources_images the images for calibration.
      * @param path_camera_file the path to save the calibration.
      * @return The number of images rejected for calibration.
      */
-    static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
+    int chessBoardCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
 
     /**
      * @brief Do the chessbard calibration for one camera.
@@ -59,7 +56,7 @@ public:
      * @see cv::calibrateCamera for more information.
      * @return The number of images rejected for calibration.
      */
-    static int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,
+    int chessBoardCalibration(const std::vector<cv::Mat>& sources_images,
                                      const std::string path_camera_file,
                                      cv::Mat& camera_matrix,
                                      cv::Mat& dist_coeffs,
@@ -73,7 +70,7 @@ public:
      * @param path_camera_file the path to save the calibration.
      * @return The number of images rejected for calibration.
      */
-    static int charucoCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
+    int charucoCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
 
     /**
      * @brief Do the charuco calibration for one camera.
@@ -87,7 +84,7 @@ public:
      * @see cv::calibrateCamera for more information.
      * @return The number of images rejected for calibration.
      */
-    static int charucoCalibration(const std::vector<cv::Mat> &sources_images,
+    int charucoCalibration(const std::vector<cv::Mat> &sources_images,
                                   const std::string path_camera_file,
                                   cv::Mat& camera_matrix,
                                   cv::Mat& dist_coeffs,
@@ -101,7 +98,7 @@ public:
      * @param camera_matrix the input camera matrix calibration.
      * @param dist_coeffs the input distorsion coefficients calibration.
      */
-    static void applyUndistorded( const cv::Mat& source,
+    void applyUndistorded( const cv::Mat& source,
                                   cv::Mat& out,
                                   cv::Mat& camera_matrix,
                                   cv::Mat& dist_coeffs);
@@ -112,7 +109,7 @@ public:
      * @param source the source matrix.
      * @param out the output matrix.
      */
-    static void applyUndistorded(const cv::Mat& source, cv::Mat& out,
+    void applyUndistorded(const cv::Mat& source, cv::Mat& out,
                                  const std::string file_path);
 
 
@@ -127,7 +124,7 @@ public:
      * @param right_img_points Output array of Point2f for right correspondence.
      * @return
      */
-    static int stereoChessboard(const std::vector<cv::Mat>& sources_images_left,
+    int stereoChessboard(const std::vector<cv::Mat>& sources_images_left,
                                 const std::vector<cv::Mat> &sources_images_right,
                                 const std::string path_camera_l,
                                 const std::string path_camera_r,
@@ -144,7 +141,7 @@ public:
      * @param path_camera_l the path for saving left calibration.
      * @param path_camera_r the path for saving right calibration.
      */
-    static void stereoCalibration(const std::string path_file,
+    void stereoCalibration(const std::string path_file,
                                   const std::vector<cv::Mat>& sources_images_left,
                                   const std::vector<cv::Mat> &sources_images_right,
                                   const std::string path_camera_file_l,

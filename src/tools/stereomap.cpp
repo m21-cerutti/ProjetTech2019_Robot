@@ -14,7 +14,7 @@ void StereoMap::computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv:
 
 void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
 {
-    cv::Mat invert, left_mat, right_mat, disparity;
+    cv::Mat left_mat, right_mat, disparity;
 
     ///Gray
     if(src_left.type() != CV_8UC1)
@@ -28,7 +28,7 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
 
     ///Disparity map
     bm_state->compute(left_mat, right_mat, disparity);
-    cv::Mat tmp(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
+    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
     cv::subtract(invert, disparity, disparity);
 
     disparity.convertTo(disparity, CV_32F);
@@ -47,7 +47,7 @@ void StereoMap::computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<c
 
 void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
 {
-    cv::Mat invert, left_mat, right_mat, disparity;
+    cv::Mat left_mat, right_mat, disparity;
 
     ///Gray
     if(src_left.type() != CV_8UC1)
@@ -61,7 +61,7 @@ void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Ma
 
     ///Disparity map
     sgbm_state->compute(left_mat, right_mat, disparity);
-    cv::Mat tmp(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
+    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
     cv::subtract(invert, disparity, disparity);
 
     disparity.convertTo(disparity, CV_32F);

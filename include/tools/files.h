@@ -1,8 +1,15 @@
 #ifndef PROJECTFILES_H
 #define PROJECTFILES_H
 
+#include <opencv2/core/core.hpp>
+#include <opencv/cvwimage.h>
+#include <opencv2/highgui/highgui.hpp>
 #include <cv.h>
+
+#include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/core/affine.hpp>
 
 #include "tools/utilities.h"
 
@@ -76,8 +83,58 @@ namespace Files
                                     const cv::Mat &dist_coeffs,
                                     const std::vector<cv::Mat> &rvecs,
                                     const std::vector<cv::Mat> &tvecs );
+    bool loadCameraStereoParameters(const std::string file_path,
+                                           cv::Mat &camera_matrix_l,
+                                           cv::Mat &dist_coeffs_l,
+                                           cv::Mat &camera_matrix_r,
+                                           cv::Mat &dist_coeffs_r,
+                                           cv::Size &img_size,
+                                           cv::Mat &R,
+                                           cv::Mat &F,
+                                           cv::Mat &E,
+                                           cv::Vec3d &T,
+                                           cv::Mat &R1,
+                                           cv::Mat &R2,
+                                           cv::Mat &P1,
+                                           cv::Mat &P2,
+                                           cv::Mat &Q);
 
+    /**
+     * @brief Save the stereo calibration.
+     * @param file_path the path for saving stereo calibration.
+     * @param camera_matrix_l
+     * @param dist_coeffs_l
+     * @param camera_matrix_r
+     * @param dist_coeffs_r
+     * @param img_size
+     * @param R
+     * @param F
+     * @param E
+     * @param T
+     * @param R1
+     * @param R2
+     * @param P1
+     * @param P2
+     * @param Q
+     * @see cv::stereoCalibrate and cv::setreoRectify
+     * @return true if suceeded, false otherwise.
+     */
+    bool saveCameraStereoParameters(const std::string file_path,
+                                           const cv::Mat &camera_matrix_l,
+                                           const cv::Mat &dist_coeffs_l,
+                                           const cv::Mat &camera_matrix_r,
+                                           const cv::Mat &dist_coeffs_r,
+                                           const cv::Size &img_size,
+                                           const cv::Mat &R,
+                                           const cv::Mat &F,
+                                           const cv::Mat &E,
+                                           const cv::Vec3d &T,
+                                           const cv::Mat &R1,
+                                           const cv::Mat &R2,
+                                           const cv::Mat &P1,
+                                           const cv::Mat &P2,
+                                           const cv::Mat &Q);
 
-
+};
 
 #endif // PROJECTFILES_H

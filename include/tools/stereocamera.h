@@ -15,8 +15,10 @@
 
 using namespace cv;
 
-namespace StereoCamera
+class StereoCamera
 {
+
+    StereoCamera();
 
 /**
  * @brief Do the stereo find chessboard, more restrictive than individual.
@@ -197,6 +199,5 @@ bool saveCameraStereoParameters(const std::string file_path,
                                        const cv::Mat &Q);
 };
 
-};
 
 #endif // STEREOCAMERA_H

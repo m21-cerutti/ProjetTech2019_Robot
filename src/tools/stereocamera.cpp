@@ -1,4 +1,4 @@
-#include "stereocamera.h"
+#include "tools/stereocamera.h"
 
 StereoCamera::StereoCamera()
 {

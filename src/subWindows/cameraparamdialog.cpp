@@ -70,6 +70,7 @@ void CameraParamDialog::on_btn_openCamera_clicked()
     {
         Files::loadIntrinsicCamera(filepath.toStdString(), _img_size, _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
         refreshPrintMatrix();
+        ui->label_pathfile->setText(filepath);
     }
 
     ui->print_images->show();
@@ -86,14 +87,9 @@ void CameraParamDialog::on_btn_calibrate_clicked()
 
     if(!filepath.isEmpty() && !_vect_images.empty())
     {
-        if(ui->cb_charuco->checkState() == Qt::Checked)
-        {
-            Calibration::charucoCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
-        }
-        else
-        {
-            Calibration::chessBoardCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
-        }
+
+        Calibration::chessBoardCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+
         _img_size = _vect_images[0].size();
         ui->label_pathfile->setText(filepath);
         refreshPrintMatrix();
