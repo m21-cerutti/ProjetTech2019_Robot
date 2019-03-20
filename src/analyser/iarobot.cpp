@@ -2,7 +2,6 @@
 
 IARobot::IARobot()
 {
-    step = IARobot::Wait;
 }
 
 IARobot::~IARobot()
@@ -10,6 +9,12 @@ IARobot::~IARobot()
 
 }
 
+void IARobot::simulate()
+{
+
+}
+
+/*
 void IARobot::InitMaster()
 {
     if(nb_frame_init > NB_FRAME_INIT)
@@ -59,7 +64,7 @@ float IARobot::rotate()
 
 float IARobot::moveY()
 {
-    /*
+
     if (step == IARobot::Calibration)
     {
         return 0;
@@ -79,7 +84,7 @@ float IARobot::moveY()
         ProjectUtilities::messageDebug( "Master lost.", true);
     }
     return 0;
-    */
+
 }
 
 float IARobot::moveX()
@@ -121,3 +126,4 @@ float IARobot::moveX()
 
     return move_y / MOVE_Y_SPEED_DIV;
 }
+*/

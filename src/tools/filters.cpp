@@ -1,21 +1,6 @@
-#include "tools/imagefilter.h"
+#include "tools/filters.h"
 
-
-void ImageFilter::applyGray(const cv::Mat &src, cv::Mat &out)
-{
-    if(src.type() != CV_8UC1)
-    {
-        cv::Mat gray;
-        cv::cvtColor(src, gray, CV_BGRA2GRAY);
-        gray.copyTo(out);
-    }
-    else if(src.type() == CV_8UC1)
-    {
-        src.copyTo(out);
-    }
-}
-
-void ImageFilter::separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &mat_right)
+void Filters::separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &mat_right)
 {
     /// Parity of the image
     int offset = 0;
@@ -30,21 +15,25 @@ void ImageFilter::separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &
     mat_right = mat.colRange((mat.cols/2) + offset, mat.cols);
 }
 
-void ImageFilter::computeGaussianBlur(const cv::Mat &src, cv::Mat &out)
+void Filters::computeGaussianBlur(const cv::Mat &src, cv::Mat &out)
 {
     double sigma_x = 0, sigma_y = 0;
     cv::Size size(3,3);
     cv::GaussianBlur( src, out, size, sigma_x, sigma_y, cv::BORDER_DEFAULT );
 }
 
-void ImageFilter::computeGradient(const cv::Mat &src, cv::Mat &out)
+void Filters::computeGradient(const cv::Mat &src, cv::Mat &out)
 {
     cv::Mat gray, grad_x, grad_y;
 
     double scale = 1;
     double delta = 0;
 
-    applyGray(src, gray);
+    if(src.type() != CV_8UC1)
+    {
+        cv::cvtColor(src, gray, CV_BGRA2GRAY);
+    }
+
     computeGaussianBlur(gray, gray);
 
     /// Gradient X
@@ -55,18 +44,22 @@ void ImageFilter::computeGradient(const cv::Mat &src, cv::Mat &out)
     Sobel( gray, grad_y, CV_16S, 0, 1, 3, scale, delta, cv::BORDER_DEFAULT );
     convertScaleAbs( grad_y, grad_y );
 
-    /// Total Gradient (approximate)
+    /// Total Gradient
     addWeighted( grad_x, 1, grad_y, 1, 0, gray, CV_8UC1);
     gray.convertTo(out, CV_8UC1);
 
 }
 
-void ImageFilter::computeLaplacian(const cv::Mat &src, cv::Mat &out)
+void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
 {
     cv::Mat gray, dest;
 
     ///Transform to Gray and smooth
-    applyGray(src, gray);
+    if(src.type() != CV_8UC1)
+    {
+        cv::cvtColor(src, gray, CV_BGRA2GRAY);
+    }
+
     computeGaussianBlur(gray, gray);
 
     /// Apply Laplace function
@@ -75,10 +68,5 @@ void ImageFilter::computeLaplacian(const cv::Mat &src, cv::Mat &out)
     dest.convertTo(out, CV_8UC1);
 }
 
-void ImageFilter::fillBlank(const cv::Mat &src, cv::Mat &out)
-{
-    cv::Mat tmp(src.rows, src.cols, src.type(), cvScalar(255, 255, 255, 255));;
-    tmp.copyTo(out);
-}
 
 

@@ -44,7 +44,7 @@ void BMParamDialog::applyDisparity()
     //Conversion and application of Disparity
     CVQTInterface::toMatCV(_img_src, _mat_dst);
 
-    this->_time = ProjectUtilities::computeEfficiency(StereoMap::computeBMDisparity, _mat_dst, _mat_dst, bmState);
+    this->_time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, _mat_dst, _mat_dst, bmState);
 
     //View the result
     CVQTInterface::toQImage(_mat_dst, _img_dst);

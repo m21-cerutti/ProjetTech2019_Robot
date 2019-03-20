@@ -8,8 +8,6 @@
 #include <QStringList>
 #include <QImage>
 
-#include "tools/cvqtinterface.h"
-#include "tools/projectutilities.h"
 #include "analyser/iarobot.h"
 
 class ClientConnection: public QObject

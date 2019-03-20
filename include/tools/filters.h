@@ -12,22 +12,13 @@
 #include <opencv2/core/affine.hpp>
 
 
-#include "tools/projectutilities.h"
+#include "tools/utilities.h"
 
 /**
- * @brief The ImageFilter class gather all functions about simple filters.
+ * @brief The ImageFilter gather all functions about simple filters.
  */
-class ImageFilter
+namespace Filters
 {
-
-public:
-
-    /**
-     * @brief Transform into greyscale matrix if it's not one yet.
-     * @param src the matrix to transform.
-     * @param out the output matrix.
-     */
-    static void applyGray(const cv::Mat &src, cv::Mat &out);
 
     /**
     * @brief Seperate the image in 2 equal parts (left & right).
@@ -35,38 +26,28 @@ public:
     * @param matL Left result.
     * @param matR Right result.
     */
-    static void separateImage(const cv::Mat &src, cv::Mat &mat_left, cv::Mat &mat_right);
+    void separateImage(const cv::Mat &src, cv::Mat &mat_left, cv::Mat &mat_right);
 
     /**
      * @brief Apply a gaussian filter.
      * @param src the source matrix.
      * @param out the output matrix.
      */
-    static void computeGaussianBlur(const cv::Mat &src, cv::Mat &out);
+    void computeGaussianBlur(const cv::Mat &src, cv::Mat &out);
 
     /**
      * @brief Apply a sobel filter.
      * @param src the source matrix.
      * @param out the output matrix.
      */
-    static void computeGradient(const cv::Mat &src, cv::Mat &out);
+    void computeGradient(const cv::Mat &src, cv::Mat &out);
 
     /**
     * @brief Transform into greyscale if needed and apply the laplacian.
     * @param src the source matrix.
     * @param out the output matrix.
     */
-    static void computeLaplacian(const cv::Mat &src, cv::Mat &out);
-
-    /**
-     * @brief Fill an image with blank. THe source determine the type
-     * Use for disparity map.
-     * @param src the source matrix.
-     * @param out the output matrix.
-     */
-    static void fillBlank(const cv::Mat& src, cv::Mat &out);
-
-
+    void computeLaplacian(const cv::Mat &src, cv::Mat &out);
 
 
 };

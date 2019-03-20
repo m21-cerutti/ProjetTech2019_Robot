@@ -17,10 +17,8 @@
 #include <QDebug>
 #endif
 
-class ProjectUtilities
+namespace Utilities
 {
-public:
-
 
     /**
      * @brief Convert a matrix to a formatted string.
@@ -28,7 +26,7 @@ public:
      * @return the result string.
      */
     template<typename T>
-    static std::string matToString(const cv::Mat& source)
+    std::string matToString(const cv::Mat& source)
     {
         std::string print;
         for(int i=0; i<source.rows; i++)
@@ -50,14 +48,14 @@ public:
      * @brief Personnal system of debugging.
      * @param message the message to display.
      */
-    static void messageDebug(std::string message, bool error = true);
+    void messageDebug(std::string message, bool error = true);
 
     /**
      * @brief show the matrix.
      * @param name the name of the windows cv to refresh or create.
      * @param mat the matrix to display
      */
-    static void showMatrice(std::string name, const cv::Mat& mat);
+    void showMatrice(std::string name, const cv::Mat& mat);
 
     /**
      * @brief Compute the approximate efficiency of a function in ms.
@@ -68,7 +66,7 @@ public:
      * @return the time that have taken.
      */
     template<typename T>
-    static double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out)
+    double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out)
     {
         double elapsed_time;
         clock_t start_time, stop_time;
@@ -83,7 +81,7 @@ public:
     }
 
     template<typename T, typename U>
-    static double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out, U arg)
+    double computeEfficiency(T func, const cv::Mat &src, cv::Mat &out, U arg)
     {
         double elapsed_time;
         clock_t start_time, stop_time;

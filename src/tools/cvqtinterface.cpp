@@ -33,6 +33,82 @@ void CVQTInterface::getSetImagesStereo(const QString folder_path, std::vector<cv
 
 }
 
+void CVQTInterface::stereoVideoExtraction(std::string path_video_left, std::string path_video_right,
+                                          int start_frame,
+                                          int nb_frames,
+                                          std::vector<cv::Mat> &output_left,
+                                          std::vector<cv::Mat> &output_right,
+                                          bool choose)
+{
+    using namespace cv;
+
+    Utilities::messageDebug("Begin of capture's extraction.", false);
+
+    VideoCapture cap_left(path_video_left);
+    VideoCapture cap_right(path_video_right);
+
+    if ( !cap_left.isOpened() || ! cap_right.isOpened())
+    {
+        Utilities::messageDebug("Cannot open the videos files.", true);
+        return;
+    }
+
+    namedWindow("Video_reader_L", CV_WINDOW_AUTOSIZE);
+    namedWindow("Video_reader_R", CV_WINDOW_AUTOSIZE);
+
+    int index_frame = 0;
+    int accepted_frames = 0;
+    while(nb_frames == -1 || accepted_frames < nb_frames)
+    {
+        Mat frame_l, frame_r;
+
+        index_frame++;
+        if (!cap_left.read(frame_l) || !cap_right.read(frame_r))
+        {
+            Utilities::messageDebug("Cannot read the videos files.", true);
+            break;
+        }
+
+        if(index_frame > start_frame)
+        {
+            if(choose)
+            {
+                while(true)
+                {
+
+                    imshow("Video_reader_L", frame_l);
+                    imshow("Video_reader_R", frame_r);
+
+                    if(waitKey(DELAY_DEBUG_VIDEO) == 32) // Wait for 'spacebar' key press to accept
+                    {
+                        accepted_frames++;
+                        output_left.push_back(frame_l);
+                        output_right.push_back(frame_r);
+                        Utilities::messageDebug("Frame "+std::to_string(accepted_frames)+" accepted. Index "+std::to_string(index_frame)+".", false);
+                        break;
+                    }
+                    else if(waitKey(DELAY_DEBUG_VIDEO) == 27) // Wait for 'esc' key press to exit
+                    {
+                        Utilities::messageDebug("Frame rejected : index "+std::to_string(index_frame)+".", false);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                output_left.push_back(frame_l);
+                output_right.push_back(frame_r);
+                accepted_frames++;
+            }
+        }
+    }
+
+    cvDestroyWindow( "Video_reader_L" );
+    cvDestroyWindow( "Video_reader_R" );
+    Utilities::messageDebug("End of capture.", false);
+    return;
+}
+
 void CVQTInterface::toQImage(const cv::Mat &in, QImage &out)
 {
     if(in.empty())
@@ -83,7 +159,7 @@ void CVQTInterface::toQImage(const cv::Mat &in, QImage &out)
     default:
     {
         out = QImage();
-        ProjectUtilities::messageDebug("Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4 | CV_32F.", true);
+        Utilities::messageDebug("Non valid format from openCV, Must be CV_8UC1 | CV_8UC3 | CV_8UC4 | CV_32F.", true);
         break;
     }
     }

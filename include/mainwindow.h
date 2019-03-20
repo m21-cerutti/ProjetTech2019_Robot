@@ -12,10 +12,10 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "tools/projectutilities.h"
+#include "tools/utilities.h"
 #include "tools/cvqtinterface.h"
-#include "tools/imagefilter.h"
-#include "tools/cameracalibration.h"
+#include "tools/filters.h"
+#include "tools/calibration.h"
 #include "tools/videoextractor.h"
 #include "subWindows/sgbmparamdialog.h"
 #include "subWindows/bmparamdialog.h"

@@ -44,18 +44,18 @@ SOURCES += \
     src/subWindows/bmparamdialog.cpp \
     src/subWindows/cameraparamdialog.cpp \
     src/subWindows/sgbmparamdialog.cpp \
-    src/tools/cameracalibration.cpp \
     src/tools/cvqtinterface.cpp \
-    src/tools/imagefilter.cpp \
-    src/tools/projectfiles.cpp \
-    src/tools/projectutilities.cpp \
     src/tools/stereomap.cpp \
-    src/tools/videoextractor.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/custom_controller.cpp \
     src/analyser/iarobot.cpp \
-    src/tools/trackerobjectstereo.cpp
+    src/tools/calibration.cpp \
+    src/tools/filters.cpp \
+    src/tools/files.cpp \
+    src/tools/utilities.cpp \
+    include/tools/stereocamera.cpp \
+    include/stereocamera.cpp
 
 INCLUDEPATH += include/
 
@@ -65,18 +65,18 @@ HEADERS += \
     include/subWindows/bmparamdialog.h \
     include/subWindows/cameraparamdialog.h \
     include/subWindows/sgbmparamdialog.h \
-    include/tools/cameracalibration.h \
     include/tools/cvqtinterface.h \
-    include/tools/imagefilter.h \
-    include/tools/projectfiles.h \
-    include/tools/projectutilities.h \
     include/tools/stereomap.h \
-    include/tools/videoextractor.h \
     include/mainwindow.h \
     include/controller.h \
     include/custom_controller.h \
     include/analyser/iarobot.h \
-    include/tools/trackerobjectstereo.h
+    include/tools/calibration.h \
+    include/tools/filters.h \
+    include/tools/files.h \
+    include/tools/utilities.h \
+    include/tools/stereocamera.h \
+    include/stereocamera.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -45,7 +45,7 @@ void SGBMParamDialog::applyDisparity()
 
     //Conversion and application of Disparity
     CVQTInterface::toMatCV(_img_src, _mat_dst);
-    _time = ProjectUtilities::computeEfficiency(StereoMap::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
+    _time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
 
     //View the result
     CVQTInterface::toQImage(_mat_dst, _img_dst);

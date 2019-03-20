@@ -11,8 +11,8 @@
 
 #include <fstream>
 
-#include "tools/projectutilities.h"
-#include "tools/projectfiles.h"
+#include "tools/utilities.h"
+#include "tools/files.h"
 
 //in cm
 //Board chess
@@ -34,7 +34,7 @@
 /**
  * @brief The CameraCalibration class, gather all the functions about camera calibration.
  */
-class CameraCalibration
+namespace Calibration
 {
 
     ///Functions

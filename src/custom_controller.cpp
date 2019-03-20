@@ -17,10 +17,23 @@ void CustomController::process(const cv::Mat & left_img,
                                const cv::Mat & right_img,
                                float * vx, float * vy, float * omega)
 {
-    setNewImages(left_img, right_img);
+    //setNewImages(left_img, right_img);
+
+    //cv::normalize(image_3d, image_3d, 0, 255, CV_MINMAX, CV_8UC1);
+    //cv::threshold( image_3d, image_3d, 0, 1, CV_THRESH_TRUNC );
+
+
+    /*
+     * initUndistortRectifyMap(left_cam_matrix, left_dist_coeffs, R1, P1, frame_size,CV_32FC1, left_undist_rect_map_x, left_undist_rect_map_y);
+initUndistortRectifyMap(right_cam_matrix, right_dist_coeffs, R2, P2, frame_size, CV_32FC1, right_undist_rect_map_x, right_undist_rect_map_y);
+cv::remap(left_frame, left_undist_rect, left_undist_rect_map_x, left_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, 0);
+cv::remap(right_frame, right_undist_rect, right_undist_rect_map_x, right_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, 0);
+
+ */
+
 
     // Just keep static
-    *vx = moveX();
+    *vx = 0;
     *vy = 0;
     *omega = 0;
 
@@ -29,7 +42,7 @@ void CustomController::process(const cv::Mat & left_img,
 void CustomController::load()
 {
     using namespace cv;
-
+    /*
     ProjectUtilities::messageDebug( "Starting load robot file.", false);
 
     FileStorage fs(NAME_FILE_CONFIG, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
@@ -86,7 +99,7 @@ void CustomController::load()
     fs.release();
 
     ProjectUtilities::messageDebug("Read file sucessfull.", false);
-
+    */
 }
 
 }

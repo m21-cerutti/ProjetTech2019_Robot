@@ -4,11 +4,11 @@
 #include <cv.h>
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
-#include "tools/cameracalibration.h"
-#include "tools/imagefilter.h"
+#include "tools/calibration.h"
+#include "tools/filters.h"
 
 
-#include "tools/projectutilities.h"
+#include "tools/utilities.h"
 
 //cm
 #define DEPTH_MAX 200

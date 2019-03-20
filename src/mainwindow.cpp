@@ -123,7 +123,7 @@ void MainWindow::on_btnGauss_clicked()
     }
 
     double time;
-    time = ProjectUtilities::computeEfficiency(ImageFilter::computeGaussianBlur, _image_mat, _image_mat);
+    time = Utilities::computeEfficiency(Filters::computeGaussianBlur, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("GaussianBlur", time);
@@ -138,7 +138,7 @@ void MainWindow::on_btnSobel_clicked()
     }
 
     double time;
-    time = ProjectUtilities::computeEfficiency(ImageFilter::computeGradient, _image_mat, _image_mat);
+    time = Utilities::computeEfficiency(Filters::computeGradient, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Sobel", time);
@@ -154,7 +154,7 @@ void MainWindow::on_btnLaplacian_clicked()
     }
 
     double time;
-    time = ProjectUtilities::computeEfficiency(ImageFilter::computeLaplacian, _image_mat, _image_mat);
+    time = Utilities::computeEfficiency(Filters::computeLaplacian, _image_mat, _image_mat);
 
     refreshImages();
     showEfficiency("Laplacian", time);
@@ -241,7 +241,7 @@ void MainWindow::on_actionApplyFromFile_triggered()
     // open image
     if(!filename.isEmpty())
     {
-        CameraCalibration::applyUndistorded(_image_mat, _image_mat, filename.toStdString());
+        Calibration::applyUndistorded(_image_mat, _image_mat, filename.toStdString());
         //Refresh window
         refreshImages();
     }
@@ -265,7 +265,7 @@ void MainWindow::on_actionCalibrate_triggered()
         }
     }
 
-    CameraCalibration::chessBoardCalibration(vect_images, "quick_calibration.xml");
+    Calibration::chessBoardCalibration(vect_images, "quick_calibration.xml");
 }
 
 void MainWindow::on_actionCalibration_triggered()
@@ -281,7 +281,7 @@ void MainWindow::on_actionOpen_video_triggered()
     // open image
     if(!filename.isEmpty())
     {
-        VideoExtractor::filterVideo(filename.toStdString(), ImageFilter::computeGradient);
+        VideoExtractor::filterVideo(filename.toStdString(), Filters::computeGradient);
     }
 }
 
@@ -307,7 +307,7 @@ void MainWindow::on_actionCalibrationStereo_triggered()
         std::vector<cv::Mat> vect_images_l, vect_images_r;
 
         CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
-        CameraCalibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
+        Calibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
     }
 }
 
@@ -321,7 +321,7 @@ void MainWindow::on_actionCalibrationStereoVideo_triggered()
         std::vector<cv::Mat> vect_images_l, vect_images_r ;
         VideoExtractor::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images_r, vect_images_l, true);
 
-        CameraCalibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
+        Calibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
     }
 }
 
@@ -335,7 +335,7 @@ void MainWindow::on_actionExtractImages_triggered()
     {
         std::vector<cv::Mat> vect_images_left, vect_images_right;
         VideoExtractor::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 25, vect_images_left, vect_images_right, true);
-        ProjectFiles::saveSetImages( "./setTest/stereo", vect_images_left, vect_images_right);
+        Files::saveSetImages( "./setTest/stereo", vect_images_left, vect_images_right);
     }
 }
 
@@ -361,7 +361,7 @@ void MainWindow::on_actionDepthBM_triggered()
         if(dial.exec() != QDialog::Rejected)
         {
             bmState = dial.getBMState();
-            ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+            Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
 
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
@@ -383,7 +383,7 @@ void MainWindow::on_actionDepthBM_triggered()
                 // and link accordingly
                 cv::Mat falseColorsMap;
                 applyColorMap(adjMap, falseColorsMap, cv::COLORMAP_HOT);
-                ProjectUtilities::showMatrice("false"+std::to_string(i), falseColorsMap);
+                Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
             }
         }
     }
@@ -410,7 +410,7 @@ void MainWindow::on_actionDepthSGBM_triggered()
         if(dial.exec() != QDialog::Rejected)
         {
             sgbmState = dial.getSGBMState();
-            ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+            Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoMap::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
@@ -430,7 +430,7 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 // and link accordingly
                 cv::Mat falseColorsMap;
                 applyColorMap(adjMap, falseColorsMap, cv::COLORMAP_HOT);
-                ProjectUtilities::showMatrice("false"+std::to_string(i), falseColorsMap);
+                Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
             }
         }
     }
@@ -457,7 +457,7 @@ void MainWindow::on_actionDepthBMVideo_triggered()
         if(dial.exec() != QDialog::Rejected)
         {
             bmState = dial.getBMState();
-            ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+            Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoMap::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
@@ -465,7 +465,7 @@ void MainWindow::on_actionDepthBMVideo_triggered()
 
 
 
-                ProjectUtilities::showMatrice(std::to_string(i), depth_map);
+                Utilities::showMatrice(std::to_string(i), depth_map);
             }
         }
     }
@@ -493,7 +493,7 @@ void MainWindow::on_actionDepthSGBMVideo_triggered()
         {
             sgbmState = dial.getSGBMState();
 
-            ProjectFiles::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
+            Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
 
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {

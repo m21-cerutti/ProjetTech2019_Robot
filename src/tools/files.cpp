@@ -1,30 +1,30 @@
-#include "tools/projectfiles.h"
+#include "tools/files.h"
 
 
-bool ProjectFiles::getMatrixCalibrationFileStorage(const std::string file_path, const std::string name_parameter, cv::Mat &out)
+bool Files::getMatrixCalibrationFileStorage(const std::string file_path, const std::string name_parameter, cv::Mat &out)
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting load matrix in file: " +file_path, false);
+    Utilities::messageDebug( "Starting load matrix in file: " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
-        ProjectUtilities::messageDebug("Can't open file for read the parameter of calibration.", true);
+        Utilities::messageDebug("Can't open file for read the parameter of calibration.", true);
         return false;
     }
 
     std::string date;
     fs["calibration_date"] >> date;
-    ProjectUtilities::messageDebug("Calibration date : " +  date, false);
+    Utilities::messageDebug("Calibration date : " +  date, false);
 
     fs[name_parameter] >> out;
     fs.release();
 
-    ProjectUtilities::messageDebug("Read file parameter sucessfull.", false);
+    Utilities::messageDebug("Read file parameter sucessfull.", false);
     return true;
 }
 
-bool ProjectFiles::saveSetImages(const std::string prefix_folder, const std::vector<cv::Mat> images_left, const std::vector<cv::Mat> images_right)
+bool Files::saveSetImages(const std::string prefix_folder, const std::vector<cv::Mat> images_left, const std::vector<cv::Mat> images_right)
 {
     using namespace cv;
 
@@ -32,18 +32,18 @@ bool ProjectFiles::saveSetImages(const std::string prefix_folder, const std::vec
     if (std::system(folder_cmd.c_str()) == 0)
     {
 
-        ProjectUtilities::messageDebug("Create folder done.", false);
+        Utilities::messageDebug("Create folder done.", false);
     }
     else
     {
-        ProjectUtilities::messageDebug("Error create folder.", true);
+        Utilities::messageDebug("Error create folder.", true);
     }
 
-    ProjectUtilities::messageDebug( "Starting save set camera: " +prefix_folder, false);
+    Utilities::messageDebug( "Starting save set camera: " +prefix_folder, false);
 
     if(images_left.size() != images_right.size())
     {
-        ProjectUtilities::messageDebug("Not the same number of images.", true);
+        Utilities::messageDebug("Not the same number of images.", true);
         return false;
     }
 
@@ -55,11 +55,11 @@ bool ProjectFiles::saveSetImages(const std::string prefix_folder, const std::vec
 
     time_t rawtime; time(&rawtime);
     std::string date =  asctime(localtime(&rawtime));
-    ProjectUtilities::messageDebug("Set done. Date : " + date, false);
+    Utilities::messageDebug("Set done. Date : " + date, false);
     return true;
 }
 
-bool ProjectFiles::loadIntrinsicCamera(const std::string file_path,
+bool Files::loadIntrinsicCamera(const std::string file_path,
                                        cv::Size &img_size,
                                        cv::Mat& camera_matrix,
                                        cv::Mat& dist_coeffs,
@@ -68,17 +68,17 @@ bool ProjectFiles::loadIntrinsicCamera(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting load intrinsic camera: " +file_path, false);
+    Utilities::messageDebug( "Starting load intrinsic camera: " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
-        ProjectUtilities::messageDebug("Can't open file for read calibration.", true);
+        Utilities::messageDebug("Can't open file for read calibration.", true);
         return false;
     }
 
     std::string date;
     fs["calibration_date"] >> date;
-    ProjectUtilities::messageDebug("Calibration date : " +  date, false);
+    Utilities::messageDebug("Calibration date : " +  date, false);
 
     fs["width"] >> img_size.width;
     fs["height"] >> img_size.height;
@@ -88,17 +88,17 @@ bool ProjectFiles::loadIntrinsicCamera(const std::string file_path,
     fs["tvecs"] >> tvecs;
     fs.release();
 
-    ProjectUtilities::messageDebug("Read camera file sucessfull.", false);
+    Utilities::messageDebug("Read camera file sucessfull.", false);
     return true;
 }
 
-bool ProjectFiles::loadIntrinsicCamera(const std::string file_path, cv::Size &img_size, cv::Mat &camera_matrix, cv::Mat &dist_coeffs)
+bool Files::loadIntrinsicCamera(const std::string file_path, cv::Size &img_size, cv::Mat &camera_matrix, cv::Mat &dist_coeffs)
 {
     std::vector<cv::Mat> rvecs, tvecs;
     return loadIntrinsicCamera(file_path, img_size, camera_matrix, dist_coeffs, rvecs, tvecs);
 }
 
-bool ProjectFiles::saveIntrinsicCamera(const std::string file_path,
+bool Files::saveIntrinsicCamera(const std::string file_path,
                                        const cv::Size img_size,
                                        const cv::Mat& camera_matrix,
                                        const  cv::Mat& dist_coeffs,
@@ -107,11 +107,11 @@ bool ProjectFiles::saveIntrinsicCamera(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting save intrinsic camera: " +file_path, false);
+    Utilities::messageDebug( "Starting save intrinsic camera: " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
     if(!fs.isOpened()) {
-        ProjectUtilities::messageDebug("Can't open file for write calibration.", true);
+        Utilities::messageDebug("Can't open file for write calibration.", true);
         return false;
     }
 
@@ -126,11 +126,11 @@ bool ProjectFiles::saveIntrinsicCamera(const std::string file_path,
     fs << "tvecs" << tvecs;
     fs.release();
 
-    ProjectUtilities::messageDebug("File done. Date : " + date, false);
+    Utilities::messageDebug("File done. Date : " + date, false);
     return true;
 }
 
-bool ProjectFiles::loadCameraStereoParameters(const std::string file_path,
+bool Files::loadCameraStereoParameters(const std::string file_path,
                                               cv::Mat &camera_matrix_l,
                                               cv::Mat &dist_coeffs_l,
                                               cv::Mat &camera_matrix_r,
@@ -148,17 +148,17 @@ bool ProjectFiles::loadCameraStereoParameters(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting load intrinsic camera : " +file_path, false);
+    Utilities::messageDebug( "Starting load intrinsic camera : " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
-        ProjectUtilities::messageDebug("Can't open file for read calibration.", true);
+        Utilities::messageDebug("Can't open file for read calibration.", true);
         return false;
     }
 
     std::string date;
     fs["calibration_date"] >> date;
-    ProjectUtilities::messageDebug("Calibration date : " +  date, false);
+    Utilities::messageDebug("Calibration date : " +  date, false);
     fs["width"] >> img_size.width;
     fs["height"] >> img_size.height;
     fs["camera_matrix_l"] >> camera_matrix_l;
@@ -177,11 +177,11 @@ bool ProjectFiles::loadCameraStereoParameters(const std::string file_path,
 
     fs.release();
 
-    ProjectUtilities::messageDebug("Read camera file sucessfull.", false);
+    Utilities::messageDebug("Read camera file sucessfull.", false);
     return true;
 }
 
-bool ProjectFiles::saveCameraStereoParameters(const std::string file_path,
+bool Files::saveCameraStereoParameters(const std::string file_path,
                                               const cv::Mat &camera_matrix_l,
                                               const cv::Mat &dist_coeffs_l,
                                               const cv::Mat &camera_matrix_r,
@@ -199,11 +199,11 @@ bool ProjectFiles::saveCameraStereoParameters(const std::string file_path,
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting stereo save extrinsic : " +file_path, false);
+    Utilities::messageDebug( "Starting stereo save extrinsic : " +file_path, false);
 
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
     if(!fs.isOpened()) {
-        ProjectUtilities::messageDebug("Can't open file for write calibration.", true);
+        Utilities::messageDebug("Can't open file for write calibration.", true);
         return false;
     }
 
@@ -228,7 +228,7 @@ bool ProjectFiles::saveCameraStereoParameters(const std::string file_path,
 
     fs.release();
 
-    ProjectUtilities::messageDebug("File done. Date : " + date, false);
+    Utilities::messageDebug("File done. Date : " + date, false);
     return true;
 }
 

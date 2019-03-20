@@ -1,6 +1,6 @@
-#include "tools/cameracalibration.h"
+#include "tools/calibration.h"
 
-
+int Calibration::stereoChessboard(const std::vector<cv::Mat> &sources_images_left,
 int CameraCalibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images, const std::string path_camera_file)
 {
     using namespace cv;
@@ -221,7 +221,7 @@ int CameraCalibration::stereoChessboard(const std::vector<cv::Mat> &sources_imag
 {
     using namespace cv;
 
-    ProjectUtilities::messageDebug( "Starting chessboard stereo calibration.", false);
+    Utilities::messageDebug( "Starting chessboard stereo calibration.", false);
 
     //FIND CHESSBOARD
     //Initialisation
@@ -271,7 +271,7 @@ int CameraCalibration::stereoChessboard(const std::vector<cv::Mat> &sources_imag
         }
     }
     //END FIND CHESSBOARD
-    ProjectUtilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
+    Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
 
     //Calibration
     cv::Mat camera_matrix_l = cv::Mat(3, 3, CV_64F);
@@ -289,19 +289,19 @@ int CameraCalibration::stereoChessboard(const std::vector<cv::Mat> &sources_imag
     camera_matrix_r.ptr<float>(1)[1] = 1;
 
     double rmserror1 = calibrateCamera(object_points, left_img_points, sources_images_left[0].size(), camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
-    ProjectUtilities::messageDebug( "Calibration finish with left :" + std::to_string(rmserror1) + " of error.", false);
+    Utilities::messageDebug( "Calibration finish with left :" + std::to_string(rmserror1) + " of error.", false);
     double rmserror2 = calibrateCamera(object_points, right_img_points, sources_images_right[0].size(), camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
-    ProjectUtilities::messageDebug( "And right :" + std::to_string(rmserror2) + " of error.", false);
+    Utilities::messageDebug( "And right :" + std::to_string(rmserror2) + " of error.", false);
 
     //Save
-    ProjectUtilities::messageDebug( "Saving calibration in "+path_camera_l+ " and "+path_camera_r+"...", false);
-    ProjectFiles::saveIntrinsicCamera( path_camera_l, sources_images_left[0].size(), camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
-    ProjectFiles::saveIntrinsicCamera( path_camera_r, sources_images_right[0].size(), camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
+    Utilities::messageDebug( "Saving calibration in "+path_camera_l+ " and "+path_camera_r+"...", false);
+    Files::saveIntrinsicCamera( path_camera_l, sources_images_left[0].size(), camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
+    Files::saveIntrinsicCamera( path_camera_r, sources_images_right[0].size(), camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
 
     return nb_rejected;
 }
 
-void CameraCalibration::stereoCalibration(const std::string path_file_stereo,
+void Calibration::stereoCalibration(const std::string path_file_stereo,
                                           const std::vector<cv::Mat> &sources_images_left,
                                           const std::vector<cv::Mat> &sources_images_right,
                                           const std::string path_camera_file_l,
@@ -324,27 +324,27 @@ void CameraCalibration::stereoCalibration(const std::string path_file_stereo,
                      left_img_points,
                      right_img_points);
 
-    ProjectFiles::loadIntrinsicCamera(path_camera_file_l, img_size, camera_matrix_l, dist_coeffs_l);
-    ProjectFiles::loadIntrinsicCamera(path_camera_file_r, img_size, camera_matrix_r, dist_coeffs_r);
+    Files::loadIntrinsicCamera(path_camera_file_l, img_size, camera_matrix_l, dist_coeffs_l);
+    Files::loadIntrinsicCamera(path_camera_file_r, img_size, camera_matrix_r, dist_coeffs_r);
 
-    ProjectUtilities::messageDebug("Starting Calibration.",false);
-    ProjectUtilities::messageDebug("Read intrasic...",false);
+    Utilities::messageDebug("Starting Calibration.",false);
+    Utilities::messageDebug("Read intrasic...",false);
 
-    ProjectUtilities::messageDebug( "Starting stereo calibration.", false);
+    Utilities::messageDebug( "Starting stereo calibration.", false);
 
     Mat R, F, E;
     Vec3d T;
     int flag = CV_CALIB_FIX_INTRINSIC;
 
-    ProjectUtilities::messageDebug("Stereo calibrate...", false);
+    Utilities::messageDebug("Stereo calibrate...", false);
     double rmserror = stereoCalibrate(object_points, left_img_points, right_img_points, camera_matrix_l, dist_coeffs_l,
                                       camera_matrix_r, dist_coeffs_r, img_size, R, T, E, F, flag);
-    ProjectUtilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
+    Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
 
-    ProjectUtilities::messageDebug("Starting Rectification.", false);
+    Utilities::messageDebug("Starting Rectification.", false);
     cv::Mat R1, R2, P1, P2, Q;
     stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q);
-    ProjectUtilities::messageDebug("Done Rectification.", false);
+    Utilities::messageDebug("Done Rectification.", false);
 
     /*
     int i =0;
@@ -365,7 +365,7 @@ void CameraCalibration::stereoCalibration(const std::string path_file_stereo,
     }
     */
 
-    ProjectFiles::saveCameraStereoParameters(path_file_stereo, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, F, E, T, R1, R2, P1, P2, Q);
+    Files::saveCameraStereoParameters(path_file_stereo, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, F, E, T, R1, R2, P1, P2, Q);
 }
 
 

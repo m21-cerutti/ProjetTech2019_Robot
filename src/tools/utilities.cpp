@@ -1,6 +1,6 @@
-#include "tools/projectutilities.h"
+#include "tools/utilities.h"
 
-void ProjectUtilities::messageDebug(std::string message, bool error)
+void Utilities::messageDebug(std::string message, bool error)
 {
 #ifdef IS_COMPUTER
     if(error)
@@ -19,7 +19,7 @@ void ProjectUtilities::messageDebug(std::string message, bool error)
 #endif
 }
 
-void ProjectUtilities::showMatrice(std::string name, const cv::Mat &mat)
+void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 {
     #ifdef IS_COMPUTER
     if(mat.empty())

@@ -9,7 +9,6 @@
 #include <QtNetwork/QAbstractSocket>
 #include <QtNetwork/QNetworkInterface>
 
-#include "tools/projectutilities.h"
 #include "analyser/clientconnection.h"
 
 #define DEBUG_NETWORK

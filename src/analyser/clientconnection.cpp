@@ -99,7 +99,6 @@ void ClientConnection::analyse(char *cmd, int len)
         cv::Mat tmp_l(1, size_left, CV_8UC3, cmd+offset_left);
         cv::Mat img_left = cv::imdecode(tmp_l, CV_LOAD_IMAGE_UNCHANGED);
 
-
         cv::Mat tmp_r(1, size_right, CV_8UC3, cmd+offset_right);
         cv::Mat img_right = cv::imdecode(tmp_r, CV_LOAD_IMAGE_UNCHANGED);
 
