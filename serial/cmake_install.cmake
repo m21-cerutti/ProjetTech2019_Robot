@@ -1,4 +1,4 @@
-# Install script for directory: /home/cerutt-m21/Documents/University/Projet-Tech-3D/l3-rvc/serial
+# Install script for directory: /net/cremi/mcerutti/espaces/travail/Semestre 6/Projet tech 3D/l3-rvc/serial
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -30,10 +30,5 @@ endif()
 # Install shared libraries without execute permission?
 if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
-endif()
-
-# Is this installation the result of a crosscompile?
-if(NOT DEFINED CMAKE_CROSSCOMPILING)
-  set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 

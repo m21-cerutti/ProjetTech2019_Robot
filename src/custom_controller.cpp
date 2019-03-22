@@ -23,6 +23,7 @@ void CustomController::process(const cv::Mat & left_img,
 
     Utilities::showMatrice("Normal_"+std::to_string(nb_frame), left_img);
     Utilities::showMatrice("Normal_"+std::to_string(nb_frame), right_img);
+    Utilities::messageDebug("Normal images save.", false);
 
     Mat disparity, depth_map;
 
@@ -47,17 +48,20 @@ void CustomController::process(const cv::Mat & left_img,
 
     Utilities::showMatrice("Undistord_"+std::to_string(nb_frame), left_img_undist);
     Utilities::showMatrice("Undistord_"+std::to_string(nb_frame), right_img_undist);
+    Utilities::messageDebug("Undistord images save.", false);
 
     //DISPARITY
     StereoMap::computeBMDisparityStereo( left_img_undist, right_img_undist, disparity, bm_state);
 
     Utilities::showMatrice("Disparity_"+std::to_string(nb_frame), left_img_undist);
+    Utilities::messageDebug("Disparity images save.", false);
 
     //DEPTH
     StereoMap::computeDepthMap(disparity, Q, depth_map);
     threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
 
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
+    Utilities::messageDebug("Depth images save.", false);
 
     //BLOB
     std::vector<KeyPoint> keypoints;
@@ -69,11 +73,46 @@ void CustomController::process(const cv::Mat & left_img,
     drawKeypoints( depth_map, keypoints, im_with_keypoints, Scalar(0,0,255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
 
     Utilities::showMatrice("Blob_"+std::to_string(nb_frame), depth_map);
+    Utilities::messageDebug("Blob images save.", false);
 
     // Just keep static
-    *vx = 0;
-    *vy = 0;
-    *omega = 0;
+    if(nb_frame < 5)
+    {
+        *vx = 0;
+        *vy = 0;
+        *omega = 0;
+    }
+    else if(nb_frame < 10)
+    {
+        *vx = 1;
+        *vy = 0;
+        *omega = 0;
+    }
+    else if(nb_frame < 15)
+    {
+        *vx = 0;
+        *vy = 1;
+        *omega = 0;
+    }
+    else if(nb_frame < 20)
+    {
+        *vx = -1;
+        *vy = 0;
+        *omega = 0;
+    }
+    else if(nb_frame < 25)
+    {
+        *vx = 0;
+        *vy = -1;
+        *omega = 0;
+    }
+    else
+    {
+        *vx = 0;
+        *vy = 0;
+        *omega = 1;
+    }
+
 
 }
 
@@ -218,7 +257,7 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 
     using namespace cv;
 
-    std::string folder_cmd = "mkdir -p ./DEBUG_IMAGES_CERUTTI/"+name;
+    std::string folder_cmd = "mkdir -p ./DEBUG_IMAGES_CERUTTI/";
     if (std::system(folder_cmd.c_str()) == 0)
     {
 
@@ -233,7 +272,7 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 
     time_t rawtime; time(&rawtime);
     std::string date =  asctime(localtime(&rawtime));
-    imwrite("./DEBUG_IMAGES_CERUTTI/"+name+"_"+date, mat);
+    imwrite("./DEBUG_IMAGES_CERUTTI/"+name+"_"+date+".png", mat);
 
     Utilities::messageDebug("Image saved.", false);
 

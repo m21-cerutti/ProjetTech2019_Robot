@@ -1,4 +1,4 @@
-# Install script for directory: /home/cerutt-m21/Documents/University/Projet-Tech-3D/l3-rvc
+# Install script for directory: /net/cremi/mcerutti/espaces/travail/Semestre 6/Projet tech 3D/l3-rvc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -32,14 +32,9 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
-# Is this installation the result of a crosscompile?
-if(NOT DEFINED CMAKE_CROSSCOMPILING)
-  set(CMAKE_CROSSCOMPILING "FALSE")
-endif()
-
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/cerutt-m21/Documents/University/Projet-Tech-3D/l3-rvc/serial/cmake_install.cmake")
+  include("/net/cremi/mcerutti/espaces/travail/Semestre 6/Projet tech 3D/l3-rvc/serial/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/cerutt-m21/Documents/University/Projet-Tech-3D/l3-rvc/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/net/cremi/mcerutti/espaces/travail/Semestre 6/Projet tech 3D/l3-rvc/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
