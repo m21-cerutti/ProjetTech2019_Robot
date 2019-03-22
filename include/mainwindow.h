@@ -20,6 +20,8 @@
 #include "subWindows/bmparamdialog.h"
 #include "subWindows/cameraparamdialog.h"
 
+#include "custom_controller.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -87,6 +89,8 @@ private slots:
 
     void on_actionDepthSGBMVideo_triggered();
 
+
+    void on_actionTest_controller_triggered();
 
 private:
 

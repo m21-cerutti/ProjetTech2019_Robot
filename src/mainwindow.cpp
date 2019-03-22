@@ -303,13 +303,6 @@ void MainWindow::on_actionDepthBM_triggered()
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoBM> bmState;
 
-        /*
-        initUndistortRectifyMap(left_cam_matrix, left_dist_coeffs, R1, P1, frame_size,CV_32FC1, left_undist_rect_map_x, left_undist_rect_map_y);
-        initUndistortRectifyMap(right_cam_matrix, right_dist_coeffs, R2, P2, frame_size, CV_32FC1, right_undist_rect_map_x, right_undist_rect_map_y);
-        cv::remap(left_frame, left_undist_rect, left_undist_rect_map_x, left_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, 0);
-        cv::remap(right_frame, right_undist_rect, right_undist_rect_map_x, right_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, 0);
-        */
-
         QImage disp_q;
         cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
         CVQTInterface::toQImage(disparity, disp_q);
@@ -464,3 +457,26 @@ void MainWindow::on_actionDepthSGBMVideo_triggered()
     }
 }
 
+
+void MainWindow::on_actionTest_controller_triggered()
+{
+    QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
+
+    // open image
+    if(!folder_set.isEmpty())
+    {
+        std::vector<cv::Mat> vect_images_l, vect_images_r;
+
+        CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
+
+        cerutti::CustomController cont = cerutti::CustomController();
+        cont.load();
+        float vx, vy, omega;
+        for(int i =0; i< vect_images_l.size(); i++)
+        {
+            cont.process(vect_images_l.at(i), vect_images_r.at(i), &vx, &vy, &omega);
+            Utilities::messageDebug("End frame " +std::to_string(i), false);
+            Utilities::messageDebug(std::to_string(vx)+";"+std::to_string(vy)+";"+std::to_string(omega), false);
+        }
+    }
+}

@@ -21,9 +21,18 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
     {
         cv::cvtColor(src_left, left_mat, CV_BGRA2GRAY);
     }
+    else
+    {
+        left_mat = src_left;
+    }
+
     if(src_right.type() != CV_8UC1)
     {
         cv::cvtColor(src_right, right_mat, CV_BGRA2GRAY);
+    }
+    else
+    {
+        right_mat = src_right;
     }
 
     ///Disparity map

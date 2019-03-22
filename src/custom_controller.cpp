@@ -21,11 +21,11 @@ void CustomController::process(const cv::Mat & left_img,
 
     nb_frame++;
 
-    Utilities::showMatrice("Normal_"+std::to_string(nb_frame), left_img);
-    Utilities::showMatrice("Normal_"+std::to_string(nb_frame), right_img);
+    Utilities::showMatrice("Normal_l_"+std::to_string(nb_frame), left_img);
+    Utilities::showMatrice("Normal_r_"+std::to_string(nb_frame), right_img);
     Utilities::messageDebug("Normal images save.", false);
 
-    Mat disparity, depth_map;
+    cv::Mat disparity, depth_map;
 
     Size image_size(size_width, size_height);
 
@@ -40,20 +40,23 @@ void CustomController::process(const cv::Mat & left_img,
          ;
 
     //UNDISTORD
-    initUndistortRectifyMap(camera_matrix_l, dist_coeffs_l, R1, P1, image_size, CV_32FC1, left_undist_rect_map_x, left_undist_rect_map_y);
-    initUndistortRectifyMap(camera_matrix_r, dist_coeffs_r, R2, P2,  image_size, CV_32FC1, right_undist_rect_map_x, right_undist_rect_map_y);
+
+    initUndistortRectifyMap(camera_matrix_l, dist_coeffs_l, R1, camera_matrix_l, image_size, CV_32FC1, left_undist_rect_map_x, left_undist_rect_map_y);
+    initUndistortRectifyMap(camera_matrix_r, dist_coeffs_r, R2, camera_matrix_r,  image_size, CV_32FC1, right_undist_rect_map_x, right_undist_rect_map_y);
 
     remap(left_img, left_img_undist, left_undist_rect_map_x, left_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, Scalar());
     remap(right_img, right_img_undist, right_undist_rect_map_x, right_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, Scalar());
 
-    Utilities::showMatrice("Undistord_"+std::to_string(nb_frame), left_img_undist);
-    Utilities::showMatrice("Undistord_"+std::to_string(nb_frame), right_img_undist);
+    //undistort(left_img, left_img_undist, camera_matrix_l, dist_coeffs_l);
+
+    Utilities::showMatrice("Undistord_l_"+std::to_string(nb_frame), left_img_undist);
+    Utilities::showMatrice("Undistord_r_"+std::to_string(nb_frame), right_img_undist);
     Utilities::messageDebug("Undistord images save.", false);
 
     //DISPARITY
     StereoMap::computeBMDisparityStereo( left_img_undist, right_img_undist, disparity, bm_state);
 
-    Utilities::showMatrice("Disparity_"+std::to_string(nb_frame), left_img_undist);
+    Utilities::showMatrice("Disparity_"+std::to_string(nb_frame), disparity);
     Utilities::messageDebug("Disparity images save.", false);
 
     //DEPTH
@@ -64,12 +67,15 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::messageDebug("Depth images save.", false);
 
     //BLOB
+    normalize(depth_map, depth_map, 0, 255, NORM_MINMAX, CV_8UC1);
     std::vector<KeyPoint> keypoints;
     blob_detector->detect( depth_map, keypoints);
 
     // Draw detected blobs as red circles.
     // DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
+
     Mat im_with_keypoints;
+
     drawKeypoints( depth_map, keypoints, im_with_keypoints, Scalar(0,0,255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
 
     Utilities::showMatrice("Blob_"+std::to_string(nb_frame), depth_map);
@@ -84,33 +90,33 @@ void CustomController::process(const cv::Mat & left_img,
     }
     else if(nb_frame < 10)
     {
-        *vx = 1;
+        *vx = 1*MOVE_SPEED_MULT;
         *vy = 0;
         *omega = 0;
     }
     else if(nb_frame < 15)
     {
         *vx = 0;
-        *vy = 1;
+        *vy = 1*MOVE_SPEED_MULT;
         *omega = 0;
     }
     else if(nb_frame < 20)
     {
-        *vx = -1;
+        *vx = -1*MOVE_SPEED_MULT;
         *vy = 0;
         *omega = 0;
     }
     else if(nb_frame < 25)
     {
         *vx = 0;
-        *vy = -1;
+        *vy = -1*MOVE_SPEED_MULT;
         *omega = 0;
     }
     else
     {
         *vx = 0;
         *vy = 0;
-        *omega = 1;
+        *omega = 1*MOVE_SPEED_MULT;
     }
 
 
@@ -157,7 +163,8 @@ void CustomController::load()
     int minDisparity;
     int numDisparities;
 
-    Ptr<StereoBM> bm_state = StereoBM::create();
+    bm_state = StereoBM::create();
+
     fs["preFilterCap"] >> preFilterCap;
     bm_state->setPreFilterCap(preFilterCap);
     fs["PreFilterSize"] >> PreFilterSize;
@@ -201,7 +208,7 @@ void CustomController::load()
     params.minInertiaRatio = 0.01;
 
     // Set up detector with params
-    Ptr<SimpleBlobDetector> blob_detector = SimpleBlobDetector::create(params);
+    blob_detector = SimpleBlobDetector::create(params);
 
     fs.release();
 
@@ -256,8 +263,12 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 #else
 
     using namespace cv;
+    time_t rawtime; time(&rawtime);
+    std::string date(asctime(localtime(&rawtime)));
+    std::string folder = "DEBUG_IMAGES_CERUTTI";
 
-    std::string folder_cmd = "mkdir -p ./DEBUG_IMAGES_CERUTTI/";
+
+    std::string folder_cmd = "mkdir -p \""+folder+"\"";
     if (std::system(folder_cmd.c_str()) == 0)
     {
 
@@ -269,10 +280,7 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
     }
 
     Utilities::messageDebug( "Starting save image: " +name, false);
-
-    time_t rawtime; time(&rawtime);
-    std::string date =  asctime(localtime(&rawtime));
-    imwrite("./DEBUG_IMAGES_CERUTTI/"+name+"_"+date+".png", mat);
+    imwrite(folder+"/"+name+"_"+date+".png", mat);
 
     Utilities::messageDebug("Image saved.", false);
 
@@ -356,29 +364,27 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
 //////////////////////////////////
 
 
-
-void StereoMap::computeBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
-{
-    cv::Mat left_mat, right_mat;
-
-    ///Separate
-    Filters::separateImage(src, left_mat, right_mat);
-
-    computeBMDisparityStereo(left_mat, right_mat, out, bm_state);
-}
-
 void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
 {
     cv::Mat left_mat, right_mat, disparity;
 
+    disparity =cv::Mat(src_left.size(), CV_32F, Scalar());
     ///Gray
     if(src_left.type() != CV_8UC1)
     {
         cv::cvtColor(src_left, left_mat, CV_BGRA2GRAY);
     }
+    else
+    {
+         src_left.copyTo(left_mat);
+    }
     if(src_right.type() != CV_8UC1)
     {
         cv::cvtColor(src_right, right_mat, CV_BGRA2GRAY);
+    }
+    else
+    {
+         src_right.copyTo(right_mat);
     }
 
     ///Disparity map
@@ -390,14 +396,6 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
 
 
     disparity.copyTo(out);
-}
-
-void StereoMap::computeSGBMDisparity(const cv::Mat &src, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
-{
-    cv::Mat left_mat, right_mat;
-    Filters::separateImage(src, left_mat, right_mat);
-
-    computeSGBMDisparityStereo(left_mat, right_mat, out, sgbm_state);
 }
 
 void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)

@@ -24,7 +24,7 @@ using namespace cv;
 
 #define NB_FRAME_INIT 10
 
-#define MOVE_Y_SPEED_DIV 2
+#define MOVE_SPEED_MULT 0.2
 
 class CustomController : public Controller
 {
@@ -187,17 +187,6 @@ namespace StereoMap
 {
 
 /**
-     * @brief Make disparity map with BM algorithm
-     * @param src the matrix to compute with left and right image
-     * @param out the output matrix.
-     * @param bmState he parameters initialised for computing
-     *     PRESET
-     *     nbdisparities
-     *     SADWindowsSize
-     */
-void computeBMDisparity(const Mat &src, Mat &out, Ptr<StereoBM> bm_state);
-
-/**
      * @brief Make disparity map with BM algorithm.
      * @param src_left the source image left.
      * @param src_right the source image right.
@@ -208,26 +197,6 @@ void computeBMDisparity(const Mat &src, Mat &out, Ptr<StereoBM> bm_state);
      *     SADWindowsSize
      */
 void computeBMDisparityStereo(const Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoBM> bm_state);
-
-
-/**
-     * @brief Make disparity map with SGBM algorithm.
-     * @param src the matrix to compute with left and right image.
-     * @param out the output matrix.
-     * @param sgbmState the parameters initialised for computing
-     *     preFilterCap
-     *     fullDP
-     *     P1
-     *     P2
-     *     minDisparity
-     *     numberOfDisparities
-     *     uniquenessRatio
-     *     speckleWindowSize
-     *     speckleRange
-     *     disp12MaxDiff
-     *     SADWindowSize
-     */
-void computeSGBMDisparity(const Mat &src, Mat &out, Ptr<StereoSGBM> sgbm_state);
 
 /**
      * @brief Make disparity map with SGBM algorithm.

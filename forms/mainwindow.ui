@@ -223,7 +223,7 @@
    </widget>
    <widget class="QMenu" name="menuCameraCalibration">
     <property name="title">
-     <string>Calibration</string>
+     <string>&amp;Calibration</string>
     </property>
     <addaction name="actionCalibration"/>
     <addaction name="actionCalibrationStereo"/>
@@ -261,6 +261,12 @@
     <addaction name="actionDepthBM"/>
     <addaction name="actionDepthSGBM"/>
    </widget>
+   <widget class="QMenu" name="menuRobot">
+    <property name="title">
+     <string>&amp;Robot</string>
+    </property>
+    <addaction name="actionTest_controller"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuFilter"/>
@@ -268,6 +274,7 @@
    <addaction name="menuCameraCalibration"/>
    <addaction name="menuDisparity_map"/>
    <addaction name="menuDepthMap"/>
+   <addaction name="menuRobot"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -367,17 +374,22 @@
   </action>
   <action name="actionDepthBM">
    <property name="text">
-    <string>BM</string>
+    <string>&amp;BM</string>
    </property>
   </action>
   <action name="actionDepthSGBM">
    <property name="text">
-    <string>SGBM</string>
+    <string>&amp;SGBM</string>
    </property>
   </action>
   <action name="actionCalibrationStereo">
    <property name="text">
-    <string>CalibrationStereo</string>
+    <string>Ca&amp;librationStereo</string>
+   </property>
+  </action>
+  <action name="actionTest_controller">
+   <property name="text">
+    <string>Test controller</string>
    </property>
   </action>
  </widget>
