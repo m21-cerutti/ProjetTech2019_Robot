@@ -215,7 +215,6 @@ void CustomController::load()
     Utilities::messageDebug("Read file sucessfull.", false);
 }
 
-
 //////////////////////////////////
 
 void Utilities::messageDebug(std::string message, bool error)
@@ -288,9 +287,7 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 
 }
 
-
 //////////////////////////////////
-
 
 void Filters::separateImage(const cv::Mat& mat, cv::Mat &mat_left, cv::Mat &mat_right)
 {
@@ -359,7 +356,6 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
     convertScaleAbs( dest, dest );
     dest.convertTo(out, CV_8UC1);
 }
-
 
 //////////////////////////////////
 
