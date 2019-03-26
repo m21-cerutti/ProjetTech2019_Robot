@@ -255,6 +255,7 @@ void MainWindow::on_actionCalibrationStereo_triggered()
 
         CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
         Calibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
+
     }
 }
 
@@ -303,8 +304,19 @@ void MainWindow::on_actionDepthBM_triggered()
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoBM> bmState;
 
+        cv::Mat undist_left, undist_right, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_l", camera_matrix_l);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_l", dist_coeffs_l);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_r", camera_matrix_r);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_r", dist_coeffs_r);
+
+        //UNDISTORD
+        undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
+
+
         QImage disp_q;
-        cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
+        cv::hconcat(undist_left, undist_right, disparity);
         CVQTInterface::toQImage(disparity, disp_q);
         BMParamDialog dial(disp_q);
         if(dial.exec() != QDialog::Rejected)
@@ -314,11 +326,14 @@ void MainWindow::on_actionDepthBM_triggered()
 
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
-                StereoMap::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
+                //UNDISTORD
+                undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
+                StereoMap::computeBMDisparityStereo(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map);
 
-                cv::threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
+                //cv::threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
 
                 double min;
                 double max;
@@ -354,8 +369,19 @@ void MainWindow::on_actionDepthSGBM_triggered()
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoSGBM> sgbmState;
 
+        cv::Mat undist_left, undist_right, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_l", camera_matrix_l);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_l", dist_coeffs_l);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_r", camera_matrix_r);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_r", dist_coeffs_r);
+
+        //UNDISTORD
+        undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
+
+
         QImage disp_q;
-        cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
+        cv::hconcat(undist_left, undist_right, disparity);
         CVQTInterface::toQImage(disparity, disp_q);
         SGBMParamDialog dial(disp_q);
         if(dial.exec() != QDialog::Rejected)
@@ -364,10 +390,14 @@ void MainWindow::on_actionDepthSGBM_triggered()
             Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
-                StereoMap::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
+                //UNDISTORD
+                undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
+
+                StereoMap::computeSGBMDisparityStereo(undist_left, undist_right, disparity, sgbmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map);
 
-                cv::threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
+                cv::threshold(depth_map, depth_map, -300, -100, CV_THRESH_TRUNC);
 
                 double min;
                 double max;
@@ -402,6 +432,15 @@ void MainWindow::on_actionDepthBMVideo_triggered()
 
         cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoBM> bmState;
+        cv::Mat undist_left, undist_right, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_l", camera_matrix_l);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_l", dist_coeffs_l);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_r", camera_matrix_r);
+        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_r", dist_coeffs_r);
+
+        //UNDISTORD
+        undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
 
         QImage disp_q;
         cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
@@ -413,10 +452,12 @@ void MainWindow::on_actionDepthBMVideo_triggered()
             Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
-                StereoMap::computeBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, bmState);
+                //UNDISTORD
+                undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
+
+                StereoMap::computeBMDisparityStereo(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map);
-
-
 
                 Utilities::showMatrice(std::to_string(i), depth_map);
             }

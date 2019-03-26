@@ -29,25 +29,13 @@ void CustomController::process(const cv::Mat & left_img,
 
     Size image_size(size_width, size_height);
 
-    Mat left_undist_rect_map_x,
-        left_undist_rect_map_y,
-
-         right_undist_rect_map_x,
-         right_undist_rect_map_y,
-
-         left_img_undist,
-         right_img_undist
-         ;
+    Mat left_img_undist,
+        right_img_undist
+            ;
 
     //UNDISTORD
-
-    initUndistortRectifyMap(camera_matrix_l, dist_coeffs_l, R1, camera_matrix_l, image_size, CV_32FC1, left_undist_rect_map_x, left_undist_rect_map_y);
-    initUndistortRectifyMap(camera_matrix_r, dist_coeffs_r, R2, camera_matrix_r,  image_size, CV_32FC1, right_undist_rect_map_x, right_undist_rect_map_y);
-
-    remap(left_img, left_img_undist, left_undist_rect_map_x, left_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, Scalar());
-    remap(right_img, right_img_undist, right_undist_rect_map_x, right_undist_rect_map_y, CV_INTER_CUBIC, BORDER_CONSTANT, Scalar());
-
-    //undistort(left_img, left_img_undist, camera_matrix_l, dist_coeffs_l);
+    undistort(left_img, left_img_undist, camera_matrix_l, dist_coeffs_l);
+    undistort(right_img, right_img_undist, camera_matrix_r, dist_coeffs_r);
 
     Utilities::showMatrice("Undistord_l_"+std::to_string(nb_frame), left_img_undist);
     Utilities::showMatrice("Undistord_r_"+std::to_string(nb_frame), right_img_undist);
@@ -372,7 +360,7 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
     }
     else
     {
-         src_left.copyTo(left_mat);
+        src_left.copyTo(left_mat);
     }
     if(src_right.type() != CV_8UC1)
     {
@@ -380,7 +368,7 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
     }
     else
     {
-         src_right.copyTo(right_mat);
+        src_right.copyTo(right_mat);
     }
 
     ///Disparity map

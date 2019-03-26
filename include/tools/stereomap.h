@@ -4,6 +4,8 @@
 #include <cv.h>
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
+#include <opencv2/ximgproc/disparity_filter.hpp>
+
 #include "tools/calibration.h"
 #include "tools/filters.h"
 
