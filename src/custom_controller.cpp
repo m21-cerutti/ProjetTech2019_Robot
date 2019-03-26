@@ -55,18 +55,19 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::messageDebug("Depth images save.", false);
 
     //BLOB
-    normalize(depth_map, depth_map, 0, 255, NORM_MINMAX, CV_8UC1);
+    cvtColor( left_img_undist, left_img_undist,CV_BGR2GRAY);
+    //normalize(left_img, left_img, 0, 255, NORM_MINMAX, CV_8UC1);
     std::vector<KeyPoint> keypoints;
-    blob_detector->detect( depth_map, keypoints);
+    blob_detector->detect( left_img_undist, keypoints);
 
     // Draw detected blobs as red circles.
     // DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
 
     Mat im_with_keypoints;
 
-    drawKeypoints( depth_map, keypoints, im_with_keypoints, Scalar(0,0,255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
+    drawKeypoints( left_img_undist, keypoints, im_with_keypoints, Scalar(0,0,255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
 
-    Utilities::showMatrice("Blob_"+std::to_string(nb_frame), depth_map);
+    Utilities::showMatrice("Blob_"+std::to_string(nb_frame), im_with_keypoints);
     Utilities::messageDebug("Blob images save.", false);
 
     // Just keep static
@@ -176,24 +177,26 @@ void CustomController::load()
     SimpleBlobDetector::Params params;
 
     // Change thresholds
-    params.minThreshold = 10;
-    params.maxThreshold = 200;
+    params.minThreshold = 50;
+    params.maxThreshold = 1000;
+    params.thresholdStep = 15;
 
     // Filter by Area.
     params.filterByArea = true;
-    params.minArea = 800;
+    params.minArea = 500;
 
     // Filter by Circularity
-    params.filterByCircularity = true;
-    params.minCircularity = 0.1;
+    params.filterByCircularity = false;
+    //params.minCircularity = 0.1;
 
     // Filter by Convexity
-    params.filterByConvexity = true;
-    params.minConvexity = 0.87;
+        params.filterByConvexity = false;
+
+    params.filterByColor = false;
 
     // Filter by Inertia
     params.filterByInertia = true;
-    params.minInertiaRatio = 0.01;
+    params.maxInertiaRatio = 0.3;
 
     // Set up detector with params
     blob_detector = SimpleBlobDetector::create(params);
