@@ -3,15 +3,15 @@
 <calibration_date>"Wed Mar 13 20:07:53 2019&#x0a;"</calibration_date>
 <width>640</width>
 <height>480</height>
-<preFilterCap>30</preFilterCap>
+<preFilterCap>63</preFilterCap>
 <PreFilterSize>5</PreFilterSize>
-<PreFilterType>1</PreFilterType>
-<TextureThreshold>4811</TextureThreshold>
-<uniquenessRatio>0</uniquenessRatio>
-<blockSize>93</blockSize>
+<PreFilterType>0</PreFilterType>
+<TextureThreshold>0</TextureThreshold>
+<uniquenessRatio>4</uniquenessRatio>
+<blockSize>5</blockSize>
 <disp12MaxDiff>100</disp12MaxDiff>
-<minDisparity>-47</minDisparity>
-<numDisparities>64</numDisparities>
+<minDisparity>5</minDisparity>
+<numDisparities>112</numDisparities>
 <camera_matrix_l type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>

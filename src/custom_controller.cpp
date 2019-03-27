@@ -54,6 +54,7 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
     Utilities::messageDebug("Depth images save.", false);
 
+    /*
     //BLOB
     cvtColor( left_img_undist, left_img_undist,CV_BGR2GRAY);
     //normalize(left_img, left_img, 0, 255, NORM_MINMAX, CV_8UC1);
@@ -69,6 +70,7 @@ void CustomController::process(const cv::Mat & left_img,
 
     Utilities::showMatrice("Blob_"+std::to_string(nb_frame), im_with_keypoints);
     Utilities::messageDebug("Blob images save.", false);
+    */
 
     // Just keep static
     if(nb_frame < 5)
@@ -79,7 +81,7 @@ void CustomController::process(const cv::Mat & left_img,
     }
     else if(nb_frame < 10)
     {
-        *vx = 1*MOVE_SPEED_MULT;
+        *vx = -1*MOVE_SPEED_MULT;
         *vy = 0;
         *omega = 0;
     }
@@ -91,7 +93,7 @@ void CustomController::process(const cv::Mat & left_img,
     }
     else if(nb_frame < 20)
     {
-        *vx = -1*MOVE_SPEED_MULT;
+        *vx = 1*MOVE_SPEED_MULT;
         *vy = 0;
         *omega = 0;
     }
@@ -268,9 +270,23 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
     {
         Utilities::messageDebug("Error create folder.", true);
     }
+    Mat tmp;
+    if(mat.type() == CV_32F)
+    {
+        double min;
+        double max;
+        cv::minMaxIdx(mat, &min, &max);
+        double scale = 255 / (max-min);
+        mat.convertTo(tmp, CV_8UC1, scale, -min*scale);
+        applyColorMap(tmp, tmp, cv::COLORMAP_HOT);
+    }
+    else
+    {
+        mat.copyTo(tmp);
+    }
 
     Utilities::messageDebug( "Starting save image: " +name, false);
-    imwrite(folder+"/"+name+"_"+date+".png", mat);
+    imwrite(folder+"/"+name+"_"+date+".png", tmp);
 
     Utilities::messageDebug("Image saved.", false);
 
