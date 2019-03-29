@@ -1,0 +1,263 @@
+#include "tools/calibration.h"
+
+int Calibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images, const std::string path_camera_file)
+{
+    using namespace cv;
+
+    //Parameters to save
+    Mat camera_matrix = Mat::zeros(3, 3, CV_64F);
+    Mat dist_coeffs = Mat::zeros(8, 1, CV_64F);
+    std::vector<Mat> rvecs;
+    std::vector<Mat> tvecs;
+    camera_matrix.ptr<float>(0)[0] = 1;
+    camera_matrix.ptr<float>(1)[1] = 1;
+
+    return chessBoardCalibration(sources_images, path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
+}
+
+int Calibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_images,
+                                             const std::string path_camera_file,
+                                             cv::Mat& camera_matrix,
+                                             cv::Mat& dist_coeffs,
+                                             std::vector<cv::Mat>& rvecs,
+                                             std::vector<cv::Mat>& tvecs)
+{
+    using namespace cv;
+
+    std::vector<std::vector<Point3f>> object_points;
+    std::vector<std::vector<Point2f>> image_points;
+
+    Utilities::messageDebug( "Starting chessboard calibration.", false);
+
+    //FIND CHESSBOARD
+    //Initialisation
+    Size board_size = Size(CHESS_WIDTH, CHESS_HEIGHT);
+    std::vector<Point2f> corners;
+    std::vector<Point3f> obj;
+    for (float i = 0; i < CHESS_HEIGHT; i++){
+        for (float j = 0; j < CHESS_WIDTH; j++){
+            obj.push_back(Point3f(i*SQUARE_SIZE, j*SQUARE_SIZE, 0.0f));
+        }
+    }
+
+    //Research
+    int nb_rejected=0;
+    Mat gray;
+    for(cv::Mat source : sources_images)
+    {
+        cv::cvtColor(source, gray, CV_BGRA2GRAY);
+        bool found = findChessboardCorners(gray, board_size, corners, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK);
+
+        if(found)
+        {
+            cornerSubPix(gray, corners,
+                         Size(11, 11),
+                         Size(-1, -1),
+                         TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+
+            image_points.push_back(corners);
+            object_points.push_back(obj);
+        }
+        else
+        {
+            nb_rejected++;
+        }
+    }
+    //END FIND CHESSBOARD
+    Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
+
+    //Calibration
+    double rmserror = calibrateCamera(object_points, image_points, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs, 0, TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 60, DBL_EPSILON) );
+
+    Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
+
+    //Save
+    Utilities::messageDebug( "Saving calibration in "+path_camera_file+ "...", false);
+    Files::saveIntrinsicCamera( path_camera_file, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
+
+    return nb_rejected;
+}
+
+void Calibration::applyUndistorded(const cv::Mat &source, cv::Mat &out,
+                                         cv::Mat &camera_matrix, cv::Mat &dist_coeffs)
+{
+    using namespace cv;
+    cv::Mat undistorded;
+    undistort(source, undistorded, camera_matrix, dist_coeffs);
+    undistorded.copyTo(out);
+}
+
+
+void Calibration::applyUndistorded(const cv::Mat &source, cv::Mat &out, const std::string file_path)
+{
+    using namespace cv;
+
+    Mat camera_matrix, dist_coeffs;
+    cv::Size img_size;
+    if(!Files::loadIntrinsicCamera(file_path, img_size, camera_matrix, dist_coeffs))
+        return;
+
+    cv::Mat undistorded;
+    undistort(source, undistorded, camera_matrix, dist_coeffs);
+
+    undistorded.copyTo(out);
+}
+
+int Calibration::stereoChessboard(const std::vector<cv::Mat> &sources_images_left,
+                                        const std::vector<cv::Mat> &sources_images_right,
+                                        const std::string path_camera_l,
+                                        const std::string path_camera_r,
+                                        std::vector<std::vector<cv::Point3f>> &object_points,
+                                        std::vector<std::vector<cv::Point2f>> &left_img_points,
+                                        std::vector<std::vector<cv::Point2f>> &right_img_points)
+{
+    using namespace cv;
+
+    Utilities::messageDebug( "Starting chessboard stereo calibration.", false);
+
+    //FIND CHESSBOARD
+    //Initialisation
+    Size board_size = Size(CHESS_WIDTH, CHESS_HEIGHT);
+    std::vector<Point2f> corners_l;
+    std::vector<Point2f> corners_r;
+    std::vector<Point3f> obj;
+    for (float i = 0; i < CHESS_HEIGHT; i++){
+        for (float j = 0; j < CHESS_WIDTH; j++){
+            obj.push_back(Point3f(i*SQUARE_SIZE, j*SQUARE_SIZE, 0.0f));
+        }
+    }
+
+    //Research
+    int nb_rejected=0;
+    Mat gray_l, gray_r;
+    for(int i =0; i<sources_images_left.size() && i<sources_images_right.size(); i++)
+    {
+        Mat source_l = sources_images_left.at(i);
+        Mat source_r = sources_images_right.at(i);
+
+        cv::cvtColor(source_l, gray_l, CV_BGRA2GRAY);
+        cv::cvtColor(source_r, gray_r, CV_BGRA2GRAY);
+
+        bool found1 = findChessboardCorners(gray_l, board_size, corners_l, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK);
+        bool found2 = findChessboardCorners(gray_r, board_size, corners_r, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK);
+
+
+        if(found1 && found2)
+        {
+            cornerSubPix(gray_l, corners_l,
+                         Size(11, 11),
+                         Size(-1, -1),
+                         TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.01));
+            cornerSubPix(gray_r, corners_r,
+                         Size(11, 11),
+                         Size(-1, -1),
+                         TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.01));
+
+            left_img_points.push_back(corners_l);
+            right_img_points.push_back(corners_r);
+            object_points.push_back(obj);
+        }
+        else
+        {
+            nb_rejected++;
+        }
+    }
+    //END FIND CHESSBOARD
+    Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
+
+    //Calibration
+    cv::Mat camera_matrix_l = cv::Mat(3, 3, CV_64F);
+    cv::Mat dist_coeffs_l = cv::Mat::zeros(8, 1, CV_64F);
+    std::vector<cv::Mat> rvecs_l;
+    std::vector<cv::Mat> tvecs_l;
+    camera_matrix_l.ptr<float>(0)[0] = 1;
+    camera_matrix_l.ptr<float>(1)[1] = 1;
+
+    cv::Mat camera_matrix_r = cv::Mat(3, 3, CV_64F);
+    cv::Mat dist_coeffs_r = cv::Mat::zeros(8, 1, CV_64F);
+    std::vector<cv::Mat> rvecs_r;
+    std::vector<cv::Mat> tvecs_r;
+    camera_matrix_r.ptr<float>(0)[0] = 1;
+    camera_matrix_r.ptr<float>(1)[1] = 1;
+
+    double rmserror1 = calibrateCamera(object_points, left_img_points, sources_images_left[0].size(), camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
+    Utilities::messageDebug( "Calibration finish with left :" + std::to_string(rmserror1) + " of error.", false);
+    double rmserror2 = calibrateCamera(object_points, right_img_points, sources_images_right[0].size(), camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
+    Utilities::messageDebug( "And right :" + std::to_string(rmserror2) + " of error.", false);
+
+    //Save
+    Utilities::messageDebug( "Saving calibration in "+path_camera_l+ " and "+path_camera_r+"...", false);
+    Files::saveIntrinsicCamera( path_camera_l, sources_images_left[0].size(), camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
+    Files::saveIntrinsicCamera( path_camera_r, sources_images_right[0].size(), camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
+
+    return nb_rejected;
+}
+
+void Calibration::stereoCalibration(const std::string path_file_stereo,
+                                          const std::vector<cv::Mat> &sources_images_left,
+                                          const std::vector<cv::Mat> &sources_images_right,
+                                          const std::string path_camera_file_l,
+                                          const std::string path_camera_file_r)
+{
+    using namespace cv;
+
+    cv::Mat camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
+    cv::Size img_size ;
+
+    std::vector<std::vector<cv::Point3f>> object_points;
+    std::vector<std::vector<cv::Point2f>> left_img_points;
+    std::vector<std::vector<cv::Point2f>> right_img_points;
+
+    stereoChessboard(sources_images_left,
+                     sources_images_right,
+                     path_camera_file_l,
+                     path_camera_file_r,
+                     object_points,
+                     left_img_points,
+                     right_img_points);
+
+    Files::loadIntrinsicCamera(path_camera_file_l, img_size, camera_matrix_l, dist_coeffs_l);
+    Files::loadIntrinsicCamera(path_camera_file_r, img_size, camera_matrix_r, dist_coeffs_r);
+
+    Utilities::messageDebug("Starting Calibration.",false);
+    Utilities::messageDebug("Read intrasic...",false);
+
+    Utilities::messageDebug( "Starting stereo calibration.", false);
+
+    Mat R, F, E;
+    Vec3d T;
+    int flag = CV_CALIB_FIX_INTRINSIC;
+
+    Utilities::messageDebug("Stereo calibrate...", false);
+    double rmserror = stereoCalibrate(object_points, left_img_points, right_img_points, camera_matrix_l, dist_coeffs_l,
+                                      camera_matrix_r, dist_coeffs_r, img_size, R, T, E, F, flag);
+    Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
+
+    Utilities::messageDebug("Starting Rectification.", false);
+    cv::Mat R1, R2, P1, P2, Q;
+    stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q, 0, 0);
+    Utilities::messageDebug("Done Rectification.", false);
+
+    /*
+    int i =0;
+    for(cv::Mat img : sources_images_left)
+    {
+        cv::Mat tmp;
+        undistort(img, tmp, camera_matrix_l, dist_coeffs_l);
+        Utilities::showMatrice("left_" + std::to_string(i), tmp);
+        i++;
+    }
+    i=0;
+    for(cv::Mat img : sources_images_right)
+    {
+        cv::Mat tmp;
+        undistort(img, tmp, camera_matrix_r, dist_coeffs_r);
+        Utilities::showMatrice("right_" + std::to_string(i), tmp);
+        i++;
+    }
+    */
+
+    Files::saveCameraStereoParameters(path_file_stereo, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, F, E, T, R1, R2, P1, P2, Q);
+}
+
+
