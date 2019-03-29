@@ -12,18 +12,12 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "tools/utilities.h"
-#include "tools/cvqtinterface.h"
-#include "tools/filters.h"
-#include "tools/calibration.h"
-#include "subWindows/sgbmparamdialog.h"
-#include "subWindows/bmparamdialog.h"
-#include "subWindows/cameraparamdialog.h"
-
 #include "custom_controller.h"
 
 #define THRESHOLD_MIN 0.0
 #define THRESHOLD_MAX 200.0
+
+using namespace cerutti;
 
 namespace Ui {
 class MainWindow;
@@ -94,6 +88,18 @@ private slots:
 
 
     void on_actionTest_controller_triggered();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_btn_stereo_clicked();
+
+    void on_btn_simulation_clicked();
+
+    void on_btn_singleImage_clicked();
 
 private:
 

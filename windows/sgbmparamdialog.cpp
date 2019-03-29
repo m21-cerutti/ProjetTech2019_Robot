@@ -1,4 +1,4 @@
-#include "subWindows/sgbmparamdialog.h"
+#include "windows/sgbmparamdialog.h"
 #include "ui_sgbmparamdialog.h"
 
 SGBMParamDialog::SGBMParamDialog(QImage& src, QWidget *parent) :

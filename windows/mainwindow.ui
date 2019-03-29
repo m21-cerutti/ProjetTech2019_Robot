@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1005</width>
+    <height>428</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QTextEdit" name="textEdit">
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Project by CERUTTI Marc &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Interface de tests pour les fonctions d'analyse d'images.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Manual :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1005</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>Fi&amp;le</string>
+    </property>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuCameraCalibration">
+    <property name="title">
+     <string>&amp;Calibration</string>
+    </property>
+    <addaction name="actionCalibration"/>
+    <addaction name="actionCalibrationStereo"/>
+   </widget>
+   <widget class="QMenu" name="menuDisparity_map">
+    <property name="title">
+     <string>Disparity &amp;map</string>
+    </property>
+    <addaction name="actionDisparityBM"/>
+    <addaction name="actionDisparitySGBM"/>
+   </widget>
+   <widget class="QMenu" name="menuVideo">
+    <property name="title">
+     <string>&amp;Video</string>
+    </property>
+    <addaction name="actionExtractImages"/>
+    <addaction name="actionCalibrationStereoVideo"/>
+    <addaction name="separator"/>
+    <addaction name="actionDepthSGBMVideo"/>
+    <addaction name="actionDepthBMVideo"/>
+   </widget>
+   <widget class="QMenu" name="menuDepthMap">
+    <property name="title">
+     <string>Depth</string>
+    </property>
+    <addaction name="actionDepthBM"/>
+    <addaction name="actionDepthSGBM"/>
+   </widget>
+   <widget class="QMenu" name="menuRobot">
+    <property name="title">
+     <string>&amp;Robot</string>
+    </property>
+    <addaction name="actionTest_controller"/>
+   </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>Sim&amp;ulation</string>
+    </property>
+    <addaction name="actionOpen_simulation_unity"/>
+   </widget>
+   <widget class="QMenu" name="menuSingleImage">
+    <property name="title">
+     <string>Sin&amp;gleImage</string>
+    </property>
+    <addaction name="actionOrigin"/>
+    <addaction name="actionGaussian"/>
+    <addaction name="actionSobel"/>
+    <addaction name="actionLaplacian"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSingleImage"/>
+   <addaction name="menuVideo"/>
+   <addaction name="menuCameraCalibration"/>
+   <addaction name="menuDisparity_map"/>
+   <addaction name="menuDepthMap"/>
+   <addaction name="menuSimulation"/>
+   <addaction name="menuRobot"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionOrigin">
+   <property name="text">
+    <string>&amp;Origin</string>
+   </property>
+  </action>
+  <action name="actionLaplacian">
+   <property name="text">
+    <string>&amp;Laplacian</string>
+   </property>
+  </action>
+  <action name="actionDisparityBM">
+   <property name="text">
+    <string>&amp;DisparityBM</string>
+   </property>
+  </action>
+  <action name="actionDisparitySGBM">
+   <property name="text">
+    <string>D&amp;isparitySGBM</string>
+   </property>
+  </action>
+  <action name="actionGaussian">
+   <property name="text">
+    <string>&amp;Gaussian</string>
+   </property>
+  </action>
+  <action name="actionSobel">
+   <property name="text">
+    <string>So&amp;bel</string>
+   </property>
+  </action>
+  <action name="actionCalibration">
+   <property name="text">
+    <string>&amp;Calibration menu</string>
+   </property>
+  </action>
+  <action name="actionCalibrationStereoVideo">
+   <property name="text">
+    <string>&amp;StereoCalibrationVideo</string>
+   </property>
+  </action>
+  <action name="actionDepthSGBMVideo">
+   <property name="text">
+    <string>&amp;DepthMap SGBM</string>
+   </property>
+  </action>
+  <action name="actionExtractImages">
+   <property name="text">
+    <string>&amp;ExtractImages</string>
+   </property>
+  </action>
+  <action name="actionDepthBMVideo">
+   <property name="text">
+    <string>Depth &amp;map BM</string>
+   </property>
+  </action>
+  <action name="actionDepthBM">
+   <property name="text">
+    <string>&amp;BM</string>
+   </property>
+  </action>
+  <action name="actionDepthSGBM">
+   <property name="text">
+    <string>&amp;SGBM</string>
+   </property>
+  </action>
+  <action name="actionCalibrationStereo">
+   <property name="text">
+    <string>Ca&amp;libration folder</string>
+   </property>
+  </action>
+  <action name="actionTest_controller">
+   <property name="text">
+    <string>&amp;Test controller</string>
+   </property>
+  </action>
+  <action name="actionOpen_simulation_unity">
+   <property name="text">
+    <string>Open simulation unity</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,5 +1,7 @@
-#include "subWindows/bmparamdialog.h"
+#include "windows/bmparamdialog.h"
 #include "ui_bmparamdialog.h"
+
+using namespace cerutti;
 
 BMParamDialog::BMParamDialog(QImage& src, QWidget *parent):
     QDialog(parent),

@@ -5,11 +5,6 @@
 
 #include "custom_controller.h"
 
-#include "tools/cvqtinterface.h"
-#include "subWindows/sgbmparamdialog.h"
-#include "subWindows/bmparamdialog.h"
-#include "subWindows/cameraparamdialog.h"
-
 
 using namespace cerutti;
 

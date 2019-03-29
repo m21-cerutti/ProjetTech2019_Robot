@@ -42,7 +42,7 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::messageDebug("Undistord images save.", false);
 
     //DISPARITY
-    StereoMap::computeBMDisparityStereo( left_img_undist, right_img_undist, disparity, bm_state);
+    StereoMap::computeBMDisparity( left_img_undist, right_img_undist, disparity, bm_state);
 
     Utilities::showMatrice("Disparity_"+std::to_string(nb_frame), disparity);
     Utilities::messageDebug("Disparity images save.", false);
@@ -367,7 +367,7 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
 //////////////////////////////////
 
 
-void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
+void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
 {
     cv::Mat left_mat, right_mat, disparity;
 
@@ -401,7 +401,7 @@ void StereoMap::computeBMDisparityStereo(const cv::Mat &src_left, const cv::Mat 
     disparity.copyTo(out);
 }
 
-void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
+void StereoMap::computeSGBMDisparity(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
 {
     cv::Mat left_mat, right_mat, disparity;
 

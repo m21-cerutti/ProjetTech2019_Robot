@@ -1,4 +1,4 @@
-#include "subWindows/cameraparamdialog.h"
+#include "windows/cameraparamdialog.h"
 #include "ui_cameraparamdialog.h"
 
 CameraParamDialog::CameraParamDialog(QWidget *parent) :

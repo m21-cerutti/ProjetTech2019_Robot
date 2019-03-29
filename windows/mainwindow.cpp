@@ -74,12 +74,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     refreshImages();
 }
 
-void MainWindow::on_actionAbout_triggered()
-{
-    QMessageBox::about(this, "About", "Project by CERUTTI Marc"\
-                                      "\nInterface de tests pour les fonctions d'analyse d'images.");
-}
-
 void MainWindow::on_actionOpen_triggered()
 {
     chooseImage();
@@ -330,7 +324,7 @@ void MainWindow::on_actionDepthBM_triggered()
                 undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
                 undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
-                StereoMap::computeBMDisparityStereo(undist_left, undist_right, disparity, bmState);
+                StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 //cv::threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
@@ -394,7 +388,7 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
                 undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
-                StereoMap::computeSGBMDisparityStereo(undist_left, undist_right, disparity, sgbmState);
+                StereoMap::computeSGBMDisparity(undist_left, undist_right, disparity, sgbmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 double min;
@@ -454,7 +448,7 @@ void MainWindow::on_actionDepthBMVideo_triggered()
                 undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
                 undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
-                StereoMap::computeBMDisparityStereo(undist_left, undist_right, disparity, bmState);
+                StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 Utilities::showMatrice(std::to_string(i), depth_map);
@@ -489,7 +483,7 @@ void MainWindow::on_actionDepthSGBMVideo_triggered()
 
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
-                StereoMap::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
+                StereoMap::computeSGBMDisparity(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
                 StereoMap::computeDepthMap( disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
             }
         }
@@ -518,4 +512,19 @@ void MainWindow::on_actionTest_controller_triggered()
             Utilities::messageDebug(std::to_string(vx)+";"+std::to_string(vy)+";"+std::to_string(omega), false);
         }
     }
+}
+
+void MainWindow::on_btn_stereo_clicked()
+{
+
+}
+
+void MainWindow::on_btn_simulation_clicked()
+{
+
+}
+
+void MainWindow::on_btn_singleImage_clicked()
+{
+
 }

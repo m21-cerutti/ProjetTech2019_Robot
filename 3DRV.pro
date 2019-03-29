@@ -21,7 +21,7 @@ TARGET = 3DRV
 TEMPLATE = app
 
 # Import OpenCV
-#INCLUDEPATH += /usr/include/opencv
+#INCLUDEPATH += /usr/opencv
 #LIBS += -L\usr/lib/x86_64-linux-gnu -lopencv_core -lopencv_highgui
 
 
@@ -39,42 +39,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-    src/analyser/clientconnection.cpp \
-    src/analyser/servermaster.cpp \
-    src/subWindows/bmparamdialog.cpp \
-    src/subWindows/cameraparamdialog.cpp \
-    src/subWindows/sgbmparamdialog.cpp \
-    src/tools/cvqtinterface.cpp \
-    src/tools/stereomap.cpp \
-    src/main.cpp \
-    src/mainwindow.cpp \
-    src/custom_controller.cpp \
-    src/analyser/iarobot.cpp \
-    src/tools/calibration.cpp \
-    src/tools/filters.cpp \
-    src/tools/files.cpp \
-    src/tools/utilities.cpp \
-    include/tools/image.cpp
+    simulation/clientconnection.cpp \
+    simulation/servermaster.cpp \
+    windows/bmparamdialog.cpp \
+    windows/cameraparamdialog.cpp \
+    windows/sgbmparamdialog.cpp \
+    cvqtinterface.cpp \
+    main.cpp \
+    custom_controller.cpp \
+    simulation/iarobot.cpp \
+    windows/mainwindow.cpp \
+    windows/singleimagedialog.cpp
 
-INCLUDEPATH += include/
+INCLUDEPATH +=
 
 HEADERS += \
-    include/analyser/clientconnection.h \
-    include/analyser/servermaster.h \
-    include/subWindows/bmparamdialog.h \
-    include/subWindows/cameraparamdialog.h \
-    include/subWindows/sgbmparamdialog.h \
-    include/tools/cvqtinterface.h \
-    include/tools/stereomap.h \
-    include/mainwindow.h \
-    include/controller.h \
-    include/custom_controller.h \
-    include/analyser/iarobot.h \
-    include/tools/calibration.h \
-    include/tools/filters.h \
-    include/tools/files.h \
-    include/tools/utilities.h \
-    include/tools/image.h
+    simulation/clientconnection.h \
+    simulation/servermaster.h \
+    windows/bmparamdialog.h \
+    windows/cameraparamdialog.h \
+    windows/sgbmparamdialog.h \
+    cvqtinterface.h \
+    controller.h \
+    custom_controller.h \
+    simulation/iarobot.h \
+    windows/mainwindow.h \
+    windows/singleimagedialog.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -82,10 +72,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    forms/subWindows/bmparamdialog.ui \
-    forms/subWindows/cameraparamdialog.ui \
-    forms/subWindows/sgbmparamdialog.ui \
-    forms/mainwindow.ui
+    windows/bmparamdialog.ui \
+    windows/cameraparamdialog.ui \
+    windows/sgbmparamdialog.ui \
+    windows/mainwindow.ui \
+    windows/singleimagedialog.ui
 
 
 

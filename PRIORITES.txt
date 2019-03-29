@@ -99,8 +99,8 @@ Deux critères Unity / OpenCv
 
 Idées
 Changer custom_controller en sgbm
-Nettoyer le code
-Transformer en orienté objet
+Gérer par objet calibration
+Supprimer les fichiers doubles
 Simulation avancé
 Faire des fenetres Depth
 

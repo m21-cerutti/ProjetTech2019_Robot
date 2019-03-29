@@ -2,8 +2,9 @@
 #define BMPARAMDIALOG_H
 
 #include <QDialog>
-#include "tools/stereomap.h"
-#include "tools/cvqtinterface.h"
+
+#include "cvqtinterface.h"
+#include "custom_controller.h"
 
 namespace Ui {
 class BMParamDialog;

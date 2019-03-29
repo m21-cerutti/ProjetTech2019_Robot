@@ -2,9 +2,9 @@
 #define SGBMPARAMDIALOG_H
 
 #include <QDialog>
-#include "tools/stereomap.h"
-#include "tools/cvqtinterface.h"
 
+#include "cvqtinterface.h"
+#include "custom_controller.h"
 
 namespace Ui {
 class SGBMParamDialog;
@@ -66,9 +66,6 @@ public slots:
     void refreshModifs();
 
 private slots:
-
-    ///Resize principally the images
-    void resizeEvent(QResizeEvent *event);
 
     ///Show the result of disparity with parameter
     void on_btnShow_clicked();

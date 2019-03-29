@@ -2,10 +2,15 @@
 
 #include "controller.h"
 
+#ifdef IS_COMPUTER
+#include <QDebug>
+#endif
+
 #include <cv.h>
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/video/tracking.hpp>
+
 
 namespace cerutti
 {
@@ -133,7 +138,23 @@ double computeEfficiency(T func, const Mat &src, Mat &out, U arg)
     clock_t start_time, stop_time;
     start_time = clock();
 
-    func(src, out, arg);
+    func(src_left, out, arg);
+
+    stop_time = clock();
+    elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
+
+    return elapsed_time;
+}
+
+
+template<typename T, typename U>
+double computeEfficiency(T func, const Mat &src_left, const Mat &src_right, Mat &out, U arg)
+{
+    double elapsed_time;
+    clock_t start_time, stop_time;
+    start_time = clock();
+
+    func(src_left, src_right, out, arg);
 
     stop_time = clock();
     elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
@@ -183,6 +204,7 @@ void computeLaplacian(const Mat &src, Mat &out);
 
 };
 
+///////////////////////////////////////////
 
 /**
  * @brief The StereoAnalyser class gather all stereo function analyser after calibration.
@@ -200,7 +222,7 @@ namespace StereoMap
      *     nbdisparities
      *     SADWindowsSize
      */
-void computeBMDisparityStereo(const Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoBM> bm_state);
+void computeBMDisparity (Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoBM> bm_state);
 
 /**
      * @brief Make disparity map with SGBM algorithm.
@@ -220,7 +242,7 @@ void computeBMDisparityStereo(const Mat &src_left, const Mat &src_right, Mat &ou
      *     disp12MaxDiff
      *     SADWindowSize
      */
-void computeSGBMDisparityStereo(const Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoSGBM> sgbm_state);
+void computeSGBMDisparity (Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoSGBM> sgbm_state);
 
 /**
      * @brief Make the depth map.
@@ -231,6 +253,43 @@ void computeSGBMDisparityStereo(const Mat &src_left, const Mat &src_right, Mat &
 void computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max);
 
 };
+
+///////////////////////////////////////////
+namespace Calibration
+{
+
+class StereoCamera
+{
+public:
+    StereoCamera(std::string file_path);
+
+    void calibrate(const std::vector<cv::Mat>& sources_images_left,
+                   const std::vector<cv::Mat> &sources_images_right);
+
+    void save(std::string file_path);
+
+    void load(std::string file_path);
+
+    const cv::Mat &getMatrix(std::string name);
+
+private:
+    cv::Mat camera_matrix_l;
+    cv::Mat dist_coeffs_l;
+    cv::Mat camera_matrix_r;
+    cv::Mat dist_coeffs_r;
+    cv::Size img_size;
+    cv::Mat R;
+    cv::Mat F;
+    cv::Mat E;
+    cv::Vec3d T;
+    cv::Mat R1;
+    cv::Mat R2;
+    cv::Mat P1;
+    cv::Mat P2;
+    cv::Mat Q;
+};
+
+}
 
 
 }

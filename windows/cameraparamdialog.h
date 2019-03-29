@@ -6,10 +6,8 @@
 #include <QFileDialog>
 #include <QListWidgetItem>
 
-#include "tools/utilities.h"
-#include "tools/cvqtinterface.h"
-#include "tools/filters.h"
-#include "tools/calibration.h"
+#include "cvqtinterface.h"
+#include "custom_controller.h"
 
 namespace Ui {
 class CameraParamDialog;
