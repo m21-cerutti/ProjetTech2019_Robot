@@ -331,7 +331,7 @@ void MainWindow::on_actionDepthBM_triggered()
                 undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
                 StereoMap::computeBMDisparityStereo(undist_left, undist_right, disparity, bmState);
-                StereoMap::computeDepthMap(disparity, Q, depth_map);
+                StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 //cv::threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
 
@@ -395,9 +395,7 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
                 StereoMap::computeSGBMDisparityStereo(undist_left, undist_right, disparity, sgbmState);
-                StereoMap::computeDepthMap(disparity, Q, depth_map);
-
-                cv::threshold(depth_map, depth_map, -300, -100, CV_THRESH_TRUNC);
+                StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 double min;
                 double max;
@@ -457,7 +455,7 @@ void MainWindow::on_actionDepthBMVideo_triggered()
                 undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
 
                 StereoMap::computeBMDisparityStereo(undist_left, undist_right, disparity, bmState);
-                StereoMap::computeDepthMap(disparity, Q, depth_map);
+                StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 Utilities::showMatrice(std::to_string(i), depth_map);
             }
@@ -492,7 +490,7 @@ void MainWindow::on_actionDepthSGBMVideo_triggered()
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 StereoMap::computeSGBMDisparityStereo(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
-                StereoMap::computeDepthMap( disparity, Q, depth_map);
+                StereoMap::computeDepthMap( disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
             }
         }
     }

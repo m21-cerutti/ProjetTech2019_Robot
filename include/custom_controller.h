@@ -27,6 +27,9 @@ using namespace cv;
 
 #define MOVE_SPEED_MULT 0.2
 
+#define THRESHOLD_MIN 70
+#define THRESHOLD_MAX 150
+
 class CustomController : public Controller
 {
 public:
@@ -225,7 +228,7 @@ void computeSGBMDisparityStereo(const Mat &src_left, const Mat &src_right, Mat &
      * @param Q Input 4×4 disparity-to-depth mapping matrix.
      * @param image_3d the Output matrix.
      */
-void computeDepthMap(const Mat& disparity, const Mat& Q, Mat& depth_map);
+void computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max);
 
 };
 

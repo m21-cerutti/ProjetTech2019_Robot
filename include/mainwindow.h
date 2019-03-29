@@ -22,6 +22,9 @@
 
 #include "custom_controller.h"
 
+#define THRESHOLD_MIN 0.0
+#define THRESHOLD_MAX 200.0
+
 namespace Ui {
 class MainWindow;
 }

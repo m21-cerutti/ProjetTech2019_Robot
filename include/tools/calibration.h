@@ -20,12 +20,6 @@
 #define CHESS_WIDTH 9
 #define CHESS_HEIGHT 6
 
-//Board Charuco
-#define MARKER_SIZE 1
-#define CHARU_WIDHT 9
-#define CHARU_HEIGHT 6
-#define MIN_MARKERS 2
-
 #define DEFAULT_FILE_CAMERA_L "calib_default_camera_l.xml"
 #define DEFAULT_FILE_CAMERA_R "calib_default_camera_r.xml"
 #define DEFAULT_FILE_STEREO "calib_stereo.xml"
@@ -62,35 +56,6 @@ namespace Calibration
                                      cv::Mat& dist_coeffs,
                                      std::vector<cv::Mat>& rvecs,
                                      std::vector<cv::Mat>& tvecs);
-
-    /**
-     * @brief Do the charuco calibration for one camera.
-     * Not very effective, use chessBoardCalibration instead.
-     * @param sources_images the images for calibration.
-     * @param path_camera_file the path to save the calibration.
-     * @return The number of images rejected for calibration.
-     */
-    int charucoCalibration(const std::vector<cv::Mat>& sources_images, const std::string path_camera_file);
-
-    /**
-     * @brief Do the charuco calibration for one camera.
-     * Not very effective, use chessBoardCalibration instead.
-     * @param sources_images the images for calibration.
-     * @param path_camera_file the path to save the calibration.
-     * @param camera_matrix Output 3x3 floating-point camera matrix.
-     * @param dist_coeffs Output vector of distortion coefficients.
-     * @param rvecs Output vector of rotation vectors estimated for each pattern view.
-     * @param tvecs Output vector of translation vectors estimated for each pattern view.
-     * @see cv::calibrateCamera for more information.
-     * @return The number of images rejected for calibration.
-     */
-    int charucoCalibration(const std::vector<cv::Mat> &sources_images,
-                                  const std::string path_camera_file,
-                                  cv::Mat& camera_matrix,
-                                  cv::Mat& dist_coeffs,
-                                  std::vector<cv::Mat>& rvecs,
-                                  std::vector<cv::Mat>& tvecs);
-
     /**
      * @brief Undistord using the camera calibration.
      * @param source the source matrix.

@@ -92,3 +92,28 @@ Mettre #define propre
 Unity mettre Q valeur théorique
 
 
+Rendu dans 2 semaines 10 avril
+Pas de rapport
+Se préparer aux questions
+Deux critères Unity / OpenCv
+
+Idées
+Nettoyer le code
+Transformer en orienté objet
+Simulation avancé
+Faire des fenetres Depth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

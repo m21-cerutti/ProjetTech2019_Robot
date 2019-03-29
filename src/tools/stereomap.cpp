@@ -79,7 +79,7 @@ void StereoMap::computeSGBMDisparityStereo(const cv::Mat &src_left, const cv::Ma
     disparity.copyTo(out);
 }
 
-void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map)
+void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max)
 {
     using namespace cv;
     Mat image_3d;
@@ -87,8 +87,27 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::
 
     //Extract depth
     depth_map = cv::Mat::zeros(image_3d.rows, image_3d.cols, CV_32FC1);
-    // image_3d[2] -> depth_map[0]
-    int from_to[] = { 2,0 };
-    mixChannels( &image_3d, 1, &depth_map, 1, from_to, 1 );
+
+        for(int i = 0; i < image_3d.rows; i++) {
+            for(int j = 0; j < image_3d.cols; j++) {
+                cv::Vec3f point = image_3d.at<cv::Vec3f>(i,j);
+                float z = - point[2];
+                //depth_map.at<float>(i,j) = z;
+
+                if( z >= depth_min && z <= depth_max){
+                    depth_map.at<float>(i,j) = z;
+                }
+                else if (z > depth_max)
+                {
+                    depth_map.at<float>(i,j) = depth_max+1;
+                }
+                else if (z < depth_min)
+                {
+                    depth_map.at<float>(i,j) = depth_min-1;
+                }
+
+            }
+        }
+        //threshold(depth_map, depth_map, depth_min, depth_max, THRESH_TOZERO );
 
 }

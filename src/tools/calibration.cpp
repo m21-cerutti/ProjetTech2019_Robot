@@ -78,113 +78,6 @@ int Calibration::chessBoardCalibration(const std::vector<cv::Mat> &sources_image
     return nb_rejected;
 }
 
-int Calibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
-                                          const std::string path_camera_file)
-{
-    cv::Mat camera_matrix = cv::Mat(3, 3, CV_64F);
-    cv::Mat dist_coeffs = cv::Mat::zeros(8, 1, CV_64F);
-    std::vector<cv::Mat> rvecs;
-    std::vector<cv::Mat> tvecs;
-    camera_matrix.ptr<float>(0)[0] = 1;
-    camera_matrix.ptr<float>(1)[1] = 1;
-
-
-    return charucoCalibration(sources_images,path_camera_file, camera_matrix, dist_coeffs, rvecs, tvecs);
-}
-
-
-int Calibration::charucoCalibration(const std::vector<cv::Mat> &sources_images,
-                                          const std::string path_camera_file,
-                                          cv::Mat& camera_matrix,
-                                          cv::Mat& dist_coeffs,
-                                          std::vector<cv::Mat>& rvecs,
-                                          std::vector<cv::Mat>& tvecs)
-{
-    using namespace cv;
-
-    Mat gray;
-
-    Utilities::messageDebug( "Starting charuco calibration.", false);
-
-    std::vector<std::vector<cv::Point2f>> allCharucoCorners;
-    std::vector<std::vector<int>> allCharucoIds;
-
-    //FIND CHARUCO
-    //Initialisation
-
-    Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
-    detectorParams->doCornerRefinement = true;
-    detectorParams->adaptiveThreshWinSizeMin = 3;
-    detectorParams->adaptiveThreshWinSizeMax = 23;
-    detectorParams->adaptiveThreshWinSizeStep = 10;
-    detectorParams->adaptiveThreshConstant = 7;
-    detectorParams->minMarkerPerimeterRate = 0.03;
-    detectorParams->maxMarkerPerimeterRate = 4.0;
-    detectorParams->polygonalApproxAccuracyRate = 0.05;
-    detectorParams->minCornerDistanceRate = 0.05;
-    detectorParams->minDistanceToBorder = 3;
-    detectorParams->minMarkerDistanceRate = 0.05;
-    detectorParams->cornerRefinementWinSize = 5;
-    detectorParams->cornerRefinementMaxIterations = 30;
-    detectorParams->cornerRefinementMinAccuracy = 0.1;
-    detectorParams->markerBorderBits = 1;
-    detectorParams->perspectiveRemovePixelPerCell = 8;
-    detectorParams->perspectiveRemoveIgnoredMarginPerCell = 0.13;
-    detectorParams->maxErroneousBitsInBorderRate = 0.04;
-    detectorParams->minOtsuStdDev = 5.0;
-    detectorParams->errorCorrectionRate = 0.6;
-
-    Ptr< aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME::DICT_ARUCO_ORIGINAL);
-
-    cv::Ptr<aruco::CharucoBoard> board = aruco::CharucoBoard::create(CHARU_WIDHT, CHARU_HEIGHT, (float)(SQUARE_SIZE), (float)(MARKER_SIZE), dictionary);
-
-    int nb_rejected = 0;
-    for(cv::Mat source : sources_images)
-    {
-        cv::cvtColor(source, gray, CV_BGRA2GRAY);
-        std::vector<int> ids;
-        std::vector<std::vector<cv::Point2f>> corners, rejected;
-
-        cv::aruco::detectMarkers(gray, dictionary, corners, ids, detectorParams, rejected);
-        cv::aruco::refineDetectedMarkers(gray, board, corners, ids, rejected);
-
-        // if at least one marker detected
-        if (ids.size() > 0) {
-            std::vector<cv::Point2f> charucoCorners;
-            std::vector<int> charucoIds;
-            aruco::interpolateCornersCharuco(corners, ids, gray, board, charucoCorners, charucoIds, camera_matrix, dist_coeffs, MIN_MARKERS);
-            // if at least one charuco corner detected
-            if(charucoIds.size() > MIN_MARKERS){
-                cv::aruco::drawDetectedCornersCharuco(gray, charucoCorners, charucoIds, cv::Scalar(255, 0, 0));
-                allCharucoCorners.push_back(charucoCorners);
-                allCharucoIds.push_back(charucoIds);
-            }
-            else
-            {
-                nb_rejected++;
-            }
-        }
-        else
-        {
-            nb_rejected++;
-        }
-    }
-    Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
-    //END FIND CHARUCO
-
-    //Calibration
-    double rmserror = cv::aruco::calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, sources_images[0].size(),
-            camera_matrix, dist_coeffs, rvecs, tvecs, CV_CALIB_FIX_INTRINSIC);
-
-    Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
-
-    //Save
-    Utilities::messageDebug( "Saving calibration in "+path_camera_file+ "...", false);
-    Files::saveIntrinsicCamera( path_camera_file, sources_images[0].size(), camera_matrix, dist_coeffs, rvecs, tvecs);
-
-    return nb_rejected;
-}
-
 void Calibration::applyUndistorded(const cv::Mat &source, cv::Mat &out,
                                          cv::Mat &camera_matrix, cv::Mat &dist_coeffs)
 {
@@ -342,7 +235,7 @@ void Calibration::stereoCalibration(const std::string path_file_stereo,
 
     Utilities::messageDebug("Starting Rectification.", false);
     cv::Mat R1, R2, P1, P2, Q;
-    stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q);
+    stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q, 0, 0);
     Utilities::messageDebug("Done Rectification.", false);
 
     /*
