@@ -98,6 +98,7 @@ Se préparer aux questions
 Deux critères Unity / OpenCv
 
 Idées
+Changer custom_controller en sgbm
 Nettoyer le code
 Transformer en orienté objet
 Simulation avancé
