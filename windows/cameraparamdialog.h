@@ -79,8 +79,8 @@ private:
     ///Set management of images
     int _current_img_left = -1;
     int _current_img_right = -1;
-    std::vector<cv::Mat> _vect_images_left;
-    std::vector<cv::Mat> _vect_images_right;
+    std::vector<cv::Mat> _vect_images_left = std::vector<cv::Mat>();
+    std::vector<cv::Mat> _vect_images_right = std::vector<cv::Mat>();
 
     Ui::CameraParamDialog *ui;
 

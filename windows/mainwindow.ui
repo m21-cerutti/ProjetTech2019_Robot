@@ -83,9 +83,6 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionExtractImages"/>
     <addaction name="actionCalibrationStereoVideo"/>
-    <addaction name="separator"/>
-    <addaction name="actionDepthSGBMVideo"/>
-    <addaction name="actionDepthBMVideo"/>
    </widget>
    <widget class="QMenu" name="menuDepthMap">
     <property name="title">
@@ -147,19 +144,9 @@ p, li { white-space: pre-wrap; }
     <string>&amp;StereoCalibrationVideo</string>
    </property>
   </action>
-  <action name="actionDepthSGBMVideo">
-   <property name="text">
-    <string>&amp;DepthMap SGBM</string>
-   </property>
-  </action>
   <action name="actionExtractImages">
    <property name="text">
     <string>&amp;ExtractImages</string>
-   </property>
-  </action>
-  <action name="actionDepthBMVideo">
-   <property name="text">
-    <string>Depth &amp;map BM</string>
    </property>
   </action>
   <action name="actionDepthBM">

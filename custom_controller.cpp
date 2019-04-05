@@ -474,21 +474,26 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::
 
 //////////////////////////////////
 
-Calibration::StereoCamera::StereoCamera(std::string file_path)
+Calibration::StereoCamera::StereoCamera()
 {
-
+    load(DEFAULT_FILE_STEREO);
 }
 
-void Calibration::StereoCamera::calibrate(const std::vector<Mat> &sources_images_left, const std::vector<Mat> &sources_images_right)
+Calibration::StereoCamera::StereoCamera(std::string file_path)
+{
+    load(file_path);
+}
+
+void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left, std::vector<Mat> &sources_images_right)
 {
     using namespace cv;
 
-    if(sources_images_left.size() == 0 && sources_images_left.size() != sources_images_right.size())
+    if(sources_images_left.size() == 0 ||(sources_images_left.size() != sources_images_right.size()))
     {
         Utilities::messageDebug("Wrong number of images for calibration : "+std::to_string(sources_images_left.size())+" . "+std::to_string(sources_images_right.size()));
         return;
     }
-
+    /*
     std::vector<std::vector<cv::Point3f>> object_points;
     std::vector<std::vector<cv::Point2f>> left_img_points;
     std::vector<std::vector<cv::Point2f>> right_img_points;
@@ -584,7 +589,7 @@ void Calibration::StereoCamera::calibrate(const std::vector<Mat> &sources_images
     cv::Mat R1, R2, P1, P2, Q;
     stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q, 0, 0);
     Utilities::messageDebug("Done Rectification.", false);
-
+*/
     /*
     int i =0;
     for(cv::Mat img : sources_images_left)
@@ -604,7 +609,6 @@ void Calibration::StereoCamera::calibrate(const std::vector<Mat> &sources_images
     }
     */
     save();
-
 }
 
 void Calibration::StereoCamera::undistord(Mat &image_left, Mat &image_right)
@@ -619,7 +623,7 @@ void Calibration::StereoCamera::save()
 
 void Calibration::StereoCamera::load(std::string file_path)
 {
-
+    this->file_path = file_path;
 }
 
 const Mat &Calibration::StereoCamera::getMatrix(std::string name)

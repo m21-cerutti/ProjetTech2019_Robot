@@ -19,9 +19,6 @@
 
 #include "custom_controller.h"
 
-#define THRESHOLD_MIN 0.0
-#define THRESHOLD_MAX 200.0
-
 using namespace cerutti;
 
 namespace Ui {
@@ -58,10 +55,6 @@ private slots:
     void on_actionDepthBM_triggered();
 
     void on_actionDepthSGBM_triggered();
-
-    void on_actionDepthBMVideo_triggered();
-
-    void on_actionDepthSGBMVideo_triggered();
 
     void on_actionTest_controller_triggered();
 

@@ -83,7 +83,6 @@ void CameraParamDialog::on_btn_openCamera_clicked()
 void CameraParamDialog::on_btn_calibrate_clicked()
 {
     calib.calibrate(_vect_images_left, _vect_images_right);
-    calib.save();
     refreshPrintMatrix();
 }
 

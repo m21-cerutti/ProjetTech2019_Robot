@@ -269,10 +269,12 @@ namespace Calibration
 class StereoCamera
 {
 public:
+
+    StereoCamera();
     StereoCamera(std::string file_path);
 
-    void calibrate(const std::vector<cv::Mat>& sources_images_left,
-                   const std::vector<cv::Mat> &sources_images_right);
+    void calibrate(std::vector<cv::Mat>& sources_images_left,
+                    std::vector<cv::Mat> &sources_images_right);
 
     void undistord(cv::Mat& image_left, cv::Mat& image_right);
 
@@ -282,7 +284,7 @@ public:
 
     const cv::Mat &getMatrix(std::string name);
 
-private:
+public:
     std::string file_path;
 
     cv::Mat camera_matrix_l;

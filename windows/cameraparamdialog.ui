@@ -243,7 +243,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QLabel" name="imgview_right">
+          <widget class="QLabel" name="imgview_left">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
@@ -259,7 +259,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="imgview_left">
+          <widget class="QLabel" name="imgview_right">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>

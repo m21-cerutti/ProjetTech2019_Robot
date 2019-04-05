@@ -133,6 +133,7 @@ void MainWindow::on_actionDepthBM_triggered()
     using namespace cv;
 
     QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
+    Calibration::StereoCamera calib;
 
     // open image
     if(!folder_set.isEmpty())
@@ -141,36 +142,28 @@ void MainWindow::on_actionDepthBM_triggered()
 
         CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
 
-        cv::Mat Q, depth_map, disparity;
         cv::Ptr<cv::StereoBM> bmState;
 
-        cv::Mat undist_left, undist_right, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
-        /*
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_l", camera_matrix_l);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_l", dist_coeffs_l);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_r", camera_matrix_r);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_r", dist_coeffs_r);
-        */
+        cv::Mat undist_left, undist_right, disparity, depth_map;
 
         //UNDISTORD
-        undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
-        undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
+        undistort(vect_images_l.at(0), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
 
         BMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
         {
             bmState = dial.getBMState();
-            //Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
 
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 //UNDISTORD
-                undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
-                undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
+                undistort(vect_images_l.at(i), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
                 StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
-                StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
+                StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 //cv::threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
 
@@ -197,6 +190,7 @@ void MainWindow::on_actionDepthBM_triggered()
 void MainWindow::on_actionDepthSGBM_triggered()
 {
     QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
+    Calibration::StereoCamera calib;
 
     // open image
     if(!folder_set.isEmpty())
@@ -205,35 +199,27 @@ void MainWindow::on_actionDepthSGBM_triggered()
 
         CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
 
-        cv::Mat Q, depth_map, disparity;
+        cv::Mat depth_map, disparity;
         cv::Ptr<cv::StereoSGBM> sgbmState;
 
-        cv::Mat undist_left, undist_right, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
-        /*
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_l", camera_matrix_l);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_l", dist_coeffs_l);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_r", camera_matrix_r);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_r", dist_coeffs_r);
-        */
-
+        cv::Mat undist_left, undist_right;
         //UNDISTORD
-        undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
-        undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
+        undistort(vect_images_l.at(0), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
 
         SGBMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
         {
             sgbmState = dial.getSGBMState();
-            //Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
             for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
             {
                 //UNDISTORD
-                undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
-                undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
+                undistort(vect_images_l.at(i), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
                 StereoMap::computeSGBMDisparity(undist_left, undist_right, disparity, sgbmState);
-                StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
+                StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 double min;
                 double max;
@@ -254,83 +240,6 @@ void MainWindow::on_actionDepthSGBM_triggered()
         }
     }
 }
-
-
-void MainWindow::on_actionDepthBMVideo_triggered()
-{
-    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    // open image
-    if(filepaths.size() == 2)
-    {
-        std::vector<cv::Mat> vect_images_l, vect_images_r;
-        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
-
-        cv::Mat Q, depth_map, disparity;
-        cv::Ptr<cv::StereoBM> bmState;
-        cv::Mat undist_left, undist_right, camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r;
-        /*
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_l", camera_matrix_l);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_l", dist_coeffs_l);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "camera_matrix_r", camera_matrix_r);
-        Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "dist_coeffs_r", dist_coeffs_r);
-        */
-
-        //UNDISTORD
-        undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
-        undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
-
-
-        BMParamDialog dial(vect_images_l.at(0), vect_images_r.at(0));
-        if(dial.exec() != QDialog::Rejected)
-        {
-            bmState = dial.getBMState();
-            //Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
-            for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
-            {
-                //UNDISTORD
-                undistort(vect_images_l.at(i), undist_left, camera_matrix_l, dist_coeffs_l);
-                undistort(vect_images_r.at(i), undist_right, camera_matrix_r, dist_coeffs_r);
-
-                StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
-                StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
-
-                Utilities::showMatrice(std::to_string(i), depth_map);
-            }
-        }
-    }
-}
-
-void MainWindow::on_actionDepthSGBMVideo_triggered()
-{
-    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open video stero left-right", "~/", tr("Video Files (*.mp4)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    // open image
-    if(filepaths.size() == 2)
-    {
-        std::vector<cv::Mat> vect_images_r, vect_images_l;
-        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 20, vect_images_r, vect_images_l, false);
-
-        cv::Mat Q, depth_map, disparity;
-        cv::Ptr<cv::StereoSGBM> sgbmState;
-
-
-        SGBMParamDialog dial(vect_images_l.at(0), vect_images_r.at(0));
-        if(dial.exec() != QDialog::Rejected)
-        {
-            sgbmState = dial.getSGBMState();
-
-            //Files::getMatrixCalibrationFileStorage("stereo_calibration.xml", "Q", Q);
-
-            for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
-            {
-                StereoMap::computeSGBMDisparity(vect_images_l.at(i), vect_images_r.at(i), disparity, sgbmState);
-                StereoMap::computeDepthMap( disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
-            }
-        }
-    }
-}
-
 
 void MainWindow::on_actionTest_controller_triggered()
 {
