@@ -2,6 +2,8 @@
 #define CAMERAPARAMDIALOG_H
 
 #include <QDialog>
+#include <QFile>
+#include <QTextStream>
 #include <QFileDialog>
 #include <QListWidgetItem>
 
@@ -58,23 +60,29 @@ private slots:
 
     void on_btn_reset_clicked();
 
-    void on_list_imgcalib_currentRowChanged(int currentRow);
+    void on_list_imgcalib_left_currentRowChanged(int currentRow);
+
+    void on_list_imgcalib_right_currentRowChanged(int currentRow);
 
     void on_btn_clear_clicked();
+
+    void on_btn_save_clicked();
 
 private:
 
     Calibration::StereoCamera calib;
 
     ///The selected image for preview
-    QImage _img_selection;
+    QImage _img_selection_left;
+    QImage _img_selection_right;
 
     ///Set management of images
-    int _current_img = -1;
-    std::vector<cv::Mat> _vect_images;
+    int _current_img_left = -1;
+    int _current_img_right = -1;
+    std::vector<cv::Mat> _vect_images_left;
+    std::vector<cv::Mat> _vect_images_right;
 
     Ui::CameraParamDialog *ui;
-
 
 };
 

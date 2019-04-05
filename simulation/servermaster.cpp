@@ -1,4 +1,4 @@
-#include "analyser/servermaster.h"
+#include "simulation/servermaster.h"
 
 ServerMaster::ServerMaster(QObject *parent):
     QTcpServer(parent)

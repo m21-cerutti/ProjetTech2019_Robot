@@ -8,7 +8,7 @@
 #include <QStringList>
 #include <QImage>
 
-#include "analyser/iarobot.h"
+#include "simulation/iarobot.h"
 
 class ClientConnection: public QObject
 {

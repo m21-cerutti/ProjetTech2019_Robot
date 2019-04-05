@@ -258,6 +258,14 @@ void computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_
 namespace Calibration
 {
 
+//in cm
+//Board chess
+#define SQUARE_SIZE 2
+#define CHESS_WIDTH 9
+#define CHESS_HEIGHT 6
+
+#define DEFAULT_FILE_STEREO "calib_stereo.xml"
+
 class StereoCamera
 {
 public:
@@ -266,13 +274,17 @@ public:
     void calibrate(const std::vector<cv::Mat>& sources_images_left,
                    const std::vector<cv::Mat> &sources_images_right);
 
-    void save(std::string file_path);
+    void undistord(cv::Mat& image_left, cv::Mat& image_right);
+
+    void save();
 
     void load(std::string file_path);
 
     const cv::Mat &getMatrix(std::string name);
 
 private:
+    std::string file_path;
+
     cv::Mat camera_matrix_l;
     cv::Mat dist_coeffs_l;
     cv::Mat camera_matrix_r;

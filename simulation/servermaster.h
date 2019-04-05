@@ -9,7 +9,7 @@
 #include <QtNetwork/QAbstractSocket>
 #include <QtNetwork/QNetworkInterface>
 
-#include "analyser/clientconnection.h"
+#include "simulation/clientconnection.h"
 
 #define DEBUG_NETWORK
 #define PORT 9999

@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "analyser/servermaster.h"
+#include "windows/mainwindow.h"
+#include "simulation/servermaster.h"
 
 #include <QApplication>
 

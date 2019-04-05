@@ -1,4 +1,4 @@
-#include "analyser/clientconnection.h"
+#include "simulation/clientconnection.h"
 
 ClientConnection::ClientConnection(QTcpSocket* _socket, QObject *parent) :
     QObject(parent),

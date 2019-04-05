@@ -44,12 +44,12 @@ SOURCES += \
     windows/bmparamdialog.cpp \
     windows/cameraparamdialog.cpp \
     windows/sgbmparamdialog.cpp \
+    windows/mainwindow.cpp \
+    windows/singleimagedialog.cpp \
     cvqtinterface.cpp \
     main.cpp \
     custom_controller.cpp \
     simulation/iarobot.cpp \
-    windows/mainwindow.cpp \
-    windows/singleimagedialog.cpp
 
 INCLUDEPATH +=
 
@@ -59,12 +59,12 @@ HEADERS += \
     windows/bmparamdialog.h \
     windows/cameraparamdialog.h \
     windows/sgbmparamdialog.h \
+    windows/mainwindow.h \
+    windows/singleimagedialog.h \
     cvqtinterface.h \
     controller.h \
     custom_controller.h \
     simulation/iarobot.h \
-    windows/mainwindow.h \
-    windows/singleimagedialog.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
