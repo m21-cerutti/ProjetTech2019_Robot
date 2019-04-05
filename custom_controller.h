@@ -138,7 +138,7 @@ double computeEfficiency(T func, const Mat &src, Mat &out, U arg)
     clock_t start_time, stop_time;
     start_time = clock();
 
-    func(src_left, out, arg);
+    func(src, out, arg);
 
     stop_time = clock();
     elapsed_time = (stop_time - start_time) / (CLOCKS_PER_SEC / (double) 1000.0);
@@ -222,7 +222,7 @@ namespace StereoMap
      *     nbdisparities
      *     SADWindowsSize
      */
-void computeBMDisparity (Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoBM> bm_state);
+void computeBMDisparity (const Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoBM> bm_state);
 
 /**
      * @brief Make disparity map with SGBM algorithm.
@@ -242,7 +242,7 @@ void computeBMDisparity (Mat &src_left, const Mat &src_right, Mat &out, Ptr<Ster
      *     disp12MaxDiff
      *     SADWindowSize
      */
-void computeSGBMDisparity (Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoSGBM> sgbm_state);
+void computeSGBMDisparity (const Mat &src_left, const Mat &src_right, Mat &out, Ptr<StereoSGBM> sgbm_state);
 
 /**
      * @brief Make the depth map.

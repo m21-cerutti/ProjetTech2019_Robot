@@ -3,16 +3,21 @@
 
 using namespace cerutti;
 
-BMParamDialog::BMParamDialog(QImage& src, QWidget *parent):
+
+BMParamDialog::BMParamDialog(const Mat &src_left, const Mat &src_right, QWidget *parent):
     QDialog(parent),
-    _img_src(src),
-    _img_dst(src),
+    src_left(src_left),
+    src_right(src_right),
     _time(0),
     ui(new Ui::BMParamDialog)
 {
-    CVQTInterface::toMatCV(src, _mat_dst);
+    src_left.copyTo(dst_left);
+    src_left.copyTo(dst_right);
     ui->setupUi(this);
     setWindowTitle("Parameters of BM Disparity Map");
+
+    hconcat(src_left, src_right, view);
+
     refreshImages();
 }
 
@@ -23,8 +28,12 @@ BMParamDialog::~BMParamDialog()
 
 void BMParamDialog::refreshImages()
 {
+
+    QImage img;
+    CVQTInterface::toQImage(view, img);
+
     //refresh
-    ui->imgView->setPixmap(QPixmap::fromImage(_img_dst.scaled(ui->boxImg->width()*0.9,
+    ui->imgView->setPixmap(QPixmap::fromImage(img.scaled(ui->boxImg->width()*0.9,
                                                               ui->boxImg->height()*0.9,
                                                               Qt::AspectRatioMode::KeepAspectRatio)));
     ui->labelTime->setText("Time(ms): "+ QString::number((_time)));
@@ -41,12 +50,14 @@ void BMParamDialog::refreshModifs()
 
 void BMParamDialog::applyDisparity()
 {
+    Mat left, right;
+
     cv::Ptr<cv::StereoBM> bmState = getBMState();
 
     //Conversion and application of Disparity
     CVQTInterface::toMatCV(_img_src, _mat_dst);
-
-    this->_time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, _mat_dst, _mat_dst, bmState);
+    Filters::separateImage(_mat_dst, left, right);
+    this->_time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, src_left, src_right, disparity, bmState);
 
     //View the result
     CVQTInterface::toQImage(_mat_dst, _img_dst);

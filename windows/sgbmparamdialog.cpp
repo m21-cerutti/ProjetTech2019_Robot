@@ -1,6 +1,8 @@
 #include "windows/sgbmparamdialog.h"
 #include "ui_sgbmparamdialog.h"
 
+using namespace cerutti;
+
 SGBMParamDialog::SGBMParamDialog(QImage& src, QWidget *parent) :
     QDialog(parent),
     _img_src(src),
@@ -39,13 +41,13 @@ void SGBMParamDialog::refreshModifs()
 
 void SGBMParamDialog::applyDisparity()
 {
-
+    Mat left, right;
     cv::Ptr<cv::StereoSGBM> sgbmState = getSGBMState();
-
 
     //Conversion and application of Disparity
     CVQTInterface::toMatCV(_img_src, _mat_dst);
-    _time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, _mat_dst, _mat_dst, sgbmState);
+    Filters::separateImage(_mat_dst, left, right);
+    _time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, left, right, _mat_dst, sgbmState);
 
     //View the result
     CVQTInterface::toQImage(_mat_dst, _img_dst);

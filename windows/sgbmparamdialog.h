@@ -65,6 +65,8 @@ public slots:
      */
     void refreshModifs();
 
+    void resizeEvent(QResizeEvent *event);
+
 private slots:
 
     ///Show the result of disparity with parameter

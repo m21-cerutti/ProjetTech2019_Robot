@@ -1,18 +1,14 @@
 #include "windows/cameraparamdialog.h"
 #include "ui_cameraparamdialog.h"
 
+using namespace cerutti;
+
 CameraParamDialog::CameraParamDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CameraParamDialog)
 {
     ui->setupUi(this);
     setWindowTitle("Camera calibration");
-
-    ui->print_images->hide();
-    ui->print_cameramatrix->hide();
-    ui->print_distcoeffs->hide();
-    ui->print_rvecs->hide();
-    ui->print_tvecs->hide();
 
 }
 
@@ -30,7 +26,13 @@ void CameraParamDialog::refreshImages()
 {
     if (!_img_selection.isNull())
     {
-        ui->imgview->setPixmap(QPixmap::fromImage(_img_selection.scaled((int)(ui->imgview->width()*0.9),                                                                     (int)(ui->imgview->height()*0.9),                                                                     Qt::AspectRatioMode::KeepAspectRatio)));
+        ui->imgview_left->setPixmap(QPixmap::fromImage(_img_selection.scaled((int)(ui->imgview_left->width()*0.9),
+                                                                        (int)(ui->imgview_left->height()*0.9),
+                                                                        Qt::AspectRatioMode::KeepAspectRatio)));
+
+        ui->imgview_left->setPixmap(QPixmap::fromImage(_img_selection.scaled((int)(ui->imgview_left->width()*0.9),
+                                                                        (int)(ui->imgview_left->height()*0.9),
+                                                                        Qt::AspectRatioMode::KeepAspectRatio)));
     }
 
 }
@@ -43,22 +45,20 @@ void CameraParamDialog::refreshPrintMatrix()
     text +="\nheight: ";
     text +=QString::number(_img_size.height);
     text += "\n";
-    ui->print_images->setText(text);
-    ui->print_cameramatrix->setText(QString::fromStdString(Utilities::matToString<double>(_camera_matrix)));
-    ui->print_distcoeffs->setText(QString::fromStdString(Utilities::matToString<double>(_dist_coeffs)));
-    std::string rvecs_print;
+    text += QString::fromStdString(Utilities::matToString<double>(_camera_matrix));
+    text += QString::fromStdString(Utilities::matToString<double>(_dist_coeffs));
+
     for(cv::Mat mat : _rvecs)
     {
-        rvecs_print+= Utilities::matToString<double>(mat) +"\n*********\n";
+        text += QString::fromStdString(Utilities::matToString<double>(mat) +"\n*********\n");
     }
-    ui->print_rvecs->setText(QString::fromStdString(rvecs_print));
 
-    std::string tvecs_print;
     for(cv::Mat mat : _tvecs)
     {
-        tvecs_print+= Utilities::matToString<double>(mat) +"\n*********\n";
+        text+= QString::fromStdString(Utilities::matToString<double>(mat) +"\n*********\n");
     }
-    ui->print_tvecs->setText(QString::fromStdString(tvecs_print));
+
+     ui->txt_infobox->setText(text);
 }
 
 void CameraParamDialog::on_btn_openCamera_clicked()
@@ -68,16 +68,10 @@ void CameraParamDialog::on_btn_openCamera_clicked()
     // open image
     if(!filepath.isEmpty())
     {
-        Files::loadIntrinsicCamera(filepath.toStdString(), _img_size, _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+        //Files::loadIntrinsicCamera(filepath.toStdString(), _img_size, _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
         refreshPrintMatrix();
         ui->label_pathfile->setText(filepath);
     }
-
-    ui->print_images->show();
-    ui->print_cameramatrix->show();
-    ui->print_distcoeffs->show();
-    ui->print_rvecs->show();
-    ui->print_tvecs->show();
 }
 
 void CameraParamDialog::on_btn_calibrate_clicked()
@@ -88,42 +82,12 @@ void CameraParamDialog::on_btn_calibrate_clicked()
     if(!filepath.isEmpty() && !_vect_images.empty())
     {
 
-        Calibration::chessBoardCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
+        //Calibration::chessBoardCalibration(_vect_images, filepath.toStdString(), _camera_matrix, _dist_coeffs, _rvecs, _tvecs);
 
         _img_size = _vect_images[0].size();
         ui->label_pathfile->setText(filepath);
         refreshPrintMatrix();
     }
-}
-
-void CameraParamDialog::on_btn_printimages_clicked()
-{
-    bool is_visible = ui->print_images->isVisible();
-    ui->print_images->setVisible(!is_visible);
-}
-
-void CameraParamDialog::on_btn_cameramatrix_clicked()
-{
-    bool is_visible = ui->print_cameramatrix->isVisible();
-    ui->print_cameramatrix->setVisible(!is_visible);
-}
-
-void CameraParamDialog::on_btn_distcoeff_clicked()
-{
-    bool is_visible = ui->print_distcoeffs->isVisible();
-    ui->print_distcoeffs->setVisible(!is_visible);
-}
-
-void CameraParamDialog::on_btn_rvecs_clicked()
-{
-    bool is_visible = ui->print_rvecs->isVisible();
-    ui->print_rvecs->setVisible(!is_visible);
-}
-
-void CameraParamDialog::on_btn_tvecs_clicked()
-{
-    bool is_visible = ui->print_tvecs->isVisible();
-    ui->print_tvecs->setVisible(!is_visible);
 }
 
 void CameraParamDialog::on_btn_openImages_clicked()
@@ -153,8 +117,9 @@ void CameraParamDialog::on_btn_apply_clicked()
     if(_current_img != -1)
     {
         cv::Mat tmp = _vect_images.at(_current_img).clone();
-        Calibration::applyUndistorded(tmp, tmp, _camera_matrix, _dist_coeffs);
-        CVQTInterface::toQImage(tmp, _img_selection);
+        Calibration::StereoCamera calib = Calibration::StereoCamera("stereo_calibration.xml");
+        //Calib::applyUndistorded(tmp, tmp, _camera_matrix, _dist_coeffs);
+        //CVQTInterface::toQImage(tmp, _img_selection);
         refreshImages();
     }
 

@@ -371,7 +371,8 @@ void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_r
 {
     cv::Mat left_mat, right_mat, disparity;
 
-    disparity =cv::Mat(src_left.size(), CV_32F, Scalar());
+    disparity = cv::Mat(src_left.size(), CV_32F, Scalar());
+
     ///Gray
     if(src_left.type() != CV_8UC1)
     {
@@ -453,6 +454,7 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::
         }
     }
 }
+
 
 }
 

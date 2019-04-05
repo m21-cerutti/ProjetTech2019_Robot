@@ -73,6 +73,8 @@ private slots:
 
 private:
 
+    //Calibration::StereoCamera calib = Calibration::StereoCamera("stereo_calibration.xml");
+
     ///The selected image for preview
     QImage _img_selection;
 
