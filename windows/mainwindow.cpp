@@ -19,6 +19,17 @@ MainWindow::~MainWindow()
     cv::destroyAllWindows();
 }
 
+void MainWindow::pickImages(std::vector<cv::Mat>& vect_images)
+{
+    QStringList images = QFileDialog::getOpenFileNames(this, "Get one image stereo or left and right", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
+
+    for(QString filename : images)
+    {
+        cv::Mat tmp = imread(filename.toStdString());
+        vect_images.push_back(tmp);
+    }
+}
+
 
 /***********************************************************************************/
 
@@ -29,38 +40,41 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionDisparityBM_triggered()
 {
-    QImage img;
-    CVQTInterface::toQImage(_image_mat, img);
-    BMParamDialog dial(img);
+    std::vector<cv::Mat> vect_images;
+    pickImages(vect_images);
+    Mat left, right;
+    if(vect_images.size() == 1)
+    {
+        Filters::separateImage(vect_images.at(0), left, right);
+    }
+    else
+    {
+        left = vect_images.at(0);
+        right = vect_images.at(1);
+    }
+
+    BMParamDialog dial(left, right);
     dial.exec();
+
 }
 
 void MainWindow::on_actionDisparitySGBM_triggered()
 {
-    QImage img;
-    CVQTInterface::toQImage(_image_mat, img);
-    SGBMParamDialog dial(img);
-    dial.exec();
-}
-
-void MainWindow::on_actionCalibrate_triggered()
-{
-
-    QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Folder Image", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
-
     std::vector<cv::Mat> vect_images;
-    for(QString filename : filenames)
+    pickImages(vect_images);
+    Mat left, right;
+    if(vect_images.size() == 1)
     {
-        QImage img;
-        if(img.load(filename)){
-
-            cv::Mat tmp;
-            CVQTInterface::toMatCV(img, tmp);
-            vect_images.push_back(tmp);
-        }
+        Filters::separateImage(vect_images.at(0), left, right);
+    }
+    else
+    {
+        left = vect_images.at(0);
+        right = vect_images.at(1);
     }
 
-    //Calibration::chessBoardCalibration(vect_images, "quick_calibration.xml");
+    SGBMParamDialog dial(left, right);
+    dial.exec();
 }
 
 void MainWindow::on_actionCalibration_triggered()
@@ -143,10 +157,7 @@ void MainWindow::on_actionDepthBM_triggered()
         undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
 
 
-        QImage disp_q;
-        cv::hconcat(undist_left, undist_right, disparity);
-        CVQTInterface::toQImage(disparity, disp_q);
-        BMParamDialog dial(disp_q);
+        BMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
         {
             bmState = dial.getBMState();
@@ -210,10 +221,7 @@ void MainWindow::on_actionDepthSGBM_triggered()
         undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
 
 
-        QImage disp_q;
-        cv::hconcat(undist_left, undist_right, disparity);
-        CVQTInterface::toQImage(disparity, disp_q);
-        SGBMParamDialog dial(disp_q);
+        SGBMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
         {
             sgbmState = dial.getSGBMState();
@@ -272,10 +280,8 @@ void MainWindow::on_actionDepthBMVideo_triggered()
         undistort(vect_images_l.at(0), undist_left, camera_matrix_l, dist_coeffs_l);
         undistort(vect_images_r.at(0), undist_right, camera_matrix_r, dist_coeffs_r);
 
-        QImage disp_q;
-        cv::hconcat(vect_images_l.at(0), vect_images_r.at(0), disparity);
-        CVQTInterface::toQImage(disparity, disp_q);
-        BMParamDialog dial(disp_q);
+
+        BMParamDialog dial(vect_images_l.at(0), vect_images_r.at(0));
         if(dial.exec() != QDialog::Rejected)
         {
             bmState = dial.getBMState();
@@ -309,10 +315,7 @@ void MainWindow::on_actionDepthSGBMVideo_triggered()
         cv::Ptr<cv::StereoSGBM> sgbmState;
 
 
-        QImage disp_q;
-        cv::hconcat(vect_images_r.at(0), vect_images_l.at(0), disparity);
-        CVQTInterface::toQImage(disparity, disp_q);
-        SGBMParamDialog dial(disp_q);
+        SGBMParamDialog dial(vect_images_l.at(0), vect_images_r.at(0));
         if(dial.exec() != QDialog::Rejected)
         {
             sgbmState = dial.getSGBMState();
@@ -354,6 +357,11 @@ void MainWindow::on_actionTest_controller_triggered()
 
 void MainWindow::on_actionOpen_filters_triggered()
 {
-    SingleImageDialog dial;
-    dial.exec();
+    std::vector<cv::Mat> vect_images;
+    pickImages(vect_images);
+    if(vect_images.size() == 1)
+    {
+        SingleImageDialog dial(vect_images.at(0));
+        dial.exec();
+    }
 }

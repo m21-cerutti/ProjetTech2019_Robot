@@ -8,11 +8,9 @@ BMParamDialog::BMParamDialog(const Mat &src_left, const Mat &src_right, QWidget 
     QDialog(parent),
     src_left(src_left),
     src_right(src_right),
-    _time(0),
+    time(0),
     ui(new Ui::BMParamDialog)
 {
-    src_left.copyTo(dst_left);
-    src_left.copyTo(dst_right);
     ui->setupUi(this);
     setWindowTitle("Parameters of BM Disparity Map");
 
@@ -28,7 +26,6 @@ BMParamDialog::~BMParamDialog()
 
 void BMParamDialog::refreshImages()
 {
-
     QImage img;
     CVQTInterface::toQImage(view, img);
 
@@ -36,7 +33,7 @@ void BMParamDialog::refreshImages()
     ui->imgView->setPixmap(QPixmap::fromImage(img.scaled(ui->boxImg->width()*0.9,
                                                               ui->boxImg->height()*0.9,
                                                               Qt::AspectRatioMode::KeepAspectRatio)));
-    ui->labelTime->setText("Time(ms): "+ QString::number((_time)));
+    ui->labelTime->setText("Time(ms): "+ QString::number((time)));
 }
 
 void BMParamDialog::refreshModifs()
@@ -50,17 +47,10 @@ void BMParamDialog::refreshModifs()
 
 void BMParamDialog::applyDisparity()
 {
-    Mat left, right;
-
     cv::Ptr<cv::StereoBM> bmState = getBMState();
 
     //Conversion and application of Disparity
-    CVQTInterface::toMatCV(_img_src, _mat_dst);
-    Filters::separateImage(_mat_dst, left, right);
-    this->_time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, src_left, src_right, disparity, bmState);
-
-    //View the result
-    CVQTInterface::toQImage(_mat_dst, _img_dst);
+    this->time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, src_left, src_right, view, bmState);
 
 }
 
@@ -78,18 +68,18 @@ void BMParamDialog::on_btnShow_clicked()
 
 void BMParamDialog::on_btnReset_clicked()
 {
-    _img_dst = _img_src;
+    hconcat(src_left, src_right, view);
     refreshImages();
 }
 
 cv::Mat BMParamDialog::getMatResult() const
 {
-    return _mat_dst;
+    return view;
 }
 
 double BMParamDialog::getTimeResult() const
 {
-    return _time;
+    return time;
 }
 
 cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const

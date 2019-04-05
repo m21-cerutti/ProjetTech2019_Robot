@@ -36,6 +36,9 @@ public:
     explicit MainWindow();
     ~MainWindow();
 
+private:
+    void pickImages(std::vector<Mat> &vect_images);
+
 private slots:
 
     void on_actionQuit_triggered();
@@ -43,8 +46,6 @@ private slots:
     void on_actionDisparityBM_triggered();
 
     void on_actionDisparitySGBM_triggered();
-
-    void on_actionCalibrate_triggered();
 
     void on_actionCalibration_triggered();
 

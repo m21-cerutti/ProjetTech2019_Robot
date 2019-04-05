@@ -3,16 +3,16 @@
 
 using namespace cerutti;
 
-SGBMParamDialog::SGBMParamDialog(QImage& src, QWidget *parent) :
+SGBMParamDialog::SGBMParamDialog(const Mat &src_left, const Mat &src_right, QWidget *parent):
     QDialog(parent),
-    _img_src(src),
-    _img_dst(src),
-    _time(0),
+    src_left(src_left),
+    src_right(src_right),
+    time(0),
     ui(new Ui::SGBMParamDialog)
 {
-    CVQTInterface::toMatCV(src, _mat_dst);
     ui->setupUi(this);
     setWindowTitle("Parameters of SGBM Disparity Map");
+    hconcat(src_left, src_right, view);
     refreshImages();
 }
 
@@ -23,11 +23,14 @@ SGBMParamDialog::~SGBMParamDialog()
 
 void SGBMParamDialog::refreshImages()
 {
+    QImage img;
+    CVQTInterface::toQImage(view, img);
+
     //refresh
-    ui->imgView->setPixmap(QPixmap::fromImage(_img_dst.scaled(ui->boxImg->width()*0.9,
+    ui->imgView->setPixmap(QPixmap::fromImage(img.scaled(ui->boxImg->width()*0.9,
                                                               ui->boxImg->height()*0.9,
                                                               Qt::AspectRatioMode::KeepAspectRatio)));
-    ui->labelTime->setText("Time(ms): "+ QString::number((_time)));
+    ui->labelTime->setText("Time(ms): "+ QString::number((time)));
 }
 
 void SGBMParamDialog::refreshModifs()
@@ -41,16 +44,8 @@ void SGBMParamDialog::refreshModifs()
 
 void SGBMParamDialog::applyDisparity()
 {
-    Mat left, right;
     cv::Ptr<cv::StereoSGBM> sgbmState = getSGBMState();
-
-    //Conversion and application of Disparity
-    CVQTInterface::toMatCV(_img_src, _mat_dst);
-    Filters::separateImage(_mat_dst, left, right);
-    _time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, left, right, _mat_dst, sgbmState);
-
-    //View the result
-    CVQTInterface::toQImage(_mat_dst, _img_dst);
+    time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, src_left, src_right, view, sgbmState);
 }
 
 void SGBMParamDialog::resizeEvent(QResizeEvent *event)
@@ -67,18 +62,18 @@ void SGBMParamDialog::on_btnShow_clicked()
 
 void SGBMParamDialog::on_btnReset_clicked()
 {
-    _img_dst = _img_src;
+    hconcat(src_left, src_right, view);
     refreshImages();
 }
 
 cv::Mat SGBMParamDialog::getMatResult() const
 {
-    return _mat_dst;
+    return view;
 }
 
 double SGBMParamDialog::getTimeResult() const
 {
-    return _time;
+    return time;
 }
 
 cv::Ptr<cv::StereoSGBM> SGBMParamDialog::getSGBMState()

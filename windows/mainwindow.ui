@@ -110,11 +110,6 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Sin&amp;gleImage</string>
     </property>
-    <addaction name="actionOrigin"/>
-    <addaction name="actionGaussian"/>
-    <addaction name="actionSobel"/>
-    <addaction name="actionLaplacian"/>
-    <addaction name="separator"/>
     <addaction name="actionOpen_filters"/>
    </widget>
    <addaction name="menuFile"/>
@@ -132,16 +127,6 @@ p, li { white-space: pre-wrap; }
     <string>&amp;Quit</string>
    </property>
   </action>
-  <action name="actionOrigin">
-   <property name="text">
-    <string>&amp;Origin</string>
-   </property>
-  </action>
-  <action name="actionLaplacian">
-   <property name="text">
-    <string>&amp;Laplacian</string>
-   </property>
-  </action>
   <action name="actionDisparityBM">
    <property name="text">
     <string>&amp;DisparityBM</string>
@@ -150,16 +135,6 @@ p, li { white-space: pre-wrap; }
   <action name="actionDisparitySGBM">
    <property name="text">
     <string>D&amp;isparitySGBM</string>
-   </property>
-  </action>
-  <action name="actionGaussian">
-   <property name="text">
-    <string>&amp;Gaussian</string>
-   </property>
-  </action>
-  <action name="actionSobel">
-   <property name="text">
-    <string>So&amp;bel</string>
    </property>
   </action>
   <action name="actionCalibration">
@@ -214,7 +189,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_filters">
    <property name="text">
-    <string>Open filters</string>
+    <string>Open &amp;filters</string>
    </property>
   </action>
  </widget>

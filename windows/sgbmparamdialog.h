@@ -24,7 +24,7 @@ public:
      * @param src QImage to transform in disparity map using SGBM algorithm.
      * @param parent optionnal parameter for a parent widget.
      */
-    explicit SGBMParamDialog(QImage &src, QWidget *parent = nullptr);
+    explicit SGBMParamDialog(const cv::Mat& src_left, const cv::Mat& src_right, QWidget *parent = nullptr);
     ~SGBMParamDialog();
 
     /**
@@ -103,13 +103,13 @@ private slots:
 
 private:
     ///Image Source, need only for reset
-    QImage& _img_src;
+    const cv::Mat& src_left;
+    const cv::Mat& src_right;
 
     ///Image Destination
-    QImage _img_dst;
-    cv::Mat _mat_dst;
+    cv::Mat view;
 
-    double _time;
+    double time;
 
     Ui::SGBMParamDialog *ui;
 

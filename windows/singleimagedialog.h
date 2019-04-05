@@ -19,13 +19,23 @@ class SingleImageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SingleImageDialog(QWidget *parent = 0);
+    explicit SingleImageDialog(cv::Mat &src, QWidget *parent = 0);
     ~SingleImageDialog();
 
-private slots:
-    void on_cb_hidesrc_toggled(bool checked);
+private:
+    /**
+     * @brief refreshImages refresh the images.
+     */
+    void refreshImages();
 
-    void on_cb_resetbefore_toggled(bool checked);
+    void resetBeforeOperationCheck();
+
+
+private slots:
+
+    void resizeEvent(QResizeEvent *event);
+
+    void on_cb_hidesrc_toggled(bool checked);
 
     void on_btn_Origin_clicked();
 
@@ -35,12 +45,15 @@ private slots:
 
     void on_btn_Laplacian_clicked();
 
-    void on_btn_Open_clicked();
-
 private:
-    double _efficiency_time;
-    QImage _image_src;
-    cv::Mat _image_mat;
+    ///Image Source, need only for reset
+    cv::Mat& src;
+
+    ///Image Destination
+    cv::Mat view;
+
+    double time;
+
 
     Ui::SingleImageDialog *ui;
 };

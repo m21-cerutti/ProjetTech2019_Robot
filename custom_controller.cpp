@@ -329,6 +329,10 @@ void Filters::computeGradient(const cv::Mat &src, cv::Mat &out)
     {
         cv::cvtColor(src, gray, CV_BGRA2GRAY);
     }
+    else
+    {
+        src.copyTo(gray);
+    }
 
     computeGaussianBlur(gray, gray);
 
@@ -354,6 +358,10 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
     if(src.type() != CV_8UC1)
     {
         cv::cvtColor(src, gray, CV_BGRA2GRAY);
+    }
+    else
+    {
+        src.copyTo(gray);
     }
 
     computeGaussianBlur(gray, gray);
@@ -382,6 +390,7 @@ void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_r
     {
         src_left.copyTo(left_mat);
     }
+
     if(src_right.type() != CV_8UC1)
     {
         cv::cvtColor(src_right, right_mat, CV_BGRA2GRAY);
@@ -411,11 +420,19 @@ void StereoMap::computeSGBMDisparity(const cv::Mat &src_left, const cv::Mat &src
     {
         cv::cvtColor(src_left, left_mat, CV_BGRA2GRAY);
     }
+    else
+    {
+        src_left.copyTo(left_mat);
+    }
+
     if(src_right.type() != CV_8UC1)
     {
         cv::cvtColor(src_right, right_mat, CV_BGRA2GRAY);
     }
-
+    else
+    {
+        src_right.copyTo(right_mat);
+    }
     ///Disparity map
     sgbm_state->compute(left_mat, right_mat, disparity);
     cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
@@ -453,6 +470,33 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::
             }
         }
     }
+}
+
+//////////////////////////////////
+
+Calibration::StereoCamera::StereoCamera(std::__cxx11::string file_path)
+{
+
+}
+
+void Calibration::StereoCamera::calibrate(const std::vector<Mat> &sources_images_left, const std::vector<Mat> &sources_images_right)
+{
+
+}
+
+void Calibration::StereoCamera::save(std::__cxx11::string file_path)
+{
+
+}
+
+void Calibration::StereoCamera::load(std::__cxx11::string file_path)
+{
+
+}
+
+const Mat &Calibration::StereoCamera::getMatrix(std::string name)
+{
+
 }
 
 

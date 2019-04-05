@@ -9,7 +9,7 @@ CameraParamDialog::CameraParamDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Camera calibration");
-
+    calib = Calibration::StereoCamera("stereo_calibration.xml");
 }
 
 CameraParamDialog::~CameraParamDialog()
@@ -27,24 +27,24 @@ void CameraParamDialog::refreshImages()
     if (!_img_selection.isNull())
     {
         ui->imgview_left->setPixmap(QPixmap::fromImage(_img_selection.scaled((int)(ui->imgview_left->width()*0.9),
-                                                                        (int)(ui->imgview_left->height()*0.9),
-                                                                        Qt::AspectRatioMode::KeepAspectRatio)));
+                                                                             (int)(ui->imgview_left->height()*0.9),
+                                                                             Qt::AspectRatioMode::KeepAspectRatio)));
 
         ui->imgview_left->setPixmap(QPixmap::fromImage(_img_selection.scaled((int)(ui->imgview_left->width()*0.9),
-                                                                        (int)(ui->imgview_left->height()*0.9),
-                                                                        Qt::AspectRatioMode::KeepAspectRatio)));
+                                                                             (int)(ui->imgview_left->height()*0.9),
+                                                                             Qt::AspectRatioMode::KeepAspectRatio)));
     }
-
 }
 
 void CameraParamDialog::refreshPrintMatrix()
 {
     QString text;
     text += "width: ";
-    text += QString::number(_img_size.width);
+    text += QString::number(calib.img_size.width);
     text +="\nheight: ";
-    text +=QString::number(_img_size.height);
+    text +=QString::number(calib.img_size.height);
     text += "\n";
+    /*
     text += QString::fromStdString(Utilities::matToString<double>(_camera_matrix));
     text += QString::fromStdString(Utilities::matToString<double>(_dist_coeffs));
 
@@ -57,8 +57,9 @@ void CameraParamDialog::refreshPrintMatrix()
     {
         text+= QString::fromStdString(Utilities::matToString<double>(mat) +"\n*********\n");
     }
+    */
 
-     ui->txt_infobox->setText(text);
+    ui->txt_infobox->setText(text);
 }
 
 void CameraParamDialog::on_btn_openCamera_clicked()
@@ -117,7 +118,7 @@ void CameraParamDialog::on_btn_apply_clicked()
     if(_current_img != -1)
     {
         cv::Mat tmp = _vect_images.at(_current_img).clone();
-        Calibration::StereoCamera calib = Calibration::StereoCamera("stereo_calibration.xml");
+        //Calibration::StereoCamera calib = Calibration::StereoCamera("stereo_calibration.xml");
         //Calib::applyUndistorded(tmp, tmp, _camera_matrix, _dist_coeffs);
         //CVQTInterface::toQImage(tmp, _img_selection);
         refreshImages();

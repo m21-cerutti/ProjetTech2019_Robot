@@ -1,4 +1,6 @@
-#include "tools/cvqtinterface.h"
+#include "cvqtinterface.h"
+
+using namespace cerutti;
 
 void CVQTInterface::getSetImagesStereo(const QString folder_path, std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images)
 {

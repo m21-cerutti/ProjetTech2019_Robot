@@ -128,7 +128,7 @@ private:
     ///Image Destination
     cv::Mat view;
 
-    double _time;
+    double time;
 
     Ui::BMParamDialog *ui;
 };
