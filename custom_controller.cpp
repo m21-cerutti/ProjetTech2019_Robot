@@ -49,7 +49,6 @@ void CustomController::process(const cv::Mat & left_img,
 
     //DEPTH
     StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
-    //threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
 
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
     Utilities::messageDebug("Depth images save.", false);
@@ -214,10 +213,8 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 #else
 
     using namespace cv;
-    time_t rawtime; time(&rawtime);
-    std::string date(asctime(localtime(&rawtime)));
-    std::string folder = "DEBUG_IMAGES_CERUTTI";
 
+    std::string folder = "DEBUG_IMAGES_CERUTTI";
 
     std::string folder_cmd = "mkdir -p \""+folder+"\"";
     if (std::system(folder_cmd.c_str()) == 0)
@@ -247,6 +244,8 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
     Utilities::messageDebug( "Starting save image: " +name, false);
     imwrite(folder+"/"+name+".png", tmp);
 
+    time_t rawtime; time(&rawtime);
+    std::string date(asctime(localtime(&rawtime)));
     Utilities::messageDebug("Image saved."+date, false);
 
 #endif
@@ -475,16 +474,16 @@ bool StereoMap::loadSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_
     fs["modeSGBM"] >> modeSGBM;
 
     sgbm_state = cv::StereoSGBM::create(minDisparity,
-                                   numDisparities,
-                                   blockSize,
-                                   P1,
-                                   P2,
-                                   disp12MaxDiff,
-                                   preFilterCap,
-                                   uniquenessRatio,
-                                   speckleWindowSize,
-                                   speckleRange,
-                                   modeSGBM);
+                                        numDisparities,
+                                        blockSize,
+                                        P1,
+                                        P2,
+                                        disp12MaxDiff,
+                                        preFilterCap,
+                                        uniquenessRatio,
+                                        speckleWindowSize,
+                                        speckleRange,
+                                        modeSGBM);
 
     fs.release();
 
@@ -519,8 +518,6 @@ void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_r
 
     ///Disparity map
     bm_state->compute(left_mat, right_mat, disparity);
-    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
-    cv::subtract(invert, disparity, disparity);
 
     disparity.convertTo(disparity, CV_32F);
 
@@ -552,28 +549,39 @@ void StereoMap::computeSGBMDisparity(const cv::Mat &src_left, const cv::Mat &src
     }
     ///Disparity map
     sgbm_state->compute(left_mat, right_mat, disparity);
-    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
-    cv::subtract(invert, disparity, disparity);
 
     disparity.convertTo(disparity, CV_32F);
-
 
     disparity.copyTo(out);
 }
 
-void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max)
+void StereoMap::computeDepthMap(const cv::Mat &disparity, cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max)
 {
     using namespace cv;
-    Mat image_3d;
-    reprojectImageTo3D(disparity, image_3d, Q, false, CV_32F);
+
+    if(Q.type() != CV_32F)
+    {
+        Q.convertTo(Q, CV_32F, 1./16);
+    }
 
     //Extract depth
-    depth_map = cv::Mat::zeros(image_3d.rows, image_3d.cols, CV_32FC1);
+    depth_map = cv::Mat::zeros(disparity.rows, disparity.cols, CV_32FC1);
 
-    for(int i = 0; i < image_3d.rows; i++) {
-        for(int j = 0; j < image_3d.cols; j++) {
-            cv::Vec3f point = image_3d.at<cv::Vec3f>(i,j);
-            float z = - point[2];
+    float Q03 = Q.at<float>(0, 3);
+    float Q13 = Q.at<float>(1, 3);
+    float Q23 = Q.at<float>(2, 3);
+    float Q32 = Q.at<float>(3, 2);
+    float Q33 = Q.at<float>(3, 3);
+
+    for (int i = 0; i < disparity.rows; i++)
+    {
+        const float* disp_ptr = disparity.ptr<float>(i);
+
+        for (int j = 0; j < disparity.cols; j++)
+        {
+            const float pw = 1.0f / (disp_ptr[j] * Q32 + Q33);
+
+            float z =  Q23 * pw;
             if( z >= depth_min && z <= depth_max){
                 depth_map.at<float>(i,j) = z;
             }

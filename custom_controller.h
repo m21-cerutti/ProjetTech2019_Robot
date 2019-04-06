@@ -164,6 +164,9 @@ namespace StereoMap
 #define DEFAULT_BM_FILE "bmdisparity.xml"
 #define DEFAULT_SGBM_FILE "sgbmdisparity.xml"
 
+#define THRESHOLD_MIN 0.0f
+#define THRESHOLD_MAX 20.0f
+
 bool saveBMParameters(std::string file_path, Ptr<StereoBM> &bm_state);
 
 bool saveSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state);
@@ -210,7 +213,7 @@ void computeSGBMDisparity (const Mat &src_left, const Mat &src_right, Mat &out, 
      * @param Q Input 4×4 disparity-to-depth mapping matrix.
      * @param image_3d the Output matrix.
      */
-void computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max);
+void computeDepthMap(const cv::Mat &disparity, Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max);
 
 };
 
@@ -265,7 +268,7 @@ public:
 
 #define FILE_CONFIG_PARAMETERS "robot.xml"
 
-#define START_DISTANCE 200
+#define START_DISTANCE 100
 #define EPSILON_START 40
 #define PERCENT_PRESENCE 0.25
 #define DISTANCE_REFRESH (EPSILON_START/4)
@@ -278,9 +281,6 @@ public:
 #define NB_FRAME_INIT 10
 
 #define MOVE_SPEED_MULT 0.2
-
-#define THRESHOLD_MIN 0.0f
-#define THRESHOLD_MAX 10.0f
 
 class CustomController : public Controller
 {
