@@ -16,20 +16,19 @@ MainWindow::~MainWindow()
     delete ui;
 
     //Use to delete windows create by cv
-    cv::destroyAllWindows();
+    destroyAllWindows();
 }
 
-void MainWindow::pickImages(std::vector<cv::Mat>& vect_images)
+void MainWindow::pickImages(std::vector<Mat>& vect_images)
 {
     QStringList images = QFileDialog::getOpenFileNames(this, "Get one image stereo or left and right", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
 
     for(QString filename : images)
     {
-        cv::Mat tmp = imread(filename.toStdString());
+        Mat tmp = imread(filename.toStdString());
         vect_images.push_back(tmp);
     }
 }
-
 
 /***********************************************************************************/
 
@@ -40,7 +39,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionDisparityBM_triggered()
 {
-    std::vector<cv::Mat> vect_images;
+    std::vector<Mat> vect_images;
     pickImages(vect_images);
     Mat left, right;
     if(vect_images.size() == 1)
@@ -60,7 +59,7 @@ void MainWindow::on_actionDisparityBM_triggered()
 
 void MainWindow::on_actionDisparitySGBM_triggered()
 {
-    std::vector<cv::Mat> vect_images;
+    std::vector<Mat> vect_images;
     pickImages(vect_images);
     Mat left, right;
     if(vect_images.size() == 1)
@@ -86,16 +85,13 @@ void MainWindow::on_actionCalibration_triggered()
 
 void MainWindow::on_actionCalibrationStereo_triggered()
 {
-    QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
+    std::vector<Mat> vect_images_l, vect_images_r;
 
-    // open image
-    if(!folder_set.isEmpty())
+    // open set
+    if(CVQTInterface::getSetImagesStereo(vect_images_l, vect_images_r ))
     {
-        std::vector<cv::Mat> vect_images_l, vect_images_r;
-
-        CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
-        //Calibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
-
+        Calibration::StereoCamera calib;
+        calib.calibrate(vect_images_l, vect_images_r);
     }
 }
 
@@ -106,10 +102,10 @@ void MainWindow::on_actionCalibrationStereoVideo_triggered()
     // open image
     if(filepaths.size() == 2)
     {
-        std::vector<cv::Mat> vect_images_l, vect_images_r ;
-        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images_r, vect_images_l, true);
-
-        //Calibration::stereoCalibration("stereo_calibration.xml", vect_images_l, vect_images_r, "l_calibration.xml", "r_calibration.xml");
+        std::vector<Mat> vect_images_l, vect_images_r ;
+        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, -1, vect_images_l, vect_images_r, true);
+        Calibration::StereoCamera calib;
+        calib.calibrate(vect_images_l, vect_images_r);
     }
 }
 
@@ -121,9 +117,10 @@ void MainWindow::on_actionExtractImages_triggered()
     // open image
     if(filepaths.size() == 2)
     {
-        std::vector<cv::Mat> vect_images_left, vect_images_right;
-        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), 100, 25, vect_images_left, vect_images_right, true);
-        //Files::saveSetImages( "./setTest/stereo", vect_images_left, vect_images_right);
+        std::vector<Mat> vect_images_left, vect_images_right;
+        CVQTInterface::stereoVideoExtraction(filepaths.at(0).toStdString(), filepaths.at(1).toStdString(), DEFAULT_BEGIN_FRAME_EXTRACT, DEFAULT_NB_FRAME_EXTRACT,
+                                             vect_images_left, vect_images_right, true);
+        CVQTInterface::saveSetImagesStereo("./setTest", vect_images_left, vect_images_right);
     }
 }
 
@@ -132,23 +129,18 @@ void MainWindow::on_actionDepthBM_triggered()
 {
     using namespace cv;
 
-    QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
     Calibration::StereoCamera calib;
+    std::vector<Mat> vect_images_l, vect_images_r;
 
-    // open image
-    if(!folder_set.isEmpty())
+    // open set
+    if(CVQTInterface::getSetImagesStereo(vect_images_l, vect_images_r ))
     {
-        std::vector<cv::Mat> vect_images_l, vect_images_r;
+        Ptr<StereoBM> bmState;
 
-        CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
-
-        cv::Ptr<cv::StereoBM> bmState;
-
-        cv::Mat undist_left, undist_right, disparity, depth_map;
+        Mat undist_left, undist_right, disparity, depth_map;
 
         //UNDISTORD
-        undistort(vect_images_l.at(0), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
-        undistort(vect_images_r.at(0), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
+        calib.undistort(vect_images_l.at(0), vect_images_r.at(0), undist_left, undist_right);
 
 
         BMParamDialog dial(undist_left, undist_right);
@@ -156,21 +148,20 @@ void MainWindow::on_actionDepthBM_triggered()
         {
             bmState = dial.getBMState();
 
-            for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
+            for(int i =1; i<vect_images_l.size() && i<vect_images_r.size(); i++)
             {
                 //UNDISTORD
-                undistort(vect_images_l.at(i), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
-                undistort(vect_images_r.at(i), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
+                calib.undistort(vect_images_l.at(i), vect_images_r.at(i), undist_left, undist_right);
 
                 StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
-                //cv::threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
+                //threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
 
                 double min;
                 double max;
-                cv::minMaxIdx(depth_map, &min, &max);
-                cv::Mat adjMap;
+                minMaxIdx(depth_map, &min, &max);
+                Mat adjMap;
                 // expand your range to 0..255. Similar to histEq();
                 float scale = 255 / (max-min);
                 depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
@@ -179,8 +170,8 @@ void MainWindow::on_actionDepthBM_triggered()
                 // much more pleasing for the eye
                 // function is found in contrib module, so include contrib.hpp
                 // and link accordingly
-                cv::Mat falseColorsMap;
-                applyColorMap(adjMap, falseColorsMap, cv::COLORMAP_HOT);
+                Mat falseColorsMap;
+                applyColorMap(adjMap, falseColorsMap, COLORMAP_HOT);
                 Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
             }
         }
@@ -189,42 +180,39 @@ void MainWindow::on_actionDepthBM_triggered()
 
 void MainWindow::on_actionDepthSGBM_triggered()
 {
-    QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
+    using namespace cv;
+
     Calibration::StereoCamera calib;
+    std::vector<Mat> vect_images_l, vect_images_r;
 
-    // open image
-    if(!folder_set.isEmpty())
+    // open set
+    if(CVQTInterface::getSetImagesStereo(vect_images_l, vect_images_r ))
     {
-        std::vector<cv::Mat> vect_images_l, vect_images_r;
 
-        CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
+        Mat depth_map, disparity;
+        Ptr<StereoSGBM> sgbmState;
 
-        cv::Mat depth_map, disparity;
-        cv::Ptr<cv::StereoSGBM> sgbmState;
-
-        cv::Mat undist_left, undist_right;
+        Mat undist_left, undist_right;
         //UNDISTORD
-        undistort(vect_images_l.at(0), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
-        undistort(vect_images_r.at(0), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
-
+        calib.undistort(vect_images_l.at(0), vect_images_r.at(0), undist_left, undist_right);
 
         SGBMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
         {
             sgbmState = dial.getSGBMState();
-            for(int i =1; i<vect_images_r.size() && i<vect_images_l.size(); i++)
+            for(int i =1; i<vect_images_l.size() && i<vect_images_r.size(); i++)
             {
                 //UNDISTORD
-                undistort(vect_images_l.at(i), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
-                undistort(vect_images_r.at(i), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
+                calib.undistort(vect_images_l.at(i), vect_images_r.at(i), undist_left, undist_right);
 
                 StereoMap::computeSGBMDisparity(undist_left, undist_right, disparity, sgbmState);
+
                 StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
                 double min;
                 double max;
-                cv::minMaxIdx(depth_map, &min, &max);
-                cv::Mat adjMap;
+                minMaxIdx(depth_map, &min, &max);
+                Mat adjMap;
                 // expand your range to 0..255. Similar to histEq();
                 float scale = 255 / (max-min);
                 depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
@@ -233,8 +221,8 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 // much more pleasing for the eye
                 // function is found in contrib module, so include contrib.hpp
                 // and link accordingly
-                cv::Mat falseColorsMap;
-                applyColorMap(adjMap, falseColorsMap, cv::COLORMAP_HOT);
+                Mat falseColorsMap;
+                applyColorMap(adjMap, falseColorsMap, COLORMAP_HOT);
                 Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
             }
         }
@@ -243,15 +231,11 @@ void MainWindow::on_actionDepthSGBM_triggered()
 
 void MainWindow::on_actionTest_controller_triggered()
 {
-    QString folder_set = QFileDialog::getExistingDirectory(this, "Open set folder", QString());
+    std::vector<Mat> vect_images_l, vect_images_r;
 
-    // open image
-    if(!folder_set.isEmpty())
+    // open set
+    if(CVQTInterface::getSetImagesStereo(vect_images_l, vect_images_r ))
     {
-        std::vector<cv::Mat> vect_images_l, vect_images_r;
-
-        CVQTInterface::getSetImagesStereo(folder_set, vect_images_l, vect_images_r );
-
         cerutti::CustomController cont = cerutti::CustomController();
         cont.load();
         float vx, vy, omega;
@@ -266,7 +250,7 @@ void MainWindow::on_actionTest_controller_triggered()
 
 void MainWindow::on_actionOpen_filters_triggered()
 {
-    std::vector<cv::Mat> vect_images;
+    std::vector<Mat> vect_images;
     pickImages(vect_images);
     if(vect_images.size() == 1)
     {

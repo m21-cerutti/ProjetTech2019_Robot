@@ -101,7 +101,12 @@ private slots:
     ///For aplying disparity in realtime.
     void on_cbRealTime_toggled(bool checked);
 
+    void on_buttonBox_accepted();
+
 private:
+
+    cv::Ptr<cv::StereoSGBM> sgbm_state;
+
     ///Image Source, need only for reset
     const cv::Mat& src_left;
     const cv::Mat& src_right;

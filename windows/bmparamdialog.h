@@ -43,7 +43,7 @@ public:
      * @brief getBMState Fonction using ui for parameters
      * @return BM parameters for a future reuse.
      */
-    cv::Ptr<cv::StereoBM>  getBMState() const;
+    cv::Ptr<cv::StereoBM>  getBMState();
 
 private:
 
@@ -66,6 +66,8 @@ public slots:
     void refreshModifs();
 
 private slots:
+
+    void on_buttonBox_accepted();
 
     ///Resize principally the images
     void resizeEvent(QResizeEvent *event);
@@ -121,6 +123,9 @@ private slots:
     void on_cbRealTime_toggled(bool checked);
 
 private:
+
+    cv::Ptr<cv::StereoBM> bm_state;
+
     ///Image Source, need only for reset
     const cv::Mat& src_left;
     const cv::Mat& src_right;

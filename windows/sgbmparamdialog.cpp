@@ -12,6 +12,35 @@ SGBMParamDialog::SGBMParamDialog(const Mat &src_left, const Mat &src_right, QWid
 {
     ui->setupUi(this);
     setWindowTitle("Parameters of SGBM Disparity Map");
+    setWindowFlag(Qt::WindowMaximizeButtonHint);
+
+    if(StereoMap::loadSGBMParameters(DEFAULT_SGBM_FILE, sgbm_state))
+    {
+        ui->minDisparity_slider->setValue(sgbm_state->getMinDisparity());
+        ui->numDisparities_slider->setValue(sgbm_state->getNumDisparities());
+        ui->blockSize_slider->setValue(sgbm_state->getBlockSize());
+        ui->P1_slider->setValue(sgbm_state->getP1());
+        ui->P2_slider->setValue(sgbm_state->getP2());
+        ui->disp12_slider->setValue(sgbm_state->getDisp12MaxDiff());
+        ui->preFilterCap_slider->setValue(sgbm_state->getPreFilterCap());
+        ui->uniquenessRatio_slider->setValue(sgbm_state->getUniquenessRatio());
+        ui->speckleWindowsSize_slider->setValue(sgbm_state->getSpeckleWindowSize());
+        ui->speckleRange_slider->setValue(sgbm_state->getSpeckleRange());
+        if( sgbm_state->getMode() == cv::StereoSGBM::MODE_HH)
+        {
+            ui->FullDP_cb->setCheckState(Qt::Checked);
+        }
+        else
+        {
+            ui->FullDP_cb->setCheckState(Qt::Unchecked);
+        }
+    }
+    else
+    {
+        sgbm_state = getSGBMState();
+    }
+
+
     hconcat(src_left, src_right, view);
     refreshImages();
 }
@@ -27,9 +56,9 @@ void SGBMParamDialog::refreshImages()
     CVQTInterface::toQImage(view, img);
 
     //refresh
-    ui->imgView->setPixmap(QPixmap::fromImage(img.scaled(ui->boxImg->width()*0.9,
-                                                              ui->boxImg->height()*0.9,
-                                                              Qt::AspectRatioMode::KeepAspectRatio)));
+    ui->imgView->setPixmap(QPixmap::fromImage(img.scaled((int)ui->boxImg->width()*0.9,
+                                                         (int)ui->boxImg->height()*0.9,
+                                                         Qt::AspectRatioMode::KeepAspectRatio)));
     ui->labelTime->setText("Time(ms): "+ QString::number((time)));
 }
 
@@ -44,9 +73,18 @@ void SGBMParamDialog::refreshModifs()
 
 void SGBMParamDialog::applyDisparity()
 {
-    cv::Ptr<cv::StereoSGBM> sgbmState = getSGBMState();
-    time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, src_left, src_right, view, sgbmState);
+    sgbm_state = getSGBMState();
+    time = Utilities::computeEfficiency(StereoMap::computeSGBMDisparity, src_left, src_right, view, sgbm_state);
 }
+
+
+
+void SGBMParamDialog::on_buttonBox_accepted()
+{
+    sgbm_state = getSGBMState();
+    StereoMap::saveSGBMParameters(DEFAULT_SGBM_FILE, sgbm_state);
+}
+
 
 void SGBMParamDialog::resizeEvent(QResizeEvent *event)
 {
@@ -101,19 +139,18 @@ cv::Ptr<cv::StereoSGBM> SGBMParamDialog::getSGBMState()
     }
 
 
-    cv::Ptr<cv::StereoSGBM> sgbmState =
-            cv::StereoSGBM::create(minDisparity,
-                                   numDisparities,
-                                   blockSize,
-                                   P1,
-                                   P2,
-                                   disp12MaxDiff,
-                                   preFilterCap,
-                                   uniquenessRatio,
-                                   speckleWindowSize,
-                                   speckleRange,
-                                   mode);
-    return sgbmState;
+    sgbm_state = cv::StereoSGBM::create(minDisparity,
+                                        numDisparities,
+                                        blockSize,
+                                        P1,
+                                        P2,
+                                        disp12MaxDiff,
+                                        preFilterCap,
+                                        uniquenessRatio,
+                                        speckleWindowSize,
+                                        speckleRange,
+                                        mode);
+    return sgbm_state;
 }
 
 void SGBMParamDialog::on_minDisparity_slider_valueChanged(int value)
@@ -189,4 +226,3 @@ void SGBMParamDialog::on_cbRealTime_toggled(bool checked)
 {
     refreshModifs();
 }
-

@@ -60,13 +60,15 @@ private slots:
 
     void on_btn_reset_clicked();
 
-    void on_list_imgcalib_left_currentRowChanged(int currentRow);
-
-    void on_list_imgcalib_right_currentRowChanged(int currentRow);
+    void on_list_imgcalib_currentRowChanged(int currentRow);
 
     void on_btn_clear_clicked();
 
     void on_btn_save_clicked();
+
+    void on_btn_remove_clicked();
+
+    void on_btn_saveset_clicked();
 
 private:
 

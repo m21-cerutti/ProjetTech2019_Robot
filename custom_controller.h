@@ -17,57 +17,6 @@ namespace cerutti
 
 using namespace cv;
 
-#define NAME_FILE_CONFIG "robot.xml"
-#define START_DISTANCE 200
-#define EPSILON_START 40
-#define PERCENT_PRESENCE 0.25
-#define DISTANCE_REFRESH (EPSILON_START/4)
-
-#define CUBE_START_X1 0.25
-#define CUBE_START_Y1 0
-#define CUBE_START_X2 0.75
-#define CUBE_START_Y2 0.5
-
-#define NB_FRAME_INIT 10
-
-#define MOVE_SPEED_MULT 0.2
-
-#define THRESHOLD_MIN 70
-#define THRESHOLD_MAX 150
-
-class CustomController : public Controller
-{
-public:
-
-    CustomController();
-
-    virtual ~CustomController();
-
-    virtual void process(const Mat & left_img,
-                         const Mat & right_img,
-                         float * vx, float * vy, float * omega) override;
-
-    virtual void load() override;
-
-
-private:
-
-    int nb_frame = 0;
-
-    int size_width, size_height;
-
-    Mat Q, R1, P1, R2, P2,
-    camera_matrix_l, dist_coeffs_l,
-    camera_matrix_r, dist_coeffs_r;
-
-    Ptr<StereoBM> bm_state;
-    Ptr<SimpleBlobDetector> blob_detector;
-
-};
-
-///////////////////////////////////////////
-
-
 namespace Utilities
 {
 
@@ -212,6 +161,17 @@ void computeLaplacian(const Mat &src, Mat &out);
 namespace StereoMap
 {
 
+#define DEFAULT_BM_FILE "bmdisparity.xml"
+#define DEFAULT_SGBM_FILE "sgbmdisparity.xml"
+
+bool saveBMParameters(std::string file_path, Ptr<StereoBM> &bm_state);
+
+bool saveSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state);
+
+bool loadBMParameters(std::string file_path, Ptr<StereoBM> &bm_state);
+
+bool loadSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state);
+
 /**
      * @brief Make disparity map with BM algorithm.
      * @param src_left the source image left.
@@ -264,7 +224,7 @@ namespace Calibration
 #define CHESS_WIDTH 9
 #define CHESS_HEIGHT 6
 
-#define DEFAULT_FILE_STEREO "calib_stereo.xml"
+#define DEFAULT_CALIB_FILE "calib_stereo.xml"
 
 class StereoCamera
 {
@@ -276,13 +236,11 @@ public:
     void calibrate(std::vector<cv::Mat>& sources_images_left,
                     std::vector<cv::Mat> &sources_images_right);
 
-    void undistord(cv::Mat& image_left, cv::Mat& image_right);
+    void undistort(const cv::Mat& image_left, const cv::Mat& image_right, Mat & out_left, Mat & out_right);
 
     void save();
-
+    void load();
     void load(std::string file_path);
-
-    const cv::Mat &getMatrix(std::string name);
 
 public:
     std::string file_path;
@@ -305,6 +263,54 @@ public:
 
 }
 
+///////////////////////////////////////////
+
+#define FILE_CONFIG_PARAMETERS "robot.xml"
+
+#define START_DISTANCE 200
+#define EPSILON_START 40
+#define PERCENT_PRESENCE 0.25
+#define DISTANCE_REFRESH (EPSILON_START/4)
+
+#define CUBE_START_X1 0.25
+#define CUBE_START_Y1 0
+#define CUBE_START_X2 0.75
+#define CUBE_START_Y2 0.5
+
+#define NB_FRAME_INIT 10
+
+#define MOVE_SPEED_MULT 0.2
+
+#define THRESHOLD_MIN 0
+#define THRESHOLD_MAX 200
+
+class CustomController : public Controller
+{
+public:
+
+    CustomController();
+
+    virtual ~CustomController();
+
+    virtual void process(const Mat & left_img,
+                         const Mat & right_img,
+                         float * vx, float * vy, float * omega) override;
+
+    virtual void load() override;
+
+
+private:
+
+    int nb_frame = 0;
+
+    int size_width, size_height;
+
+    Calibration::StereoCamera calib;
+
+    Ptr<StereoBM> bm_state;
+    Ptr<SimpleBlobDetector> blob_detector;
+
+};
 
 }
 

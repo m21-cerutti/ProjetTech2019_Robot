@@ -3,6 +3,8 @@
 
 #include <QApplication>
 
+//#define SIMULATION
+
 int main(int argc, char *argv[])
 {
 

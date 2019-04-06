@@ -13,6 +13,24 @@ BMParamDialog::BMParamDialog(const Mat &src_left, const Mat &src_right, QWidget 
 {
     ui->setupUi(this);
     setWindowTitle("Parameters of BM Disparity Map");
+    setWindowFlag(Qt::WindowMaximizeButtonHint);
+
+    if(StereoMap::loadBMParameters(DEFAULT_BM_FILE, bm_state))
+    {
+        ui->preFilterCap_slider->setValue(bm_state->getPreFilterCap());
+        ui->preFilterSize_slider->setValue(bm_state->getPreFilterSize());
+        ui->preFilterType_slider->setValue(bm_state->getPreFilterType());
+        ui->textureThreshold_slider->setValue(bm_state->getTextureThreshold());
+        ui->uniquenessRatio_slider->setValue(bm_state->getUniquenessRatio());
+        ui->blockSize_slider->setValue( bm_state->getBlockSize());
+        ui->disp12_slider->setValue(bm_state->getDisp12MaxDiff());
+        ui->minDisparity_slider->setValue(bm_state->getMinDisparity());
+        ui->numDisparities_slider->setValue(bm_state->getNumDisparities());
+    }
+    else
+    {
+        bm_state = getBMState();
+    }
 
     hconcat(src_left, src_right, view);
 
@@ -31,8 +49,8 @@ void BMParamDialog::refreshImages()
 
     //refresh
     ui->imgView->setPixmap(QPixmap::fromImage(img.scaled(ui->boxImg->width()*0.9,
-                                                              ui->boxImg->height()*0.9,
-                                                              Qt::AspectRatioMode::KeepAspectRatio)));
+                                                         ui->boxImg->height()*0.9,
+                                                         Qt::AspectRatioMode::KeepAspectRatio)));
     ui->labelTime->setText("Time(ms): "+ QString::number((time)));
 }
 
@@ -47,11 +65,15 @@ void BMParamDialog::refreshModifs()
 
 void BMParamDialog::applyDisparity()
 {
-    cv::Ptr<cv::StereoBM> bmState = getBMState();
+    bm_state = getBMState();
+    this->time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, src_left, src_right, view, bm_state);
 
-    //Conversion and application of Disparity
-    this->time = Utilities::computeEfficiency(StereoMap::computeBMDisparity, src_left, src_right, view, bmState);
+}
 
+void BMParamDialog::on_buttonBox_accepted()
+{
+    bm_state = getBMState();
+    StereoMap::saveBMParameters(DEFAULT_BM_FILE, bm_state);
 }
 
 void BMParamDialog::resizeEvent(QResizeEvent *event)
@@ -82,10 +104,9 @@ double BMParamDialog::getTimeResult() const
     return time;
 }
 
-cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const
+cv::Ptr<cv::StereoBM> BMParamDialog::getBMState()
 {
     //bgm parameters
-
 
     int preFilterCap = ui->preFilterCap_slider->value();
     int PreFilterSize = ui->preFilterSize_slider->value();
@@ -108,7 +129,7 @@ cv::Ptr<cv::StereoBM> BMParamDialog::getBMState() const
     int speckleRange = ui->speckleRange_slider->value();
     int speckleWindowSize = ui->speckleWindowsSize_slider->value();
 
-    cv::Ptr<cv::StereoBM> bm_state = cv::StereoBM::create();
+    bm_state = cv::StereoBM::create();
 
     bm_state->setPreFilterCap(preFilterCap);
     bm_state->setPreFilterSize(PreFilterSize);

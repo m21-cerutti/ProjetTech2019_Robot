@@ -3,13 +3,17 @@
 
 #include <QDir>
 #include <QFileInfoList>
+#include <QFileDialog>
 #include <QImage>
 #include <cv.h>
 #include <opencv2/opencv.hpp>
 
 #include "custom_controller.h"
 
+#define IS_COMPUTER
 #define DELAY_DEBUG_VIDEO 30
+#define DEFAULT_NB_FRAME_EXTRACT 30
+#define DEFAULT_BEGIN_FRAME_EXTRACT 50
 
 /**
  * @brief The CVQTInterface class gather all function of conversion.
@@ -17,7 +21,9 @@
 namespace CVQTInterface
 {
 
-    void getSetImagesStereo(const QString folder_path, std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images);
+    bool getSetImagesStereo(std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images);
+
+    bool saveSetImagesStereo(std::string prefix_folder, const std::vector<cv::Mat> &images_left, const std::vector<cv::Mat> &images_right);
 
 
     /**

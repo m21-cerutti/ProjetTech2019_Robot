@@ -2,37 +2,52 @@
 
 using namespace cerutti;
 
-void CVQTInterface::getSetImagesStereo(const QString folder_path, std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images)
+bool CVQTInterface::getSetImagesStereo(std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images)
 {
-    QDir dir_left(folder_path);
-    QDir dir_right = QDir(dir_left);
+    QString folder_set = QFileDialog::getExistingDirectory(nullptr, "Open set folder", QString());
 
-    QStringList filter_left;
-    QStringList filter_right;
+    // open image
+    if(!folder_set.isEmpty())
+    {
+        QDir dir_left(folder_set);
+        QDir dir_right = QDir(dir_left);
 
-    filter_left << QLatin1String("*_left.png");
-    filter_right << QLatin1String("*_right.png");
+        QStringList filter_left;
+        QStringList filter_right;
 
-    dir_left.setNameFilters(filter_left);
-    dir_right.setNameFilters(filter_right);
+        filter_left << QLatin1String("*left*.png");
+        filter_right << QLatin1String("*right*.png");
 
-    QFileInfoList filelistinfo_left = dir_left.entryInfoList();
-    QFileInfoList filelistinfo_right = dir_right.entryInfoList();
+        dir_left.setNameFilters(filter_left);
+        dir_right.setNameFilters(filter_right);
 
-    foreach (const QFileInfo &fileinfo, filelistinfo_left) {
-        QString imageFile = fileinfo.absoluteFilePath();
-        cv::Mat img_left;
-        img_left = cv::imread(imageFile.toStdString());
-        left_images.push_back(img_left);
+        QFileInfoList filelistinfo_left = dir_left.entryInfoList();
+        QFileInfoList filelistinfo_right = dir_right.entryInfoList();
+
+        if(filelistinfo_left.length() ==0 || (filelistinfo_left.length() != filelistinfo_right.length()))
+        {
+            Utilities::messageDebug("Empty folder.");
+            return false;
+        }
+
+        for (const QFileInfo &fileinfo: filelistinfo_left) {
+            QString imageFile = fileinfo.absoluteFilePath();
+            cv::Mat img_left;
+            img_left = cv::imread(imageFile.toStdString());
+            left_images.push_back(img_left);
+        }
+
+        for (const QFileInfo &fileinfo: filelistinfo_right) {
+            QString imageFile = fileinfo.absoluteFilePath();
+            cv::Mat img_right;
+            img_right = cv::imread(imageFile.toStdString());
+            right_images.push_back(img_right);
+        }
+
+        return true;
     }
 
-    foreach (const QFileInfo &fileinfo, filelistinfo_right) {
-        QString imageFile = fileinfo.absoluteFilePath();
-        cv::Mat img_right;
-        img_right = cv::imread(imageFile.toStdString());
-        right_images.push_back(img_right);
-    }
-
+    return false;
 }
 
 void CVQTInterface::stereoVideoExtraction(std::string path_video_left, std::string path_video_right,
@@ -129,7 +144,7 @@ void CVQTInterface::toQImage(const cv::Mat &in, QImage &out)
         out = dest.copy();
         break;
     }
-    ///BGR case
+        ///BGR case
     case CV_8UC3:
     {
         cv::Mat tmp;
@@ -138,7 +153,7 @@ void CVQTInterface::toQImage(const cv::Mat &in, QImage &out)
         out = dest.copy();
         break;
     }
-    ///BGRA case
+        ///BGRA case
     case CV_8UC4:
     {
         cv::Mat tmp;
@@ -179,3 +194,37 @@ void CVQTInterface::toMatCV(const QImage &in, cv::Mat& out)
     result.copyTo(out);
 }
 
+
+bool CVQTInterface::saveSetImagesStereo(std::string prefix_folder, const std::vector<Mat> &images_left, const std::vector<Mat> &images_right)
+{
+    using namespace cv;
+
+       std::string folder_cmd = "mkdir -p "+prefix_folder;
+       if (std::system(folder_cmd.c_str()) == 0)
+       {
+           Utilities::messageDebug("Create folder done.", false);
+       }
+       else
+       {
+           Utilities::messageDebug("Error create folder.", true);
+       }
+
+       Utilities::messageDebug( "Starting save set camera: " +prefix_folder, false);
+
+       if(images_left.size() != images_right.size())
+       {
+           Utilities::messageDebug("Not the same number of images.", true);
+           return false;
+       }
+
+       for(int i =0; i < images_left.size(); i++ )
+       {
+           imwrite(prefix_folder+"/"+std::to_string(i)+"_left.png", images_left[i]);
+           imwrite(prefix_folder+"/"+std::to_string(i)+"_right.png", images_right[i]);
+       }
+
+       time_t rawtime; time(&rawtime);
+       std::string date =  asctime(localtime(&rawtime));
+       Utilities::messageDebug("Set done. Date : " + date, false);
+       return true;
+}

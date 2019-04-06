@@ -5,11 +5,13 @@ using namespace cerutti;
 
 CameraParamDialog::CameraParamDialog(QWidget *parent) :
     QDialog(parent),
-    calib(Calibration::StereoCamera(DEFAULT_FILE_STEREO)),
+    calib(Calibration::StereoCamera()),
     ui(new Ui::CameraParamDialog)
 {
     ui->setupUi(this);
     setWindowTitle("Camera calibration");
+    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    refreshPrintMatrix();
 }
 
 CameraParamDialog::~CameraParamDialog()
@@ -24,18 +26,18 @@ void CameraParamDialog::resizeEvent(QResizeEvent *event)
 
 void CameraParamDialog::refreshImages()
 {
-    if (!_img_selection_left.isNull())
+    if (!img_selection_left.isNull())
     {
-        ui->imgview_left->setPixmap(QPixmap::fromImage(_img_selection_left.scaled((int)(ui->imgview_left->width()*0.9),
-                                                                                  (int)(ui->imgview_left->height()*0.9),
-                                                                                  Qt::AspectRatioMode::KeepAspectRatio)));
+        ui->imgview_left->setPixmap(QPixmap::fromImage(img_selection_left.scaled((int)(ui->imgview_left->width()*0.9),
+                                                                                 (int)(ui->imgview_left->height()*0.9),
+                                                                                 Qt::AspectRatioMode::KeepAspectRatio)));
     }
-    if (!_img_selection_right.isNull())
+    if (!img_selection_right.isNull())
     {
 
-        ui->imgview_right->setPixmap(QPixmap::fromImage(_img_selection_right.scaled((int)(ui->imgview_right->width()*0.9),
-                                                                                    (int)(ui->imgview_right->height()*0.9),
-                                                                                    Qt::AspectRatioMode::KeepAspectRatio)));
+        ui->imgview_right->setPixmap(QPixmap::fromImage(img_selection_right.scaled((int)(ui->imgview_right->width()*0.9),
+                                                                                   (int)(ui->imgview_right->height()*0.9),
+                                                                                   Qt::AspectRatioMode::KeepAspectRatio)));
     }
 }
 
@@ -50,11 +52,12 @@ void CameraParamDialog::on_btn_save_clicked()
 
     QTextStream out(&file);
     out << ui->txt_infobox->toPlainText();
+    Utilities::messageDebug("Save text edit.", false);
 }
 
 void CameraParamDialog::refreshPrintMatrix()
 {
-    QFile file(calib.file_path);
+    QFile file(QString::fromStdString(calib.file_path));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         Utilities::messageDebug("Can't open file calib for read.");
@@ -82,60 +85,46 @@ void CameraParamDialog::on_btn_openCamera_clicked()
 
 void CameraParamDialog::on_btn_calibrate_clicked()
 {
-    calib.calibrate(_vect_images_left, _vect_images_right);
+    calib.calibrate(vect_images_left, vect_images_right);
     refreshPrintMatrix();
 }
 
 void CameraParamDialog::on_btn_openImages_clicked()
 {
-    QStringList filepaths = QFileDialog::getOpenFileNames(this, "Open images left", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    for(QString filepath : filepaths)
+    // open set
+    if(!CVQTInterface::getSetImagesStereo(vect_images_left, vect_images_right ))
     {
-        QImage img;
-        if(img.load(filepath)){
-
-            QListWidgetItem* item = new QListWidgetItem(ui->list_imgcalib_left);
-            ui->list_imgcalib_left->addItem(item);
-            QLabel* label = new QLabel(QFileInfo(filepath).fileName(), ui->list_imgcalib_left);
-            item->setSizeHint(label->minimumSizeHint());
-            ui->list_imgcalib_left->setItemWidget(item, label);
-
-            cv::Mat tmp;
-            CVQTInterface::toMatCV(img, tmp);
-            _vect_images_left.push_back(tmp);
-        }
+        return;
     }
 
-    filepaths = QFileDialog::getOpenFileNames(this, "Open images right", "~/", tr("Image Files (*.GIF *.png *.jpg *.bmp *.jpeg)"), nullptr, QFileDialog::DontUseNativeDialog);
-
-    for(QString filepath : filepaths)
+    auto it_left = vect_images_left.begin();
+    auto it_right = vect_images_right.begin();
+    int i = 0;
+    for(;it_left< vect_images_left.end() && it_right<vect_images_right.end() ; it_left++, it_right++ )
     {
-        QImage img;
-        if(img.load(filepath)){
+        if(!it_left->empty() && !it_right->empty()){
 
-            QListWidgetItem* item = new QListWidgetItem(ui->list_imgcalib_right);
-            ui->list_imgcalib_right->addItem(item);
-            QLabel* label = new QLabel(QFileInfo(filepath).fileName(), ui->list_imgcalib_right);
+            QListWidgetItem* item = new QListWidgetItem(ui->list_imgcalib);
+            ui->list_imgcalib->addItem(item);
+
+            QString path_name = QString::number(i);
+            QLabel* label = new QLabel(path_name, ui->list_imgcalib);
             item->setSizeHint(label->minimumSizeHint());
-            ui->list_imgcalib_right->setItemWidget(item, label);
-
-            cv::Mat tmp;
-            CVQTInterface::toMatCV(img, tmp);
-            _vect_images_right.push_back(tmp);
+            ui->list_imgcalib->setItemWidget(item, label);
+            i++;
         }
     }
 }
 
 void CameraParamDialog::on_btn_apply_clicked()
 {
-    if((_current_img_left != -1) && (_current_img_right!= -1))
+    if((current_img != -1) && (current_img!= -1))
     {
-        cv::Mat tmp_l = _vect_images_left.at(_current_img_left).clone();
-        cv::Mat tmp_r = _vect_images_right.at(_current_img_right).clone();
-        calib.undistord(tmp_l, tmp_r);
-        CVQTInterface::toQImage(tmp_l, _img_selection_left);
-        CVQTInterface::toQImage(tmp_r, _img_selection_right);
+        cv::Mat tmp_l = vect_images_left.at(current_img).clone();
+        cv::Mat tmp_r = vect_images_right.at(current_img).clone();
+        calib.undistort(tmp_l, tmp_r, tmp_l, tmp_r);
+        CVQTInterface::toQImage(tmp_l, img_selection_left);
+        CVQTInterface::toQImage(tmp_r, img_selection_right);
         refreshImages();
     }
 
@@ -143,57 +132,66 @@ void CameraParamDialog::on_btn_apply_clicked()
 
 void CameraParamDialog::on_btn_reset_clicked()
 {
-    if(_current_img_left != -1)
+    if(current_img != -1)
     {
-        cv::Mat tmp = _vect_images_left.at(_current_img_left);
-        CVQTInterface::toQImage(tmp, _img_selection_left);
+        cv::Mat tmp = vect_images_left.at(current_img);
+        CVQTInterface::toQImage(tmp, img_selection_left);
 
-    }
-    if(_current_img_right != -1)
-    {
-        cv::Mat tmp = _vect_images_right.at(_current_img_right);
-        CVQTInterface::toQImage(tmp, _img_selection_right);
+        cv::Mat tmp2 = vect_images_right.at(current_img);
+        CVQTInterface::toQImage(tmp2, img_selection_right);
     }
     refreshImages();
 }
 
-void CameraParamDialog::on_list_imgcalib_left_currentRowChanged(int currentRow)
+void CameraParamDialog::on_list_imgcalib_currentRowChanged(int currentRow)
 {
-    if(currentRow >= _vect_images_left.size() || currentRow < 0 )
+    if(currentRow >= vect_images_left.size() || currentRow < 0 )
     {
         return;
     }
-    _current_img_left = currentRow;
-    cv::Mat tmp = _vect_images_left.at(_current_img_left);
-    CVQTInterface::toQImage(tmp, _img_selection_left);
-    refreshImages();
-}
-
-
-void CameraParamDialog::on_list_imgcalib_right_currentRowChanged(int currentRow)
-{
-    if(currentRow >= _vect_images_right.size() || currentRow < 0 )
-    {
-        return;
-    }
-    _current_img_right = currentRow;
-    cv::Mat tmp = _vect_images_right.at(_current_img_right);
-    CVQTInterface::toQImage(tmp, _img_selection_right);
+    current_img = currentRow;
+    cv::Mat tmp = vect_images_left.at(current_img);
+    CVQTInterface::toQImage(tmp, img_selection_left);
+    cv::Mat tmp2 = vect_images_right.at(current_img);
+    CVQTInterface::toQImage(tmp2, img_selection_right);
     refreshImages();
 }
 
 void CameraParamDialog::on_btn_clear_clicked()
 {
-    _current_img_left = -1;
-    _vect_images_left.clear();
-    ui->list_imgcalib_left->clear();
-    _img_selection_left.fill(0);
+    current_img = -1;
+    vect_images_left.clear();
+    img_selection_left.fill(0);
+    vect_images_right.clear();
+    img_selection_right.fill(0);
 
-    _current_img_right = -1;
-    _vect_images_right.clear();
-    ui->list_imgcalib_right->clear();
-    _img_selection_right.fill(0);
+    ui->list_imgcalib->clear();
 
     refreshImages();
 }
 
+
+void CameraParamDialog::on_btn_remove_clicked()
+{
+    if(current_img != -1)
+    {
+        auto it = vect_images_left.begin() + current_img;
+        vect_images_left.erase(it);
+        img_selection_left.fill(0);
+
+        it = vect_images_right.begin() + current_img;
+        vect_images_right.erase(it);
+        img_selection_right.fill(0);
+
+        QListWidgetItem *item = ui->list_imgcalib->takeItem(current_img);
+        delete item;
+
+        current_img = -1;
+    }
+    refreshImages();
+}
+
+void CameraParamDialog::on_btn_saveset_clicked()
+{
+    CVQTInterface::saveSetImagesStereo("./Sets/calibration", vect_images_left, vect_images_right);
+}

@@ -8,8 +8,9 @@ SingleImageDialog::SingleImageDialog(cv::Mat &src, QWidget *parent) :
     src(src),
     ui(new Ui::SingleImageDialog)
 {
-    //Setup and initiate elements in windows
     ui->setupUi(this);
+    setWindowTitle("Filters");
+    setWindowFlag(Qt::WindowMaximizeButtonHint);
     ui->BoxSrc->hide();
 
     src.copyTo(view);

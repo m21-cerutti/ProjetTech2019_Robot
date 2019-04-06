@@ -34,8 +34,8 @@ void CustomController::process(const cv::Mat & left_img,
             ;
 
     //UNDISTORD
-    undistort(left_img, left_img_undist, camera_matrix_l, dist_coeffs_l);
-    undistort(right_img, right_img_undist, camera_matrix_r, dist_coeffs_r);
+    undistort(left_img, left_img_undist, calib.camera_matrix_l, calib.dist_coeffs_l);
+    undistort(right_img, right_img_undist, calib.camera_matrix_r, calib.dist_coeffs_r);
 
     Utilities::showMatrice("Undistord_l_"+std::to_string(nb_frame), left_img_undist);
     Utilities::showMatrice("Undistord_r_"+std::to_string(nb_frame), right_img_undist);
@@ -48,7 +48,7 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::messageDebug("Disparity images save.", false);
 
     //DEPTH
-    StereoMap::computeDepthMap(disparity, Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
+    StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
     //threshold(depth_map, depth_map, -200, 0, CV_THRESH_TRUNC);
 
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
@@ -73,6 +73,7 @@ void CustomController::process(const cv::Mat & left_img,
     */
 
     // Just keep static
+    /*/
     if(nb_frame < 5)
     {
         *vx = 0;
@@ -109,7 +110,10 @@ void CustomController::process(const cv::Mat & left_img,
         *vy = 0;
         *omega = 1*MOVE_SPEED_MULT;
     }
-
+    */
+    *vx = 0;
+    *vy = 0;
+    *omega = 0;
 
 }
 
@@ -117,63 +121,18 @@ void CustomController::load()
 {
     using namespace cv;
 
-    Utilities::messageDebug( "Starting load robot file.", false);
+    Utilities::messageDebug( "Starting load robot files.", false);
 
-    FileStorage fs(NAME_FILE_CONFIG, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
+    calib.load(DEFAULT_CALIB_FILE);
+    StereoMap::loadBMParameters(DEFAULT_BM_FILE, bm_state);
+
+    Utilities::messageDebug( "Starting load robot parameters.", false);
+
+    FileStorage fs(FILE_CONFIG_PARAMETERS, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
         Utilities::messageDebug("Can't open file for robot.", true);
         return;
     }
-
-    std::string date;
-    fs["calibration_date"] >> date;
-    Utilities::messageDebug("File creation date : " +  date, false);
-
-    fs["width"] >> size_width;
-    fs["height"] >> size_height;
-
-    fs["camera_matrix_l"] >> camera_matrix_l;
-    fs["dist_coeffs_l"] >> dist_coeffs_l;
-    fs["camera_matrix_r"] >> camera_matrix_r;
-    fs["dist_coeffs_r"] >> dist_coeffs_r;
-
-    fs["Q"] >> Q;
-    fs["R1"] >> R1;
-    fs["P1"] >> P1;
-    fs["R2"] >> R2;
-    fs["P2"] >> P2;
-
-    //bgm parameters
-    int preFilterCap;
-    int PreFilterSize;
-    int PreFilterType;
-    int TextureThreshold;
-    int uniquenessRatio;
-    int blockSize;
-    int disp12MaxDiff;
-    int minDisparity;
-    int numDisparities;
-
-    bm_state = StereoBM::create();
-
-    fs["preFilterCap"] >> preFilterCap;
-    bm_state->setPreFilterCap(preFilterCap);
-    fs["PreFilterSize"] >> PreFilterSize;
-    bm_state->setPreFilterSize(PreFilterSize);
-    fs["PreFilterType"] >> PreFilterType;
-    bm_state->setPreFilterType(PreFilterType);
-    fs["TextureThreshold"] >> TextureThreshold;
-    bm_state->setTextureThreshold(TextureThreshold);
-    fs["uniquenessRatio"] >> uniquenessRatio;
-    bm_state->setUniquenessRatio(uniquenessRatio);
-    fs["blockSize"] >> blockSize;
-    bm_state->setBlockSize(blockSize);
-    fs["disp12MaxDiff"] >> disp12MaxDiff;
-    bm_state->setDisp12MaxDiff(disp12MaxDiff);
-    fs["minDisparity"] >> minDisparity;
-    bm_state->setMinDisparity(minDisparity);
-    fs["numDisparities"] >> numDisparities;
-    bm_state->setNumDisparities(numDisparities);
 
     // Setup SimpleBlobDetector parameters.
     SimpleBlobDetector::Params params;
@@ -374,6 +333,164 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
 
 //////////////////////////////////
 
+bool StereoMap::saveBMParameters(std::string file_path, Ptr<StereoBM> &bm_state)
+{
+    Utilities::messageDebug( "Starting save BM file : " +file_path, false);
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
+    if(!fs.isOpened()) {
+        Utilities::messageDebug("Can't open file for save BM file.", true);
+        return false;
+    }
+
+    fs << "preFilterCap" << bm_state->getPreFilterCap();
+    fs << "preFilterSize" << bm_state->getPreFilterSize();
+    fs << "preFilterType" << bm_state->getPreFilterType();
+    fs << "textureThreshold" << bm_state->getTextureThreshold();
+    fs << "uniquenessRatio" << bm_state->getUniquenessRatio();
+    fs << "blockSize" << bm_state->getBlockSize();
+    fs << "disp12MaxDiff" << bm_state->getDisp12MaxDiff();
+    fs << "minDisparity" << bm_state->getMinDisparity();
+    fs << "numDisparities" << bm_state->getNumDisparities();
+
+    fs.release();
+
+    Utilities::messageDebug("Save file sucessfull.", false);
+    return true;
+}
+
+
+bool StereoMap::saveSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state)
+{
+    Utilities::messageDebug( "Starting save SGBM file : " +file_path, false);
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
+    if(!fs.isOpened()) {
+        Utilities::messageDebug("Can't open file for save SGBM file.", true);
+        return false;
+    }
+
+    fs << "minDisparity" << sgbm_state->getMinDisparity();
+    fs << "numDisparities" << sgbm_state->getNumDisparities();
+    fs << "blockSize" << sgbm_state->getBlockSize();
+    fs << "P1" << sgbm_state->getP1();
+    fs << "P2" << sgbm_state->getP2();
+    fs << "disp12MaxDiff" << sgbm_state->getDisp12MaxDiff();
+    fs << "preFilterCap" << sgbm_state->getPreFilterCap();
+    fs << "uniquenessRatio" << sgbm_state->getUniquenessRatio();
+    fs << "speckleWindowSize" << sgbm_state->getSpeckleWindowSize();
+    fs << "speckleRange" << sgbm_state->getSpeckleRange();
+    fs << "modeSGBM" << sgbm_state->getMode();
+
+    fs.release();
+
+    Utilities::messageDebug("Save file sucessfull.", false);
+    return true;
+}
+
+bool StereoMap::loadBMParameters(std::string file_path, Ptr<StereoBM> &bm_state)
+{
+    Utilities::messageDebug( "Starting load disparity BM file.", false);
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
+
+    if(!fs.isOpened()) {
+        Utilities::messageDebug("Can't open file load disparity BM file.", true);
+        return false;
+    }
+
+    //bgm parameters
+    int preFilterCap;
+    int preFilterSize;
+    int preFilterType;
+    int textureThreshold;
+    int uniquenessRatio;
+    int blockSize;
+    int disp12MaxDiff;
+    int minDisparity;
+    int numDisparities;
+
+    bm_state = StereoBM::create();
+
+    fs["preFilterCap"] >> preFilterCap;
+    bm_state->setPreFilterCap(preFilterCap);
+    fs["preFilterSize"] >> preFilterSize;
+    bm_state->setPreFilterSize(preFilterSize);
+    fs["preFilterType"] >> preFilterType;
+    bm_state->setPreFilterType(preFilterType);
+    fs["textureThreshold"] >> textureThreshold;
+    bm_state->setTextureThreshold(textureThreshold);
+    fs["uniquenessRatio"] >> uniquenessRatio;
+    bm_state->setUniquenessRatio(uniquenessRatio);
+    fs["blockSize"] >> blockSize;
+    bm_state->setBlockSize(blockSize);
+    fs["disp12MaxDiff"] >> disp12MaxDiff;
+    bm_state->setDisp12MaxDiff(disp12MaxDiff);
+    fs["minDisparity"] >> minDisparity;
+    bm_state->setMinDisparity(minDisparity);
+    fs["numDisparities"] >> numDisparities;
+    bm_state->setNumDisparities(numDisparities);
+
+    fs.release();
+
+    Utilities::messageDebug("Read file sucessfull.", false);
+    return true;
+
+}
+
+bool StereoMap::loadSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state)
+{
+    Utilities::messageDebug( "Starting load disparity SGBM file.", false);
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
+
+    if(!fs.isOpened()) {
+        Utilities::messageDebug("Can't open file for load disparity SGBM file.", true);
+        return false;
+    }
+
+    //sgbgm parameters
+    int minDisparity;
+    int numDisparities;
+    int blockSize;
+    int P1;
+    int P2;
+    int disp12MaxDiff;
+    int preFilterCap;
+    int uniquenessRatio;
+    int speckleWindowSize;
+    int speckleRange;
+    int modeSGBM;
+
+    fs["minDisparity"] >> minDisparity;
+    fs["numDisparities"] >> numDisparities;
+    fs["blockSize"] >> blockSize;
+    fs["P1"] >> P1;
+    fs["P2"] >> P2;
+    fs["disp12MaxDiff"] >> disp12MaxDiff;
+    fs["preFilterCap"] >> preFilterCap;
+    fs["uniquenessRatio"] >> uniquenessRatio;
+    fs["speckleWindowSize"] >> speckleWindowSize;
+    fs["speckleRange"] >> speckleRange;
+    fs["modeSGBM"] >> modeSGBM;
+
+    sgbm_state = cv::StereoSGBM::create(minDisparity,
+                                   numDisparities,
+                                   blockSize,
+                                   P1,
+                                   P2,
+                                   disp12MaxDiff,
+                                   preFilterCap,
+                                   uniquenessRatio,
+                                   speckleWindowSize,
+                                   speckleRange,
+                                   modeSGBM);
+
+    fs.release();
+
+    Utilities::messageDebug("Read file sucessfull.", false);
+    return true;
+}
 
 void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
 {
@@ -476,7 +593,7 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, const cv::Mat &Q, cv::
 
 Calibration::StereoCamera::StereoCamera()
 {
-    load(DEFAULT_FILE_STEREO);
+    load(DEFAULT_CALIB_FILE);
 }
 
 Calibration::StereoCamera::StereoCamera(std::string file_path)
@@ -493,7 +610,9 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
         Utilities::messageDebug("Wrong number of images for calibration : "+std::to_string(sources_images_left.size())+" . "+std::to_string(sources_images_right.size()));
         return;
     }
-    /*
+
+    img_size = sources_images_left[0].size();
+
     std::vector<std::vector<cv::Point3f>> object_points;
     std::vector<std::vector<cv::Point2f>> left_img_points;
     std::vector<std::vector<cv::Point2f>> right_img_points;
@@ -513,6 +632,7 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     }
 
     //Research
+    int flag_find = CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK;
     int nb_rejected=0;
     Mat gray_l, gray_r;
     for(int i =0; i<sources_images_left.size() && i<sources_images_right.size(); i++)
@@ -523,8 +643,8 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
         cv::cvtColor(source_l, gray_l, CV_BGRA2GRAY);
         cv::cvtColor(source_r, gray_r, CV_BGRA2GRAY);
 
-        bool found1 = findChessboardCorners(gray_l, board_size, corners_l, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK);
-        bool found2 = findChessboardCorners(gray_r, board_size, corners_r, CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE | CALIB_CB_FILTER_QUADS|  CALIB_CB_FAST_CHECK);
+        bool found1 = findChessboardCorners(gray_l, board_size, corners_l, flag_find);
+        bool found2 = findChessboardCorners(gray_r, board_size, corners_r, flag_find);
 
 
         if(found1 && found2)
@@ -551,23 +671,25 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     Utilities::messageDebug( std::to_string(nb_rejected) + " images rejected.", false);
 
     //Calibration
-    cv::Mat camera_matrix_l = cv::Mat(3, 3, CV_64F);
-    cv::Mat dist_coeffs_l = cv::Mat::zeros(8, 1, CV_64F);
+    camera_matrix_l = cv::Mat(3, 3, CV_64F);
+    dist_coeffs_l = cv::Mat::zeros(8, 1, CV_64F);
+
     std::vector<cv::Mat> rvecs_l;
     std::vector<cv::Mat> tvecs_l;
     camera_matrix_l.ptr<float>(0)[0] = 1;
     camera_matrix_l.ptr<float>(1)[1] = 1;
 
-    cv::Mat camera_matrix_r = cv::Mat(3, 3, CV_64F);
-    cv::Mat dist_coeffs_r = cv::Mat::zeros(8, 1, CV_64F);
+    camera_matrix_r = cv::Mat(3, 3, CV_64F);
+    dist_coeffs_r = cv::Mat::zeros(8, 1, CV_64F);
+
     std::vector<cv::Mat> rvecs_r;
     std::vector<cv::Mat> tvecs_r;
     camera_matrix_r.ptr<float>(0)[0] = 1;
     camera_matrix_r.ptr<float>(1)[1] = 1;
 
-    double rmserror1 = calibrateCamera(object_points, left_img_points, sources_images_left[0].size(), camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
+    double rmserror1 = calibrateCamera(object_points, left_img_points, img_size, camera_matrix_l, dist_coeffs_l, rvecs_l, tvecs_l);
     Utilities::messageDebug( "Calibration finish with left :" + std::to_string(rmserror1) + " of error.", false);
-    double rmserror2 = calibrateCamera(object_points, right_img_points, sources_images_right[0].size(), camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
+    double rmserror2 = calibrateCamera(object_points, right_img_points, img_size, camera_matrix_r, dist_coeffs_r, rvecs_r, tvecs_r);
     Utilities::messageDebug( "And right :" + std::to_string(rmserror2) + " of error.", false);
 
 
@@ -576,8 +698,6 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
 
     Utilities::messageDebug( "Starting stereo calibration.", false);
 
-    Mat R, F, E;
-    Vec3d T;
     int flag = CV_CALIB_FIX_INTRINSIC;
 
     Utilities::messageDebug("Stereo calibrate...", false);
@@ -586,10 +706,8 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     Utilities::messageDebug( "Calibration finish with " + std::to_string(rmserror) + " of error.", false);
 
     Utilities::messageDebug("Starting Rectification.", false);
-    cv::Mat R1, R2, P1, P2, Q;
     stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q, 0, 0);
     Utilities::messageDebug("Done Rectification.", false);
-*/
     /*
     int i =0;
     for(cv::Mat img : sources_images_left)
@@ -611,25 +729,106 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     save();
 }
 
-void Calibration::StereoCamera::undistord(Mat &image_left, Mat &image_right)
+void Calibration::StereoCamera::undistort(const Mat &image_left, const Mat &image_right, Mat & out_left, Mat & out_right)
 {
-
+    if(camera_matrix_l.empty())
+    {
+        Utilities::messageDebug("Camera not calibrate.", true);
+        return;
+    }
+    Mat tmp;
+    cv::undistort(image_left, tmp, camera_matrix_l, dist_coeffs_l);
+    tmp.copyTo(out_left);
+    cv::undistort(image_right, tmp, camera_matrix_r, dist_coeffs_r);
+    tmp.copyTo(out_right);
 }
 
 void Calibration::StereoCamera::save()
 {
+    using namespace cv;
 
+    Utilities::messageDebug( "Starting save calib camera: " +file_path, false);
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
+    if(!fs.isOpened()) {
+        Utilities::messageDebug("Can't open file for write calibration.", true);
+        return;
+    }
+
+    time_t rawtime; time(&rawtime);
+    std::string date =  asctime(localtime(&rawtime));;
+    fs << "calibration_date" << date;
+    fs << "width" << img_size.width;
+    fs << "height" << img_size.height;
+    fs << "camera_matrix_l" << camera_matrix_l;
+    fs << "dist_coeffs_l" << dist_coeffs_l;
+    fs << "camera_matrix_r" << camera_matrix_r;
+    fs << "dist_coeffs_r" << dist_coeffs_r;
+    fs << "R" << R;
+    fs << "F" << F;
+    fs << "E" << E;
+    fs << "T" << T;
+    fs << "R1" << R1;
+    fs << "R2" << R2;
+    fs << "P1" << P1;
+    fs << "P2" << P2;
+    fs << "Q" << Q;
+
+    fs.release();
+
+    Utilities::messageDebug("File done. Date : " + date, false);
+    return;
+}
+
+void Calibration::StereoCamera::load()
+{
+    using namespace cv;
+
+    Utilities::messageDebug( "Starting load calibration camera: " +file_path, false);
+
+    FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
+    if(!fs.isOpened()) {
+        Utilities::messageDebug("Can't open file for read calibration.", true);
+        return;
+    }
+
+    std::string date;
+    fs["calibration_date"] >> date;
+    Utilities::messageDebug("Calibration date : " +  date, false);
+
+    fs["width"] >> img_size.width;
+    fs["height"] >> img_size.height;
+    fs["camera_matrix_l"] >> camera_matrix_l;
+    fs["dist_coeffs_l"] >> dist_coeffs_l;
+    fs["camera_matrix_r"] >> camera_matrix_r;
+    fs["dist_coeffs_r"] >> dist_coeffs_r;
+    fs["R"] >> R;
+    fs["F"] >> F;
+    fs["E"] >> E;
+    fs["T"] >> T;
+    fs["R1"] >> R1;
+    fs["R2"] >> R2;
+    fs["P1"] >> P1;
+    fs["P2"] >> P2;
+    fs["Q"] >> Q;
+
+    fs.release();
+
+    Utilities::messageDebug("Read camera file sucessfull.", false);
+    return;
 }
 
 void Calibration::StereoCamera::load(std::string file_path)
 {
+
+    using namespace cv;
+
     this->file_path = file_path;
+    load();
 }
 
-const Mat &Calibration::StereoCamera::getMatrix(std::string name)
-{
 
-}
+
 
 
 }
