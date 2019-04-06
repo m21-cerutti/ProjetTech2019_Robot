@@ -163,20 +163,12 @@ void MainWindow::on_actionDepthBM_triggered()
                 StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
-                //threshold(depth_map, depth_map, -150, -20, CV_THRESH_TRUNC);
-
                 double min;
                 double max;
                 minMaxIdx(depth_map, &min, &max);
                 Mat adjMap;
-                // expand your range to 0..255. Similar to histEq();
                 float scale = 255 / (max-min);
                 depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
-
-                // this is great. It converts your grayscale image into a tone-mapped one,
-                // much more pleasing for the eye
-                // function is found in contrib module, so include contrib.hpp
-                // and link accordingly
                 Mat falseColorsMap;
                 applyColorMap(adjMap, falseColorsMap, COLORMAP_HOT);
                 Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
@@ -222,14 +214,8 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 double max;
                 minMaxIdx(depth_map, &min, &max);
                 Mat adjMap;
-                // expand your range to 0..255. Similar to histEq();
                 float scale = 255 / (max-min);
                 depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
-
-                // this is great. It converts your grayscale image into a tone-mapped one,
-                // much more pleasing for the eye
-                // function is found in contrib module, so include contrib.hpp
-                // and link accordingly
                 Mat falseColorsMap;
                 applyColorMap(adjMap, falseColorsMap, COLORMAP_HOT);
                 Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);

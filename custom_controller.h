@@ -301,8 +301,6 @@ private:
 
     int nb_frame = 0;
 
-    int size_width, size_height;
-
     Calibration::StereoCamera calib;
 
     Ptr<StereoBM> bm_state;
