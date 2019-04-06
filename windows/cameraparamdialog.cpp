@@ -122,7 +122,10 @@ void CameraParamDialog::on_btn_apply_clicked()
     {
         cv::Mat tmp_l = vect_images_left.at(current_img).clone();
         cv::Mat tmp_r = vect_images_right.at(current_img).clone();
-        calib.undistort(tmp_l, tmp_r, tmp_l, tmp_r);
+
+        undistort(tmp_l, tmp_l, calib.camera_matrix_l, calib.dist_coeffs_l);
+        undistort(tmp_r, tmp_r, calib.camera_matrix_r, calib.dist_coeffs_r);
+
         CVQTInterface::toQImage(tmp_l, img_selection_left);
         CVQTInterface::toQImage(tmp_r, img_selection_right);
         refreshImages();

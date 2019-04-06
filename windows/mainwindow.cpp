@@ -41,6 +41,9 @@ void MainWindow::on_actionDisparityBM_triggered()
 {
     std::vector<Mat> vect_images;
     pickImages(vect_images);
+
+    if(vect_images.size() ==0 ) return;
+
     Mat left, right;
     if(vect_images.size() == 1)
     {
@@ -61,6 +64,9 @@ void MainWindow::on_actionDisparitySGBM_triggered()
 {
     std::vector<Mat> vect_images;
     pickImages(vect_images);
+
+    if(vect_images.size() ==0 ) return;
+
     Mat left, right;
     if(vect_images.size() == 1)
     {
@@ -140,8 +146,8 @@ void MainWindow::on_actionDepthBM_triggered()
         Mat undist_left, undist_right, disparity, depth_map;
 
         //UNDISTORD
-        calib.undistort(vect_images_l.at(0), vect_images_r.at(0), undist_left, undist_right);
-
+        undistort(vect_images_l.at(0), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
         BMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
@@ -151,7 +157,8 @@ void MainWindow::on_actionDepthBM_triggered()
             for(int i =1; i<vect_images_l.size() && i<vect_images_r.size(); i++)
             {
                 //UNDISTORD
-                calib.undistort(vect_images_l.at(i), vect_images_r.at(i), undist_left, undist_right);
+                undistort(vect_images_l.at(i), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
                 StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
@@ -194,7 +201,8 @@ void MainWindow::on_actionDepthSGBM_triggered()
 
         Mat undist_left, undist_right;
         //UNDISTORD
-        calib.undistort(vect_images_l.at(0), vect_images_r.at(0), undist_left, undist_right);
+        undistort(vect_images_l.at(0), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+        undistort(vect_images_r.at(0), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
         SGBMParamDialog dial(undist_left, undist_right);
         if(dial.exec() != QDialog::Rejected)
@@ -203,7 +211,8 @@ void MainWindow::on_actionDepthSGBM_triggered()
             for(int i =1; i<vect_images_l.size() && i<vect_images_r.size(); i++)
             {
                 //UNDISTORD
-                calib.undistort(vect_images_l.at(i), vect_images_r.at(i), undist_left, undist_right);
+                undistort(vect_images_l.at(i), undist_left, calib.camera_matrix_l, calib.dist_coeffs_l);
+                undistort(vect_images_r.at(i), undist_right, calib.camera_matrix_r, calib.dist_coeffs_r);
 
                 StereoMap::computeSGBMDisparity(undist_left, undist_right, disparity, sgbmState);
 
@@ -257,4 +266,10 @@ void MainWindow::on_actionOpen_filters_triggered()
         SingleImageDialog dial(vect_images.at(0));
         dial.exec();
     }
+}
+
+void MainWindow::on_actionOpen_simulation_unity_triggered()
+{
+    ServerMaster server;
+    server.StartServer();
 }

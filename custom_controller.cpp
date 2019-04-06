@@ -245,9 +245,9 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
     }
 
     Utilities::messageDebug( "Starting save image: " +name, false);
-    imwrite(folder+"/"+name+"_"+date+".png", tmp);
+    imwrite(folder+"/"+name+".png", tmp);
 
-    Utilities::messageDebug("Image saved.", false);
+    Utilities::messageDebug("Image saved."+date, false);
 
 #endif
 
@@ -727,20 +727,6 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     }
     */
     save();
-}
-
-void Calibration::StereoCamera::undistort(const Mat &image_left, const Mat &image_right, Mat & out_left, Mat & out_right)
-{
-    if(camera_matrix_l.empty())
-    {
-        Utilities::messageDebug("Camera not calibrate.", true);
-        return;
-    }
-    Mat tmp;
-    cv::undistort(image_left, tmp, camera_matrix_l, dist_coeffs_l);
-    tmp.copyTo(out_left);
-    cv::undistort(image_right, tmp, camera_matrix_r, dist_coeffs_r);
-    tmp.copyTo(out_right);
 }
 
 void Calibration::StereoCamera::save()

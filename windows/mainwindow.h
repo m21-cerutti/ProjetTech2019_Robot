@@ -17,6 +17,8 @@
 #include "windows/sgbmparamdialog.h"
 #include "windows/singleimagedialog.h"
 
+
+#include "simulation/servermaster.h"
 #include "custom_controller.h"
 
 using namespace cerutti;
@@ -59,6 +61,8 @@ private slots:
     void on_actionTest_controller_triggered();
 
     void on_actionOpen_filters_triggered();
+
+    void on_actionOpen_simulation_unity_triggered();
 
 private:
 

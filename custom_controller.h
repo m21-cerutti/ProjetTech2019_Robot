@@ -236,8 +236,6 @@ public:
     void calibrate(std::vector<cv::Mat>& sources_images_left,
                     std::vector<cv::Mat> &sources_images_right);
 
-    void undistort(const cv::Mat& image_left, const cv::Mat& image_right, Mat & out_left, Mat & out_right);
-
     void save();
     void load();
     void load(std::string file_path);
@@ -281,8 +279,8 @@ public:
 
 #define MOVE_SPEED_MULT 0.2
 
-#define THRESHOLD_MIN 0
-#define THRESHOLD_MAX 200
+#define THRESHOLD_MIN 0.0f
+#define THRESHOLD_MAX 10.0f
 
 class CustomController : public Controller
 {
@@ -290,7 +288,7 @@ public:
 
     CustomController();
 
-    virtual ~CustomController();
+    ~CustomController() override;
 
     virtual void process(const Mat & left_img,
                          const Mat & right_img,
