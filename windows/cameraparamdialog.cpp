@@ -54,7 +54,7 @@ void CameraParamDialog::on_btn_save_clicked()
 
 void CameraParamDialog::refreshPrintMatrix()
 {
-    QFile file(ui->label_pathfile->text());
+    QFile file(calib.file_path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         Utilities::messageDebug("Can't open file calib for read.");

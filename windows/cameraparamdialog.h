@@ -73,14 +73,13 @@ private:
     Calibration::StereoCamera calib;
 
     ///The selected image for preview
-    QImage _img_selection_left;
-    QImage _img_selection_right;
+    QImage img_selection_left;
+    QImage img_selection_right;
 
     ///Set management of images
-    int _current_img_left = -1;
-    int _current_img_right = -1;
-    std::vector<cv::Mat> _vect_images_left = std::vector<cv::Mat>();
-    std::vector<cv::Mat> _vect_images_right = std::vector<cv::Mat>();
+    int current_img= -1;
+    std::vector<cv::Mat> vect_images_left = std::vector<cv::Mat>();
+    std::vector<cv::Mat> vect_images_right = std::vector<cv::Mat>();
 
     Ui::CameraParamDialog *ui;
 
