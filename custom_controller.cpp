@@ -117,6 +117,7 @@ void CustomController::load()
     using namespace cv;
 
     Utilities::messageDebug( "Starting load robot files.", false);
+    nb_frame = 0;
 
     calib.load(DEFAULT_CALIB_FILE);
     StereoMap::loadBMParameters(DEFAULT_BM_FILE, bm_state);
@@ -516,8 +517,10 @@ void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_r
 
     ///Disparity map
     bm_state->compute(left_mat, right_mat, disparity);
+    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
+    cv::subtract(invert, disparity, disparity);
 
-    disparity.convertTo(disparity, CV_32F);
+    disparity.convertTo(disparity, CV_32F, 1./16);
 
 
     disparity.copyTo(out);
@@ -547,8 +550,10 @@ void StereoMap::computeSGBMDisparity(const cv::Mat &src_left, const cv::Mat &src
     }
     ///Disparity map
     sgbm_state->compute(left_mat, right_mat, disparity);
+    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
+    cv::subtract(invert, disparity, disparity);
 
-    disparity.convertTo(disparity, CV_32F);
+    disparity.convertTo(disparity, CV_32F, 1./16);
 
     disparity.copyTo(out);
 }
@@ -579,7 +584,8 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, cv::Mat &Q, cv::Mat &d
         {
             const float pw = 1.0f / (disp_ptr[j] * Q32 + Q33);
 
-            float z =  Q23 * pw;
+            //- if invert
+            float z = - Q23 * pw;
             if( z >= depth_min && z <= depth_max){
                 depth_map.at<float>(i,j) = z;
             }
@@ -814,7 +820,6 @@ void Calibration::StereoCamera::load(std::string file_path)
 {
 
     using namespace cv;
-
     this->file_path = file_path;
     load();
 }

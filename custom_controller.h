@@ -165,7 +165,7 @@ namespace StereoMap
 #define DEFAULT_SGBM_FILE "sgbmdisparity.xml"
 
 #define THRESHOLD_MIN 0.0f
-#define THRESHOLD_MAX 20.0f
+#define THRESHOLD_MAX 120.0f
 
 bool saveBMParameters(std::string file_path, Ptr<StereoBM> &bm_state);
 
