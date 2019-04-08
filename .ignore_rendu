@@ -2,4 +2,7 @@
 cmdHierachie
 .gitignore
 Rapport/
+setTest/
+simulation/
+files/
 PRIORITES.txt
