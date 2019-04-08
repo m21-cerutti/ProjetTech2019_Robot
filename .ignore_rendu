@@ -1,8 +1,6 @@
-.ignoreRendu
-cmdHierachie
+.ignore_rendu
+.git/
 .gitignore
-Rapport/
-setTest/
-simulation/
-files/
+cmdHierachie
+rapport/
 PRIORITES.txt
