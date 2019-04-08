@@ -4,7 +4,7 @@
 \usepackage[french]{babel}
 \usepackage{pdfpages}
 
-\title{Rapport du projet de Programmation Système}
+\title{Rapport du projet technologique}
 \date{\today}
 
 \usepackage{graphicx}
@@ -92,26 +92,34 @@
 \begin{titlepage}
  \begin{sffamily}
   \begin{center}
-            \includegraphics[scale=0.04]{img/ubx-logo.png}
-            \\[2cm]
-        
+  \includegraphics[height=50pt]{img/ubx-logo.png}
+        \hspace{2cm}
     
-    {\huge \bfseries Rapport de Projet technologique\\[0.5cm] }
-
+    {\huge \bfseries Rapport de projet technologique :\\[0.5cm] \textit{Robot suiveur}\\[0.5cm] }
     \rule{\linewidth}{.5pt}
     \\[2cm]
-
-    \begin{minipage}{0.4\textwidth}
-      \begin{flushleft} \large
-        \author{}Etudiants :\\
+    \begin{minipage}{\textwidth}
+\noindent\mbox{%
+\begin{minipage}[t]{0.48\linewidth}
+\begin{flushleft} \large
+        \author{}Etudiant :\\
         	Marc \textsc{Cerutti}\\
       \end{flushleft}
+\end{minipage}}%
+\hfill%
+\mbox{%
+\begin{minipage}[t]{0.48\linewidth}
+\begin{flushright} \large
+        \author{}Enseignants :\\
+             Pascal \textsc{Desbarats}\\
+             Ludovic \textsc{Hofer}\\
+        	 \textsc{} \\
+      \end{flushright}
+\end{minipage}
+}
     \end{minipage}
-
     \vfill
-
     {\large \today}
-
   \end{center}
   \end{sffamily}
   
@@ -126,72 +134,64 @@
 \part{Présentation du sujet}
 
 \section{Déroulement}
-	L'objectif de ce projet de L3 informatique est à terme de créer un robot suiveur qui suivrai son utilisateur à distance de 2 mètres.\\
-
+	L'objectif de ce projet de L3 informatique est à terme de créer un robot suiveur qui suivrai son utilisateur à distance de 1 mètre.
+\par\leavevmode\par
 	On passera cependant par plusieurs étapes.
-	\\\\
+\par\leavevmode
 	D'abord la création de nos fonctions d'analyse ainsi que d'une interface graphique à partir de la bibliothèque OpenCv et Qt respectivement. OpenCv implémente notamment des algorithmes pour faire les filtres, les cartes de disparité et les cartes de profondeur nécessaires à l'analyse d'images pour l'intelligence artificielle, et Qt un système d'interface complet pour pouvoir tester nos fonctions d'analyse d'images.\\
-\\\\
+\par\leavevmode
 	Ensuite la création sous Unity d'une simulation avec les différents paramètres permettant de créer les comportements par défaut du robot et testant les différents algorithmes. Elle devra prévoir les spécificités du matériel et les tests pour différents environnements et situations.\\
+\par\leavevmode
+	Et enfin les tests sur le véritable robot.
 	
-	Ces deux étapes se feront respectivement au semestre 5 et 6 de Licence informatique 2018-2019.\\
+\par\leavevmode\par
+	Ces étapes se sont faites respectivement au semestre 5 et 6 de Licence informatique 2018-2019.
 	
 \newpage
 \section{Analyse de l’existant}
 
-Les consignes sont de s'appuyer sur la bibliothèque d'OpenCv 3.2.0
-et Qt supérieur à 4.8 afin d'assurer une compatibilité avec les ordinateurs du Cremi.\\
-Du fait de la communauté de OpenCv et de Qt, de nombreux tutoriels sont disponibles en ligne afin de nous permettre d'assurer les fonctionnalités demandé, à savoir l'analyse d'image et la création d'une interface pour tester le résultat.\\
+On devait s'appuyer sur la bibliothèque d'OpenCv 3.2.0 et Qt supérieur à 4.8 afin d'assurer une compatibilité avec les ordinateurs du Cremi. Quelques bibliothèques de contributions sont aussi disponibles dans OpenCv.
+\par\leavevmode\par
+Du fait de la communauté de OpenCv, Qt et d'Unity, de nombreux tutoriels et documentation sont disponibles en ligne afin de nous permettre d'assurer les fonctionnalités demandé, à savoir l'analyse d'image et la création d'une interface pour tester le résultat, mais aussi le passage d'images par le réseau et la visualisation des ordres données au robot.
+\par\leavevmode\par
 Nous avons aussi comme matériel un robot avec une caméra stéréoscopique mis à la disposition des élèves avec bien sûr des contraintes de disponibilité.
 
 \section{Besoins}
 
-Comme notre programme de traitement d'image sera utilisé dans un système embarqué, la performance de notre code est critique, ainsi que la mémoire utilisé.\\
-Il faudra donc pour la portabilité sur le robot exactement savoir les parties de bibliothèque OpenCv à importer.\\
-Pour analyser l'environnement du Robot, il faut assurer de la gestion de ces caméra stéréoscopique et le traitement des images qui seront transmis à l'unité de contrôle.\\
-Il faudra aussi tester, quantifier les performances, et s'assurer qualitativement du bon déroulement de l'implémentation des fonctionnalités.\\
-Il faudra aussi s'assurer de la compatibilité entre le matériel et les bibliothèques.\\
+Comme notre programme de traitement d'image est utilisé dans un système embarqué, la performance de notre code est critique, ainsi que la mémoire utilisé. Il faut donc aussi s'assurer de la compatibilité entre le matériel et les bibliothèques pour la portabilité sur le robot et exactement savoir les parties de bibliothèque OpenCv à importer.
+\par\leavevmode\par
+Afin analyser l'environnement du Robot, il faut calibrer la caméra stéréoscopique et les rectifier pour l'unité de contrôle.
+\par\leavevmode\par
+Pour s'assurer de ces premiers besoins, il faut tester, quantifier les performances, et s'assurer qualitativement du bon déroulement de l'implémentation des fonctionnalités via l'interface.\\
 
 %------------------%
 \newpage
 \part{Architecture}
 
-\section{Vue Global et conventions}
+\section{Vue Global}
 
-Il a été choisi pour les fonctions d'analyse d'image de privilégier les fonctions statiques, afin d’être facilement implémentable plus tard dans les algorithmes d'intelligence artificiel. Cela a aussi le mérite de limiter les allouements de mémoires, en ayant en paramètre que ce qui est nécessaire.\\
-Cela a cependant des inconvénients au niveau de la maintenabilité en cas de changements de paramètres dans les fonctions, qui peut donc se révéler lourde.\\
-
-Au niveau des dossiers, "tools" rassemble les classes et fonctions concernant le débuguage, la conversion, et le traitement d'images.
-Le dossier "subWindows" contient les classes de sous fenêtres à la fenêtre principal de l'interface.\\
+Au départ il a été choisi d'utiliser des fonctions statiques, mais mauvais choix.
+\par\leavevmode\par
+Au niveau des dossiers, la classe "custom\_controller" rassemble les classes et fonctions concernant le débuguage, la conversion, et le traitement d'images via OpenCv.
+\par\leavevmode\par
+Les classes et fonctions utilisant QT ont été séparé pour permettre le portage sur le robot, n'ayant pas la bibliothèque QT installé.
+Le dossier "windows" contient les classes de fenêtres et d'interface.\\
 La hiérarchie des fichiers est en annexe.\\
 
-La convention de nommage adopté est la suivante :\\
-
-\begin{tabular}{ l c }
-   Attribut & \textit{\_name\_complete }\\
-   Variables locales  & \textit{name\_complete}\\ 
-   Méthodes & \textit{nameComplete}\\
-   Classes 	& \textit{NameClass}\\
-   Fichiers	& \textit{nameclass.*}\\
- \end{tabular}\\
-
-et la documentation est faite avec doxygen.\\
-
-\newpage
+\par\leavevmode\par
 \section{Débogage et performances}
 
 Il faut prévoir le débuguage à la fois sur ordinateur, et sur les robots. C'est pourquoi dans certaines des fonctions, elles peuvent fonctionner sans l'environnement Qt.
 Le principal besoin de celles-ci est de permettre un débogage facile, et de calculer les performances des différents algorithmes.\\
 
-Voire la documentation de ProjectUtilities.\\
+Voire la documentation de Utilities.\\
 
-\newpage
+\par\leavevmode\par
 \section{Interface}
-
 
 L'interface permet à la fois de tester les fonctions implémenté avec leur paramètres que de vérifier qualitativement de la performance des résultats.
 
-La fenêtre principale permet de tester les filtres de base et d'accéder à des sous menus spéciaux en fonction des besoins des développements.\\
+La fenêtre principale permet de d'accéder rapidement à toutes les sous fenêtres. tester les filtres de base et d'accéder à des sous menus spéciaux en fonction des besoins des développements.\\
 
 \includegraphics[width=\linewidth]{img/interface.png}
 
@@ -216,7 +216,7 @@ Un système de choix et de sauvegarde de sets d'images serait aussi appréciable
 
 \newpage
 \section{Bibliothèque d'analyse}
-
+\par\leavevmode\par
 \subsection{Filtre d'images}
 
 %Photo performances
@@ -253,7 +253,7 @@ computeBMDisparityStereo
     
 computeSGBMDisparityStereo
 
-\newpage
+\par\leavevmode\par
 \subsection{Calibration Caméra}
 
 %Photo résultat pire-mieux
@@ -263,44 +263,17 @@ Les deux ont été implémentés avec plus ou moins de succès afin de comparer 
 Avec une grande surprise, les résultats de calibration semble plus prometteur avec le système ChessBoard que Charuco.
 Du fait de la distorsion supposé des caméras sans calibration, on peut faire l’hypothèse que l'identification des Id Aruco n'en devient que plus complexe, c'est pourquoi, du fait du manque de temps et aussi de la compatibilité avec la fonction stereoCalibrate de OpenCv, il a été privilégier d'utiliser la solution du ChessBoard plutôt que Charuco, qui même après une première calibration avec ChessBoard, n'affinait pas les résultats et même divergé.
 
-\newpage
+\par\leavevmode\par
 \subsection{Analyseur vidéo}
 
 Il a été choisi d'utiliser les fonctions OpenCv pour lire et extraire les frames de la vidéo afin de ne pas surcharger le robot de codes de bibliothèque et aussi pour améliorer les futures performances du robot qui ne demanderait pas d'éventuelles conversion pour une interface graphique.\\
 
 Des problèmes techniques sont néanmoins survenu avec seulement la lecture de vidéo dés le début de l’implémentation de fonctions d'analyse vidéo.\\
-
-Voici d'ailleurs le backtrace reçu avec un segmentation fault.\\
-
-\begin{tabular}{ l l l }
-
-av\_buffer\_unref 									& 							& 0x7fffe0161451 \\
-av\_frame\_unref 									& 							& 0x7fffe016d60e \\
-??				 									& 							& 0x7ffff27945e8 \\
-??													& 							& 0x7ffff27947e0 \\
-cvCreateFileCapture\_FFMPEG	 						& 							& 0x7ffff27949f9 \\
-?? 													& 							& 0x7ffff279713f \\
-cv::VideoCapture::open(cv::String const\&, int) 	& 							& 0x7ffff277e1b0\\
-cv::VideoCapture::VideoCapture(cv::String const\&) 	& 							& 0x7ffff277e2be\\
-VideoAnalyser::stereoVideoExtraction 				& videoanalyser.cpp(89) 	& 0x5555555910fd\\
-MainWindow::on\_actionStereoCalibration\_triggered	& mainwindow.cpp(312)		& 0x555555564589\\
-MainWindow::qt\_static\_metacall  					& moc\_mainwindow.cpp(191)	& 0x555555591f87 \\
-MainWindow::qt\_metacall  							& moc\_mainwindow.cpp(226) 	& 0x5555555920aa \\
-QMetaObject::activate(QObject *, int, int, void * *)& 							& 0x7ffff0b1b784 \\
-QAction::triggered(bool)  							& & 0x7ffff13cc1c2 \\
-QAction::activate(QAction::ActionEvent) 			& & 0x7ffff13cebb0 \\
-??  												& & 0x7ffff153e1ca \\
-??  												& & 0x7ffff1545854 \\
-QMenu::mouseReleaseEvent(QMouseEvent *) 			& & 0x7ffff1546826 \\
-QWidget::event(QEvent *) 							& & 0x7ffff141a278 \\
-... <More>      									& & \\                                                                     
- \end{tabular}\\
- 
-On peut voire ici que sur les machines du Cremi, la bibliothèque FFMPEG est soit mal installé, soit pas à jour. Sachant que sur les machines personnelles, le code marche très bien, et que seul un administrateur peut résoudre ce problème, il a été donc décider de l'ignorer pour l'instant et d'en informer les professeurs.
+Sur les machines du Cremi, la bibliothèque FFMPEG est soit mal installé, soit pas à jour. Sachant que sur les machines personnelles, le code marche très bien, et que seul un administrateur peut résoudre ce problème, il a été donc décider de l'ignorer pour l'instant et d'en informer les professeurs.
 
 Ensuite, par manque de temps mais aussi du fait de l'inconnu par rapport au système d'extraction d'image par la caméra, seul les fonctions de Debug et d'extraction furent implémentés, sachant que l'on aurait pu améliorer le code avec une analyse progressive dans une boucle de capture vidéo. 
 
-\newpage
+\par\leavevmode\par
 \subsection{Stéréo et carte de profondeur}
 
     
@@ -324,7 +297,7 @@ Debug :  Calibration finish with 4.994794 of error.
 Ainsi en récupérant les données qu'elle avait produite, et grâce au système d'extraction de vidéo, des résultats ont pu être fourni. 
 Une analyse plus poussé des résultats sont cependant nécessaires pour analyser extraire les points sur un repère 3D.
 
-    \newpage
+\par\leavevmode\par
 \subsection{Fichiers et sauvegarde}
 
 Basé sur le système déjà existant de FileStorage d'OpenCv, les calibration mono et stéréo ont été sauvegardé en format XML, du fait de l'utilisation répandu de celui-ci.
@@ -332,17 +305,13 @@ Les fichiers sauvegardé et utilisé plus haut sont d'ailleurs en annexe.
 
 %------------------%
     
-\begin{comment}
 \newpage
 \section{Simulation}
-\end{comment}
 
 %------------------%
-\begin{comment}
+
 \newpage
 \part{Tests}
-
-\section{Tests unitaires}
 
 \section{Performances}
 
@@ -361,28 +330,51 @@ Les fichiers sauvegardé et utilisé plus haut sont d'ailleurs en annexe.
 \subsection{Carte de profondeur}
 
 %Tableau performances
-\end{comment}
+
+\section{Qualitatif}
+
+\subsection{Interface}
+
+\subsection{Unity}
+
+\subsection{Robot}
 
 %------------------%
 \newpage
 \part{Bilan}
 
-\section{Semestre 5}
-
 \subsection{Difficultés rencontrés}
 
-Les difficultés rencontré ont été diverses. Du fait déjà que j'ai été seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les interfaces qui était secondaire par rapport à la qualité d'analyse. Cette même qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètres optionnels dans OpenCv, mais néanmoins important. Parfois même, c'était difficile de savoir ce que l'on attendait comme résultat. Mais grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
+\subsubsection{Choix erronés}
+Les difficultés rencontré ont été diverses. Du fait déjà que j'ai été seul sur le projet, la recherche de documentation s'en retrouvé plus difficile et la productivité en était plus réduite surtout sur les optimisations des cartes de disparité et de profondeur, ainsi que sur l'implémentation sur le robot, ne pouvant erre fait qu’après avoir une qualité suffisante sur le robot. Cette même qualité notamment sur les cartes de disparité et la calibration était très difficile à atteindre du fait de paramètres optionnels dans OpenCv, mais néanmoins important. Parfois même, c'était difficile de savoir ce que l'on attendait comme résultat. 
+
+Grâce au dialogue et à la comparaison de résultat avec d'autres groupes, ces dernières difficultés ont en parti été surmontés.
+
+Il y eut aussi parfois des conseils de professeur mal interprétés qui ont fait que certaines solutions ont du prendre n détour, et encore perte de temps.
+
+\subsubsection{Contraintes matérielles}
+
+Cependant l'obtention de résultats utilisables à partir d'images du robot est difficile du fait de nombreux paramètres qui peuvent changer en fonction de l'environnement, mais aussi
+La prise en charge d'image stéréo n'a pas été aussi bien pris en compte, comme les données de départ utilisées était rassemblé en une seul image. 
+Le fait en plus d’être limité à la seul utilisation de "custom\_controller" comme fichier pour le robot sans d'autres include alors que justement la séparation des fichiers était exagéré sur le projet, il y a eu perte de temps sur l'adaptation.
+
+De plus sur le trackage, une bibliothèque de contribution non installé au cremi aurait pu faire gagner beaucoup de temps et plus efficace sur les donnés.
+
+\subsubsection{Viabilité et erreurs dans les données}
+
+Il était difficile d'obtenir des résultats viables tout d'abord parce que la précision des résultats reposait sur plusieurs étapes qui comportait des paramètres qui demandait beaucoup de documentation.
+La première était la calibration, sans elle les images était déformé au départ et influe sur la qualité de la suite du processus. Mais une mauvaise calibration était encore plus néfaste.
+La deuxième était la carte de disparité. Du fait du choix entre l'algorithme SGBM et BM, les tests à la fois sur l'un et l'autre ralentissait la production de l'implémentation, mais produisait aussi des résultats très différent. On aurait pu améliorer leurs résultats via wls filter, mais ça aurait été encore du temps d'implémentation supplémentaire et des performances perdu.
+Ensuite leur paramétres nombreux
+
+La carte de profondeur
 
 \subsection{Critique et améliorations potentielles}
 
-L'amélioration de l'interface pour la vidéo et les cartes de profondeur améliorerait la visualisation des résultats. Plus que une amélioration du système de base, ce qu'il faut est une refonte pour pouvoir accueillir la visualisation de stéréo, ce qui n'a pas forcément été bien pris en compte dès le début du projet du fait des images stéréo rassemblé en une seul image.
-Il manque d'ailleurs les performances pour la carte de profondeur et la calibration, il y a aussi une incohérence avec les couleurs lors du choix de la carte de disparité sur computeDepthMap.
+L'amélioration de l'interface pour la vidéo et les cartes de profondeur améliorerait la visualisation des résultats. 
+Il manque d'ailleurs les performances pour la carte de profondeur et la calibration.
+L'implémentation.
 
-\begin{comment}
-\section{Semestre 6}
-\subsection{Difficultés rencontrés}
-\subsection{Critique et améliorations potentielles}
-\end{comment}
 
 %------------------%
 \newpage
@@ -395,23 +387,23 @@ Il manque d'ailleurs les performances pour la carte de profondeur et la calibrat
 \section{Hiérarchie du projet}
 \lstinputlisting[]{hierarchie.txt}
 
-\newpage
-\section{Files}
 
-\subsection{Left calibration}
 
-\lstinputlisting{results/l_calibration.xml}
 
-\newpage
-\subsection{Right calibration}
 
-\lstinputlisting{results/r_calibration.xml}
 
-\newpage
-\subsection{Stereo calibration}
 
-\lstinputlisting{results/stereo_calibration.xml}
 
+
+
+
+
+
+
+
+
+
+\begin{comment}
 \newpage
 \section{Rapports}
 \subsection{Rapport Initial}
@@ -531,6 +523,6 @@ Implémenter des tests unitaires et de performances.\\
 Améliorer l'interface pour prendre en compte l'affichage de calibration.\\
 (Filtre pour les cartes de disparité)\\
 \\\\
-
+\end{comment}
 
 \end{document}
