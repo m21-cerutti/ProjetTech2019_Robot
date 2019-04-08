@@ -1,6 +1,7 @@
 .ignore_rendu
-.git/
+.git
 .gitignore
 cmdHierachie
-rapport/
+rapport
+sets
 PRIORITES.txt
