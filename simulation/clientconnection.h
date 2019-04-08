@@ -16,25 +16,56 @@ class ClientConnection: public QObject
 public:
 
     explicit ClientConnection(QTcpSocket *socket, QObject *parent = nullptr);
+
+    /**
+     * @brief Main loop for the client.
+     */
     void run();
 
 signals:
 
+    /**
+     * @brief error signal
+     * @param socketerror
+     */
     void error(QTcpSocket::SocketError socketerror);
 
 public slots:
+    /**
+     * @brief call when data received.
+     */
     void readyRead();
+
+    /**
+     * @brief call when data disconnected.
+     */
     void disconnected();
 
 private slots:
-    //Delete s
+
+    /**
+     * @brief analyse the command given.
+     * @param cmd the command.
+     * @param len the length.
+     */
     void analyse(char *cmd, int len);
+
+    /**
+     * @brief send a package of bytes.
+     * @param package datas to send.
+     */
     void send(QByteArray& package);
 
 private:
 
-    QTcpSocket *socket;
+
+    /**
+     * @brief Actual package size to receive in order to analyse.
+     */
     int32_t size_package = 0;
+
+    QTcpSocket *socket;
+
     IARobot analyser;
 
 };

@@ -15,7 +15,7 @@ BMParamDialog::BMParamDialog(const Mat &src_left, const Mat &src_right, QWidget 
     setWindowTitle("Parameters of BM Disparity Map");
     setWindowFlag(Qt::WindowMaximizeButtonHint);
 
-    if(StereoMap::loadBMParameters(DEFAULT_BM_FILE, bm_state))
+    if(StereoMap::loadBMParameters(bm_state))
     {
         ui->preFilterCap_slider->setValue(bm_state->getPreFilterCap());
         ui->preFilterSize_slider->setValue(bm_state->getPreFilterSize());
@@ -73,7 +73,7 @@ void BMParamDialog::applyDisparity()
 void BMParamDialog::on_buttonBox_accepted()
 {
     bm_state = getBMState();
-    StereoMap::saveBMParameters(DEFAULT_BM_FILE, bm_state);
+    StereoMap::saveBMParameters(bm_state);
 }
 
 void BMParamDialog::resizeEvent(QResizeEvent *event)

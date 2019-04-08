@@ -22,9 +22,16 @@ public :
 
     ServerMaster(QObject *parent = nullptr);
 
+    /**
+     * @brief Start the server.
+     */
     void StartServer();
 
 private slots :
+
+    /**
+     * @brief handle new connection, only one client at most for debuging windows.
+     */
     void newConnection();
 
 private :

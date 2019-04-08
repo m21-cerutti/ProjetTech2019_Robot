@@ -15,7 +15,6 @@ void ClientConnection::run()
     qDebug() << " Client connected";
 
     // make this thread a loop
-    //exec();
     while(socket->state() == QTcpSocket::ConnectedState)
     {
         socket->waitForReadyRead(30);
@@ -113,8 +112,6 @@ void ClientConnection::analyse(char *cmd, int len)
     {
         qDebug() << " Incorrect command: " << cmd[0];
     }
-
-    delete cmd;
 }
 
 void ClientConnection::send(QByteArray& package)
@@ -148,7 +145,7 @@ void ClientConnection::readyRead()
             return;
         }
         qDebug() << "End transfer.";
-        char* command= new char[size_package];
+        char command[size_package+1];
         if(in.readRawData(command, size_package) > 0)
         {
             command[size_package]='\0';

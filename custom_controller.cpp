@@ -28,8 +28,7 @@ void CustomController::process(const cv::Mat & left_img,
     cv::Mat disparity, depth_map;
 
     Mat left_img_undist,
-            right_img_undist
-            ;
+            right_img_undist;
 
     //UNDISTORD
     undistort(left_img, left_img_undist, calib.camera_matrix_l, calib.dist_coeffs_l);
@@ -56,11 +55,7 @@ void CustomController::process(const cv::Mat & left_img,
     std::vector<KeyPoint> keypoints;
     blob_detector->detect( depth_map, keypoints);
 
-    // Draw detected blobs as red circles.
-    // DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
-
     Mat im_with_keypoints;
-
     drawKeypoints( depth_map, keypoints, im_with_keypoints, Scalar(0,0,255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
 
     Utilities::showMatrice("Blob_"+std::to_string(nb_frame), im_with_keypoints);
@@ -119,8 +114,14 @@ void CustomController::load()
     Utilities::messageDebug( "Starting load robot files.", false);
     nb_frame = 0;
 
-    calib.load(DEFAULT_CALIB_FILE);
-    StereoMap::loadBMParameters(DEFAULT_BM_FILE, bm_state);
+    if(!calib.load(DEFAULT_CALIB_FILE))
+    {
+        Utilities::messageDebug("Load calibration fail.");
+    }
+    if(!StereoMap::loadBMParameters(bm_state))
+    {
+        Utilities::messageDebug("Load disparity parameter fail.");
+    }
 
     Utilities::messageDebug( "Starting load robot parameters.", false);
 
@@ -130,39 +131,29 @@ void CustomController::load()
         Utilities::messageDebug("Can't open file for robot.", true);
         return;
     }
+
+    fs.release();
+
+    Utilities::messageDebug("Read file sucessfull.", false);
     */
+
 
     // Setup SimpleBlobDetector parameters.
     SimpleBlobDetector::Params params;
-
-    // Change thresholds
     params.minThreshold = 50;
     params.maxThreshold = 1000;
     params.thresholdStep = 15;
-
-    // Filter by Area.
     params.filterByArea = true;
     params.minArea = 500;
-
-    // Filter by Circularity
     params.filterByCircularity = false;
     //params.minCircularity = 0.1;
-
-    // Filter by Convexity
     params.filterByConvexity = false;
-
-    params.filterByColor = false;
-
-    // Filter by Inertia
     params.filterByInertia = true;
     params.maxInertiaRatio = 0.3;
 
-    // Set up detector with params
     blob_detector = SimpleBlobDetector::create(params);
 
-    //fs.release();
-
-    Utilities::messageDebug("Read file sucessfull.", false);
+    Utilities::messageDebug("Load sucessfull.", false);
 }
 
 //////////////////////////////////
@@ -190,7 +181,7 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 {
     if(mat.empty())
     {
-        messageDebug("Matrice empty.", true);
+        Utilities::messageDebug("Matrice empty.", true);
         return;
     }
 
@@ -213,7 +204,7 @@ void Utilities::showMatrice(std::string name, const cv::Mat &mat)
 
     using namespace cv;
 
-    std::string folder = "DEBUG_IMAGES_CERUTTI";
+    std::string folder = DEBUG_FOLDER;
 
     std::string folder_cmd = "mkdir -p \""+folder+"\"";
     if (std::system(folder_cmd.c_str()) == 0)
@@ -320,7 +311,6 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
     {
         src.copyTo(gray);
     }
-
     computeGaussianBlur(gray, gray);
 
     /// Apply Laplace function
@@ -331,7 +321,7 @@ void Filters::computeLaplacian(const cv::Mat &src, cv::Mat &out)
 
 //////////////////////////////////
 
-bool StereoMap::saveBMParameters(std::string file_path, Ptr<StereoBM> &bm_state)
+bool StereoMap::saveBMParameters(Ptr<StereoBM> &bm_state, std::string file_path)
 {
     Utilities::messageDebug( "Starting save BM file : " +file_path, false);
 
@@ -358,7 +348,7 @@ bool StereoMap::saveBMParameters(std::string file_path, Ptr<StereoBM> &bm_state)
 }
 
 
-bool StereoMap::saveSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state)
+bool StereoMap::saveSGBMParameters(Ptr<StereoSGBM> &sgbm_state, std::string file_path)
 {
     Utilities::messageDebug( "Starting save SGBM file : " +file_path, false);
 
@@ -386,7 +376,7 @@ bool StereoMap::saveSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_
     return true;
 }
 
-bool StereoMap::loadBMParameters(std::string file_path, Ptr<StereoBM> &bm_state)
+bool StereoMap::loadBMParameters(Ptr<StereoBM> &bm_state, std::string file_path)
 {
     Utilities::messageDebug( "Starting load disparity BM file.", false);
 
@@ -436,7 +426,7 @@ bool StereoMap::loadBMParameters(std::string file_path, Ptr<StereoBM> &bm_state)
 
 }
 
-bool StereoMap::loadSGBMParameters(std::string file_path, Ptr<StereoSGBM> &sgbm_state)
+bool StereoMap::loadSGBMParameters(Ptr<StereoSGBM> &sgbm_state, std::string file_path)
 {
     Utilities::messageDebug( "Starting load disparity SGBM file.", false);
 
@@ -570,8 +560,8 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, cv::Mat &Q, cv::Mat &d
     //Extract depth
     depth_map = cv::Mat::zeros(disparity.rows, disparity.cols, CV_32FC1);
 
-    float Q03 = Q.at<float>(0, 3);
-    float Q13 = Q.at<float>(1, 3);
+    //float Q03 = Q.at<float>(0, 3);
+    //float Q13 = Q.at<float>(1, 3);
     float Q23 = Q.at<float>(2, 3);
     float Q32 = Q.at<float>(3, 2);
     float Q33 = Q.at<float>(3, 3);
@@ -603,14 +593,12 @@ void StereoMap::computeDepthMap(const cv::Mat &disparity, cv::Mat &Q, cv::Mat &d
 
 //////////////////////////////////
 
-Calibration::StereoCamera::StereoCamera()
-{
-    load(DEFAULT_CALIB_FILE);
-}
-
 Calibration::StereoCamera::StereoCamera(std::string file_path)
 {
-    load(file_path);
+    if(!load(file_path))
+    {
+        Utilities::messageDebug("Camera uncalibrated.");
+    }
 }
 
 void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left, std::vector<Mat> &sources_images_right)
@@ -686,6 +674,7 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     camera_matrix_l = cv::Mat(3, 3, CV_64F);
     dist_coeffs_l = cv::Mat::zeros(8, 1, CV_64F);
 
+    //Not used later
     std::vector<cv::Mat> rvecs_l;
     std::vector<cv::Mat> tvecs_l;
     camera_matrix_l.ptr<float>(0)[0] = 1;
@@ -694,6 +683,7 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     camera_matrix_r = cv::Mat(3, 3, CV_64F);
     dist_coeffs_r = cv::Mat::zeros(8, 1, CV_64F);
 
+    //Not used later
     std::vector<cv::Mat> rvecs_r;
     std::vector<cv::Mat> tvecs_r;
     camera_matrix_r.ptr<float>(0)[0] = 1;
@@ -720,28 +710,11 @@ void Calibration::StereoCamera::calibrate(std::vector<Mat> &sources_images_left,
     Utilities::messageDebug("Starting Rectification.", false);
     stereoRectify(camera_matrix_l, dist_coeffs_l, camera_matrix_r, dist_coeffs_r, img_size, R, T, R1, R2, P1, P2, Q, 0, 0);
     Utilities::messageDebug("Done Rectification.", false);
-    /*
-    int i =0;
-    for(cv::Mat img : sources_images_left)
-    {
-        cv::Mat tmp;
-        undistort(img, tmp, camera_matrix_l, dist_coeffs_l);
-        Utilities::showMatrice("left_" + std::to_string(i), tmp);
-        i++;
-    }
-    i=0;
-    for(cv::Mat img : sources_images_right)
-    {
-        cv::Mat tmp;
-        undistort(img, tmp, camera_matrix_r, dist_coeffs_r);
-        Utilities::showMatrice("right_" + std::to_string(i), tmp);
-        i++;
-    }
-    */
+
     save();
 }
 
-void Calibration::StereoCamera::save()
+bool Calibration::StereoCamera::save()
 {
     using namespace cv;
 
@@ -750,7 +723,7 @@ void Calibration::StereoCamera::save()
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::WRITE);
     if(!fs.isOpened()) {
         Utilities::messageDebug("Can't open file for write calibration.", true);
-        return;
+        return false;
     }
 
     time_t rawtime; time(&rawtime);
@@ -775,10 +748,10 @@ void Calibration::StereoCamera::save()
     fs.release();
 
     Utilities::messageDebug("File done. Date : " + date, false);
-    return;
+    return true;
 }
 
-void Calibration::StereoCamera::load()
+bool Calibration::StereoCamera::load()
 {
     using namespace cv;
 
@@ -787,7 +760,7 @@ void Calibration::StereoCamera::load()
     FileStorage fs(file_path, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
     if(!fs.isOpened()) {
         Utilities::messageDebug("Can't open file for read calibration.", true);
-        return;
+        return false;
     }
 
     std::string date;
@@ -813,15 +786,13 @@ void Calibration::StereoCamera::load()
     fs.release();
 
     Utilities::messageDebug("Read camera file sucessfull.", false);
-    return;
+    return true;
 }
 
-void Calibration::StereoCamera::load(std::string file_path)
+bool Calibration::StereoCamera::load(std::string file_path)
 {
-
-    using namespace cv;
     this->file_path = file_path;
-    load();
+    return load();
 }
 
 

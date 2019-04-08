@@ -14,7 +14,7 @@ SGBMParamDialog::SGBMParamDialog(const Mat &src_left, const Mat &src_right, QWid
     setWindowTitle("Parameters of SGBM Disparity Map");
     setWindowFlag(Qt::WindowMaximizeButtonHint);
 
-    if(StereoMap::loadSGBMParameters(DEFAULT_SGBM_FILE, sgbm_state))
+    if(StereoMap::loadSGBMParameters(sgbm_state))
     {
         ui->minDisparity_slider->setValue(sgbm_state->getMinDisparity());
         ui->numDisparities_slider->setValue(sgbm_state->getNumDisparities());
@@ -82,7 +82,7 @@ void SGBMParamDialog::applyDisparity()
 void SGBMParamDialog::on_buttonBox_accepted()
 {
     sgbm_state = getSGBMState();
-    StereoMap::saveSGBMParameters(DEFAULT_SGBM_FILE, sgbm_state);
+    StereoMap::saveSGBMParameters(sgbm_state);
 }
 
 

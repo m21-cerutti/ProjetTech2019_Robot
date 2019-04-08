@@ -21,7 +21,8 @@ public:
 
     /**
      * @brief Constructor
-     * @param src QImage to transform in disparity map using SGBM algorithm.
+     * @param src_left the source left image.
+     * @param src_right the source right image.
      * @param parent optionnal parameter for a parent widget.
      */
     explicit SGBMParamDialog(const cv::Mat& src_left, const cv::Mat& src_right, QWidget *parent = nullptr);
@@ -65,9 +66,16 @@ public slots:
      */
     void refreshModifs();
 
-    void resizeEvent(QResizeEvent *event);
 
 private slots:
+
+    /**
+     * @brief Save the parameters in DEFAULT_SGBM_FILE
+    **/
+    void on_buttonBox_accepted();
+
+    ///Resize principally the images
+    void resizeEvent(QResizeEvent *event);
 
     ///Show the result of disparity with parameter
     void on_btnShow_clicked();
@@ -101,7 +109,6 @@ private slots:
     ///For aplying disparity in realtime.
     void on_cbRealTime_toggled(bool checked);
 
-    void on_buttonBox_accepted();
 
 private:
 

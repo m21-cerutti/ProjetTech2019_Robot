@@ -9,7 +9,7 @@ IARobot::~IARobot()
 
 }
 
-void IARobot::simulate()
+void IARobot::simulate(const Mat &left_img, const Mat &right_img)
 {
 
 }

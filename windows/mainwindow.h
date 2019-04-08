@@ -36,10 +36,15 @@ public:
     ~MainWindow();
 
 private:
+    /**
+     * @brief pick a set of images.
+     * @param vect_images the future container.
+     */
     void pickImages(std::vector<Mat> &vect_images);
 
 private slots:
 
+    ///Quick actions
     void on_actionQuit_triggered();
 
     void on_actionDisparityBM_triggered();

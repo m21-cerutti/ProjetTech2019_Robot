@@ -2,6 +2,41 @@
 
 using namespace cerutti;
 
+
+bool CVQTInterface::saveSetImagesStereo(std::string prefix_folder, const std::vector<Mat> &left_images, const std::vector<Mat> &right_images)
+{
+    using namespace cv;
+
+    std::string folder_cmd = "mkdir -p "+prefix_folder;
+    if (std::system(folder_cmd.c_str()) == 0)
+    {
+        Utilities::messageDebug("Create folder done.", false);
+    }
+    else
+    {
+        Utilities::messageDebug("Error create folder.", true);
+    }
+
+    Utilities::messageDebug( "Starting save set camera: " +prefix_folder, false);
+
+    if(left_images.size() != right_images.size())
+    {
+        Utilities::messageDebug("Not the same number of images.", true);
+        return false;
+    }
+
+    for(int i =0; i < left_images.size(); i++ )
+    {
+        imwrite(prefix_folder+"/"+std::to_string(i)+"_left.png", left_images[i]);
+        imwrite(prefix_folder+"/"+std::to_string(i)+"_right.png", right_images[i]);
+    }
+
+    time_t rawtime; time(&rawtime);
+    std::string date =  asctime(localtime(&rawtime));
+    Utilities::messageDebug("Set done. Date : " + date, false);
+    return true;
+}
+
 bool CVQTInterface::getSetImagesStereo(std::vector<cv::Mat>& left_images, std::vector<cv::Mat>& right_images)
 {
     QString folder_set = QFileDialog::getExistingDirectory(nullptr, "Open set folder", QString());
@@ -43,7 +78,6 @@ bool CVQTInterface::getSetImagesStereo(std::vector<cv::Mat>& left_images, std::v
             img_right = cv::imread(imageFile.toStdString());
             right_images.push_back(img_right);
         }
-
         return true;
     }
 
@@ -195,36 +229,3 @@ void CVQTInterface::toMatCV(const QImage &in, cv::Mat& out)
 }
 
 
-bool CVQTInterface::saveSetImagesStereo(std::string prefix_folder, const std::vector<Mat> &images_left, const std::vector<Mat> &images_right)
-{
-    using namespace cv;
-
-       std::string folder_cmd = "mkdir -p "+prefix_folder;
-       if (std::system(folder_cmd.c_str()) == 0)
-       {
-           Utilities::messageDebug("Create folder done.", false);
-       }
-       else
-       {
-           Utilities::messageDebug("Error create folder.", true);
-       }
-
-       Utilities::messageDebug( "Starting save set camera: " +prefix_folder, false);
-
-       if(images_left.size() != images_right.size())
-       {
-           Utilities::messageDebug("Not the same number of images.", true);
-           return false;
-       }
-
-       for(int i =0; i < images_left.size(); i++ )
-       {
-           imwrite(prefix_folder+"/"+std::to_string(i)+"_left.png", images_left[i]);
-           imwrite(prefix_folder+"/"+std::to_string(i)+"_right.png", images_right[i]);
-       }
-
-       time_t rawtime; time(&rawtime);
-       std::string date =  asctime(localtime(&rawtime));
-       Utilities::messageDebug("Set done. Date : " + date, false);
-       return true;
-}

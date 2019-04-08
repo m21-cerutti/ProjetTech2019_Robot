@@ -21,7 +21,8 @@ public:
 
     /**
      * @brief Constructor
-     * @param src QImage to transform in disparity map using BM algorithm.
+     * @param src_left the source left image.
+     * @param src_right the source right image.
      * @param parent optionnal parameter for a parent widget.
      */
     explicit BMParamDialog(const cv::Mat& src_left, const cv::Mat& src_right, QWidget *parent = nullptr);
@@ -35,7 +36,7 @@ public:
 
     /**
      * @brief getTimeResult
-     * @return  the approximative time of execute the algorithm.
+     * @return  the approximative time to execute the algorithm.
      */
     double getTimeResult() const;
 
@@ -67,6 +68,9 @@ public slots:
 
 private slots:
 
+    /**
+     * @brief Save the parameters in DEFAULT_BM_FILE
+    **/
     void on_buttonBox_accepted();
 
     ///Resize principally the images

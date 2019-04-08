@@ -17,30 +17,27 @@ class CameraParamDialog;
 }
 
 /**
- * @brief The CameraParamDialog class is a QT dialog in order to see and try camera calibration.
- * Also permit a better visualisation of matrix and easy qualitative test on sets of images.
+ * @brief The CameraParamDialog class is a QT dialog in order to see and try camera calibration for stereo.
+ * Also permit easy qualitative test on sets of images stereo.
  */
 class CameraParamDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    /**
-     * @brief Constructor
-     * @param parent optionnal parameter for a parent widget.
-     */
-    explicit CameraParamDialog(QWidget *parent = 0);
+
+    explicit CameraParamDialog(QWidget *parent = nullptr);
     ~CameraParamDialog();
 
 private:
 
     /**
-     * @brief refreshImages refresh the images.
+     * @brief refresh the images.
      */
     void refreshImages();
 
     /**
-     * @brief refreshPrintMatrix refresh the matrix.
+     * @brief refresh the matrix.
      */
     void refreshPrintMatrix();
 
@@ -74,7 +71,7 @@ private:
 
     Calibration::StereoCamera calib;
 
-    ///The selected image for preview
+    ///The selected images for preview
     QImage img_selection_left;
     QImage img_selection_right;
 
