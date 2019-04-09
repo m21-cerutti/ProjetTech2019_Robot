@@ -1,13 +1,13 @@
 ﻿#ifndef IA_H
 #define IA_H
 
-#define REFRESH 30
+#define REFRESH 5000
 
 #include "custom_controller.h"
 
 using namespace cerutti;
 
-class IARobot
+class IARobot : CustomController
 {
 public:
 
@@ -22,8 +22,6 @@ public:
      * @param right_img the right stereo image.
      */
     void simulate(const Mat & left_img, const Mat & right_img);
-
-    //virtual void load() override;
 
     float vx, vy, omega;
 

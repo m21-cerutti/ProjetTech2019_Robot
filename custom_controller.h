@@ -364,7 +364,7 @@ public:
     virtual void load() override;
 
 
-private:
+protected:
 
     int nb_frame = 0;
 

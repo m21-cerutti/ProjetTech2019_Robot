@@ -120,11 +120,11 @@ void CameraParamDialog::on_btn_apply_clicked()
 {
     if((current_img != -1) && (current_img!= -1))
     {
-        cv::Mat tmp_l = vect_images_left.at(current_img).clone();
-        cv::Mat tmp_r = vect_images_right.at(current_img).clone();
+        cv::Mat tmp_l;
+        cv::Mat tmp_r;
 
-        undistort(tmp_l, tmp_l, calib.camera_matrix_l, calib.dist_coeffs_l);
-        undistort(tmp_r, tmp_r, calib.camera_matrix_r, calib.dist_coeffs_r);
+        undistort(vect_images_left.at(current_img), tmp_l, calib.camera_matrix_l, calib.dist_coeffs_l);
+        undistort(vect_images_right.at(current_img), tmp_r, calib.camera_matrix_r, calib.dist_coeffs_r);
 
         CVQTInterface::toQImage(tmp_l, img_selection_left);
         CVQTInterface::toQImage(tmp_r, img_selection_right);

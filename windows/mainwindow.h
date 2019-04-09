@@ -71,6 +71,8 @@ private slots:
 
 private:
 
+    ServerMaster* server = nullptr;
+
     Ui::MainWindow *ui;
 };
 

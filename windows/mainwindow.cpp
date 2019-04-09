@@ -17,6 +17,11 @@ MainWindow::~MainWindow()
 
     //Use to delete windows create by cv
     destroyAllWindows();
+
+    if(server != nullptr)
+    {
+        delete server;
+    }
 }
 
 void MainWindow::pickImages(std::vector<Mat>& vect_images)
@@ -256,6 +261,8 @@ void MainWindow::on_actionOpen_filters_triggered()
 
 void MainWindow::on_actionOpen_simulation_unity_triggered()
 {
-    ServerMaster server;
-    server.StartServer();
+    if(server == nullptr){
+        server = new ServerMaster;
+        server->StartServer();
+    }
 }

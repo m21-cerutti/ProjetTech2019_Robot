@@ -73,27 +73,12 @@ void ClientConnection::analyse(char *cmd, int len)
         int offset_left = num_left.length()+2;
         int offset_right = num_left.length()+size_left+num_right.length()+3;
 
-        //qDebug() << "Size left is "<< size_left;
-        //qDebug() << "Size right is "<< size_right;
+        qDebug() << "Size left is "<< size_left;
+        qDebug() << "Size right is "<< size_right;
         //qDebug() << "Offset left "<< offset_left;
         //qDebug() << "Data :\n"<< cmd+offset_left;
         //qDebug() << "Offset right "<< offset_right;
         //qDebug() << "Data :\n"<<  cmd+offset_right;
-
-        /*
-        QImage img;
-        if(img.loadFromData((uchar*)(cmd+offset_left),size_left))
-        {
-            cv::Mat img_left;
-            CVQTInterface::toMatCV(img,img_left);
-            ProjectUtilities::showMatrice("left", img_left);
-        }
-        else
-        {
-            qWarning("No image");
-        }
-        */
-
 
         cv::Mat tmp_l(1, size_left, CV_8UC3, cmd+offset_left);
         cv::Mat img_left = cv::imdecode(tmp_l, CV_LOAD_IMAGE_UNCHANGED);
@@ -101,11 +86,19 @@ void ClientConnection::analyse(char *cmd, int len)
         cv::Mat tmp_r(1, size_right, CV_8UC3, cmd+offset_right);
         cv::Mat img_right = cv::imdecode(tmp_r, CV_LOAD_IMAGE_UNCHANGED);
 
-        //analyser.update(img_left, img_right);
+        //Analyse
+        analyser.simulate(img_left, img_right);
+        qDebug() << "Images analysed.";
 
-        QString format = "i";
+        QByteArray controls;
+        QDataStream stream(&controls, QIODevice::WriteOnly);
+        stream << analyser.vx;
+        stream << analyser.vy;
+        stream << analyser.omega;
+        QString format = "c;"+QString::number(analyser.vx)+";"+QString::number(analyser.vy)+";"+QString::number(analyser.omega);
         QByteArray new_cmd;
         new_cmd.append(format);
+        new_cmd.append(controls);
         send(new_cmd);
     }
     else

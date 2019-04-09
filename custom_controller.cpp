@@ -21,8 +21,8 @@ void CustomController::process(const cv::Mat & left_img,
 
     nb_frame++;
 
-    Utilities::showMatrice("Normal_l_"+std::to_string(nb_frame), left_img);
-    Utilities::showMatrice("Normal_r_"+std::to_string(nb_frame), right_img);
+    Utilities::showMatrice(std::to_string(nb_frame)+ "_left", left_img);
+    Utilities::showMatrice(std::to_string(nb_frame)+ "_right", right_img);
     Utilities::messageDebug("Normal images save.", false);
 
     cv::Mat disparity, depth_map;
@@ -60,7 +60,6 @@ void CustomController::process(const cv::Mat & left_img,
 
     Utilities::showMatrice("Blob_"+std::to_string(nb_frame), im_with_keypoints);
     Utilities::messageDebug("Blob images save.", false);
-
 
     // Just keep static
     /*/
