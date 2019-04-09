@@ -1,7 +1,14 @@
 ﻿#ifndef IA_H
 #define IA_H
 
+#include "windows/bmparamdialog.h"
+#include "windows/cameraparamdialog.h"
+#include "windows/sgbmparamdialog.h"
+#include "windows/singleimagedialog.h"
+
+
 #define REFRESH 5000
+#define NB_FRAME_TEST_WINDOW 5
 
 #include "custom_controller.h"
 

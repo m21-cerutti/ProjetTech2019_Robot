@@ -371,7 +371,7 @@ protected:
     ///Contain all matrix and datas of calibration
     Calibration::StereoCamera calib;
 
-    Ptr<StereoBM> bm_state;
+    Ptr<StereoSGBM> sgbm_state;
     Ptr<SimpleBlobDetector> blob_detector;
 
 };

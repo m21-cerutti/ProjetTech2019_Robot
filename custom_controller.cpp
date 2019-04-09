@@ -34,22 +34,22 @@ void CustomController::process(const cv::Mat & left_img,
     undistort(left_img, left_img_undist, calib.camera_matrix_l, calib.dist_coeffs_l);
     undistort(right_img, right_img_undist, calib.camera_matrix_r, calib.dist_coeffs_r);
 
-    Utilities::showMatrice("Undistord_l_"+std::to_string(nb_frame), left_img_undist);
-    Utilities::showMatrice("Undistord_r_"+std::to_string(nb_frame), right_img_undist);
-    Utilities::messageDebug("Undistord images save.", false);
+    //Utilities::showMatrice("Undistord_l_"+std::to_string(nb_frame), left_img_undist);
+    //Utilities::showMatrice("Undistord_r_"+std::to_string(nb_frame), right_img_undist);
+    //Utilities::messageDebug("Undistord images save.", false);
 
     //DISPARITY
-    StereoMap::computeBMDisparity( left_img_undist, right_img_undist, disparity, bm_state);
+    StereoMap::computeSGBMDisparity( left_img_undist, right_img_undist, disparity, sgbm_state);
 
-    Utilities::showMatrice("Disparity_"+std::to_string(nb_frame), disparity);
-    Utilities::messageDebug("Disparity images save.", false);
+    //Utilities::showMatrice("Disparity_"+std::to_string(nb_frame), disparity);
+    //Utilities::messageDebug("Disparity images save.", false);
 
     //DEPTH
     StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
     Utilities::messageDebug("Depth images save.", false);
-
+/*
     //BLOB
     normalize(depth_map, depth_map, 0, 255, CV_MINMAX, CV_8UC1);
     std::vector<KeyPoint> keypoints;
@@ -60,7 +60,7 @@ void CustomController::process(const cv::Mat & left_img,
 
     Utilities::showMatrice("Blob_"+std::to_string(nb_frame), im_with_keypoints);
     Utilities::messageDebug("Blob images save.", false);
-
+*/
     // Just keep static
     /*/
     if(nb_frame < 5)
@@ -117,7 +117,7 @@ void CustomController::load()
     {
         Utilities::messageDebug("Load calibration fail.");
     }
-    if(!StereoMap::loadBMParameters(bm_state))
+    if(!StereoMap::loadSGBMParameters(sgbm_state))
     {
         Utilities::messageDebug("Load disparity parameter fail.");
     }
@@ -136,7 +136,7 @@ void CustomController::load()
     Utilities::messageDebug("Read file sucessfull.", false);
     */
 
-
+    /*
     // Setup SimpleBlobDetector parameters.
     SimpleBlobDetector::Params params;
     params.minThreshold = 50;
@@ -151,6 +151,7 @@ void CustomController::load()
     params.maxInertiaRatio = 0.3;
 
     blob_detector = SimpleBlobDetector::create(params);
+    */
 
     Utilities::messageDebug("Load sucessfull.", false);
 }
