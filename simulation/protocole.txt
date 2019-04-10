@@ -19,7 +19,10 @@ Server
 <size><t><time_refresh>
 
 //req_img
-<size><s>
+<size><i>
+
+//req_img
+<size><c><;vx;vy;omega(ASCII)>
 
 Client
 

@@ -7,8 +7,7 @@
 #include "windows/singleimagedialog.h"
 
 
-#define REFRESH 5000
-#define NB_FRAME_TEST_WINDOW 5
+#define REFRESH (0.5*1000)
 
 #include "custom_controller.h"
 

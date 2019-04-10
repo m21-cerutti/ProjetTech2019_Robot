@@ -168,15 +168,7 @@ void MainWindow::on_actionDepthBM_triggered()
                 StereoMap::computeBMDisparity(undist_left, undist_right, disparity, bmState);
                 StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
 
-                double min;
-                double max;
-                minMaxIdx(depth_map, &min, &max);
-                Mat adjMap;
-                float scale = 255 / (max-min);
-                depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
-                Mat falseColorsMap;
-                applyColorMap(adjMap, falseColorsMap, COLORMAP_HOT);
-                Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
+                Utilities::showMatrice("DepthTest_"+std::to_string(i), depth_map);
             }
         }
     }
@@ -214,16 +206,8 @@ void MainWindow::on_actionDepthSGBM_triggered()
                 StereoMap::computeSGBMDisparity(undist_left, undist_right, disparity, sgbmState);
 
                 StereoMap::computeDepthMap(disparity, calib.Q, depth_map, THRESHOLD_MIN, THRESHOLD_MAX);
+                Utilities::showMatrice("DepthTest_"+std::to_string(i), depth_map);
 
-                double min;
-                double max;
-                minMaxIdx(depth_map, &min, &max);
-                Mat adjMap;
-                float scale = 255 / (max-min);
-                depth_map.convertTo(adjMap,CV_8UC1, scale, -min*scale);
-                Mat falseColorsMap;
-                applyColorMap(adjMap, falseColorsMap, COLORMAP_HOT);
-                Utilities::showMatrice("false"+std::to_string(i), falseColorsMap);
             }
         }
     }

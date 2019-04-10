@@ -173,7 +173,8 @@ namespace StereoMap
 
 ///Default parameters in m for depth
 #define THRESHOLD_MIN 0.0f
-#define THRESHOLD_MAX 120.0f
+//120
+#define THRESHOLD_MAX 200.0f
 
 /**
  * @brief save the BM parameters in a file. Permit to be reuse later.
@@ -335,6 +336,7 @@ public:
 
 #define FILE_CONFIG_PARAMETERS "robot.xml"
 
+/*
 #define START_DISTANCE 100
 #define EPSILON_START 40
 #define PERCENT_PRESENCE 0.25
@@ -346,6 +348,7 @@ public:
 #define CUBE_START_Y2 0.5
 
 #define NB_FRAME_INIT 10
+*/
 
 #define MOVE_SPEED_MULT 0.2
 

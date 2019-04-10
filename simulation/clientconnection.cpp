@@ -95,7 +95,7 @@ void ClientConnection::analyse(char *cmd, int len)
         stream << analyser.vx;
         stream << analyser.vy;
         stream << analyser.omega;
-        QString format = "c;"+QString::number(analyser.vx)+";"+QString::number(analyser.vy)+";"+QString::number(analyser.omega);
+        QString format = "c;"+QString::number(analyser.vx)+";"+QString::number(analyser.vy)+";"+QString::number(analyser.omega)+";";
         QByteArray new_cmd;
         new_cmd.append(format);
         new_cmd.append(controls);

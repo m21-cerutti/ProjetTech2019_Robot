@@ -49,6 +49,7 @@ void CustomController::process(const cv::Mat & left_img,
 
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
     Utilities::messageDebug("Depth images save.", false);
+
 /*
     //BLOB
     normalize(depth_map, depth_map, 0, 255, CV_MINMAX, CV_8UC1);
@@ -62,7 +63,7 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::messageDebug("Blob images save.", false);
 */
     // Just keep static
-    /*/
+    /*
     if(nb_frame < 5)
     {
         *vx = 0;
@@ -100,9 +101,11 @@ void CustomController::process(const cv::Mat & left_img,
         *omega = 1*MOVE_SPEED_MULT;
     }
     */
+
     *vx = 0;
     *vy = 0;
     *omega = 0;
+
 
 }
 
