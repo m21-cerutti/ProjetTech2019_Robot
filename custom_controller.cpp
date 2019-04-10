@@ -50,58 +50,6 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
     Utilities::messageDebug("Depth images save.", false);
 
-/*
-    //BLOB
-    normalize(depth_map, depth_map, 0, 255, CV_MINMAX, CV_8UC1);
-    std::vector<KeyPoint> keypoints;
-    blob_detector->detect( depth_map, keypoints);
-
-    Mat im_with_keypoints;
-    drawKeypoints( depth_map, keypoints, im_with_keypoints, Scalar(0,0,255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
-
-    Utilities::showMatrice("Blob_"+std::to_string(nb_frame), im_with_keypoints);
-    Utilities::messageDebug("Blob images save.", false);
-*/
-    // Just keep static
-    /*
-    if(nb_frame < 5)
-    {
-        *vx = 0;
-        *vy = 0;
-        *omega = 0;
-    }
-    else if(nb_frame < 10)
-    {
-        *vx = -1*MOVE_SPEED_MULT;
-        *vy = 0;
-        *omega = 0;
-    }
-    else if(nb_frame < 15)
-    {
-        *vx = 0;
-        *vy = 1*MOVE_SPEED_MULT;
-        *omega = 0;
-    }
-    else if(nb_frame < 20)
-    {
-        *vx = 1*MOVE_SPEED_MULT;
-        *vy = 0;
-        *omega = 0;
-    }
-    else if(nb_frame < 25)
-    {
-        *vx = 0;
-        *vy = -1*MOVE_SPEED_MULT;
-        *omega = 0;
-    }
-    else
-    {
-        *vx = 0;
-        *vy = 0;
-        *omega = 1*MOVE_SPEED_MULT;
-    }
-    */
-
     *vx = 0;
     *vy = 0;
     *omega = 0;
@@ -124,37 +72,6 @@ void CustomController::load()
     {
         Utilities::messageDebug("Load disparity parameter fail.");
     }
-
-    Utilities::messageDebug( "Starting load robot parameters.", false);
-
-    /*
-    FileStorage fs(FILE_CONFIG_PARAMETERS, FileStorage::Mode::FORMAT_XML|FileStorage::Mode::READ);
-    if(!fs.isOpened()) {
-        Utilities::messageDebug("Can't open file for robot.", true);
-        return;
-    }
-
-    fs.release();
-
-    Utilities::messageDebug("Read file sucessfull.", false);
-    */
-
-    /*
-    // Setup SimpleBlobDetector parameters.
-    SimpleBlobDetector::Params params;
-    params.minThreshold = 50;
-    params.maxThreshold = 1000;
-    params.thresholdStep = 15;
-    params.filterByArea = true;
-    params.minArea = 500;
-    params.filterByCircularity = false;
-    //params.minCircularity = 0.1;
-    params.filterByConvexity = false;
-    params.filterByInertia = true;
-    params.maxInertiaRatio = 0.3;
-
-    blob_detector = SimpleBlobDetector::create(params);
-    */
 
     Utilities::messageDebug("Load sucessfull.", false);
 }
