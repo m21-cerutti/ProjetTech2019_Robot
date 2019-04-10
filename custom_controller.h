@@ -10,7 +10,8 @@
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/video/tracking.hpp>
-
+#include "opencv2/calib3d.hpp"
+#include "opencv2/ximgproc/disparity_filter.hpp"
 
 namespace cerutti
 {
@@ -170,6 +171,10 @@ namespace StereoMap
 
 #define DEFAULT_BM_FILE "bmdisparity.xml"
 #define DEFAULT_SGBM_FILE "sgbmdisparity.xml"
+
+
+#define LAMBDA 8000
+#define SIGMA 0.8
 
 ///Default parameters in m for depth
 #define THRESHOLD_MIN 0.0f
@@ -334,21 +339,6 @@ public:
 ///@brief Controller section
 ///
 
-#define FILE_CONFIG_PARAMETERS "robot.xml"
-
-/*
-#define START_DISTANCE 100
-#define EPSILON_START 40
-#define PERCENT_PRESENCE 0.25
-#define DISTANCE_REFRESH (EPSILON_START/4)
-
-#define CUBE_START_X1 0.25
-#define CUBE_START_Y1 0
-#define CUBE_START_X2 0.75
-#define CUBE_START_Y2 0.5
-
-#define NB_FRAME_INIT 10
-*/
 
 #define MOVE_SPEED_MULT 0.2
 
@@ -375,7 +365,6 @@ protected:
     Calibration::StereoCamera calib;
 
     Ptr<StereoSGBM> sgbm_state;
-    Ptr<SimpleBlobDetector> blob_detector;
 
 };
 

@@ -402,9 +402,7 @@ bool StereoMap::loadSGBMParameters(Ptr<StereoSGBM> &sgbm_state, std::string file
 
 void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoBM> bm_state)
 {
-    cv::Mat left_mat, right_mat, disparity;
-
-    disparity = cv::Mat(src_left.size(), CV_32F, Scalar());
+    cv::Mat left_mat, right_mat, left_disparity, right_disparity, filtered_disp;
 
     ///Gray
     if(src_left.type() != CV_8UC1)
@@ -425,20 +423,28 @@ void StereoMap::computeBMDisparity(const cv::Mat &src_left, const cv::Mat &src_r
         src_right.copyTo(right_mat);
     }
 
+    using namespace ximgproc;
+    Ptr<DisparityWLSFilter> wls_filter = createDisparityWLSFilter(bm_state);
+    Ptr<StereoMatcher> right_matcher = createRightMatcher(bm_state);
+
     ///Disparity map
-    bm_state->compute(left_mat, right_mat, disparity);
-    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
-    cv::subtract(invert, disparity, disparity);
+    bm_state-> compute(left_mat, right_mat,left_disparity);
+    right_matcher->compute(left_mat, right_mat, right_disparity);
 
-    disparity.convertTo(disparity, CV_32F, 1./16);
+    ///Filter
+    wls_filter->setLambda(LAMBDA);
+    wls_filter->setSigmaColor(SIGMA);
+    wls_filter->filter(left_disparity, left_mat, filtered_disp, right_disparity);
 
+    cv::Mat invert(filtered_disp.rows, filtered_disp.cols, filtered_disp.type(), cvScalar(255, 255, 255, 255));
+    cv::subtract(invert, filtered_disp, filtered_disp);
 
-    disparity.copyTo(out);
+    filtered_disp.convertTo(out, CV_32F, 1./16);
 }
 
 void StereoMap::computeSGBMDisparity(const cv::Mat &src_left, const cv::Mat &src_right, cv::Mat &out, cv::Ptr<cv::StereoSGBM> sgbm_state)
 {
-    cv::Mat left_mat, right_mat, disparity;
+    cv::Mat left_mat, right_mat, left_disparity, right_disparity, filtered_disp;
 
     ///Gray
     if(src_left.type() != CV_8UC1)
@@ -458,14 +464,23 @@ void StereoMap::computeSGBMDisparity(const cv::Mat &src_left, const cv::Mat &src
     {
         src_right.copyTo(right_mat);
     }
+    using namespace ximgproc;
+    Ptr<DisparityWLSFilter> wls_filter = createDisparityWLSFilter(sgbm_state);
+    Ptr<StereoMatcher> right_matcher = createRightMatcher(sgbm_state);
+
     ///Disparity map
-    sgbm_state->compute(left_mat, right_mat, disparity);
-    cv::Mat invert(disparity.rows, disparity.cols, disparity.type(), cvScalar(255, 255, 255, 255));
-    cv::subtract(invert, disparity, disparity);
+    sgbm_state-> compute(left_mat, right_mat,left_disparity);
+    right_matcher->compute(left_mat,right_mat, right_disparity);
 
-    disparity.convertTo(disparity, CV_32F, 1./16);
+    ///Filter
+    wls_filter->setLambda(LAMBDA);
+    wls_filter->setSigmaColor(SIGMA);
+    wls_filter->filter(left_disparity, left_mat, filtered_disp,right_disparity);
 
-    disparity.copyTo(out);
+    cv::Mat invert(filtered_disp.rows, filtered_disp.cols, filtered_disp.type(), cvScalar(255, 255, 255, 255));
+    cv::subtract(invert, filtered_disp, filtered_disp);
+
+    filtered_disp.convertTo(out, CV_32F, 1./16);
 }
 
 void StereoMap::computeDepthMap(const cv::Mat &disparity, cv::Mat &Q, cv::Mat &depth_map, float depth_min, float depth_max)

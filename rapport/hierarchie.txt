@@ -7,9 +7,14 @@ l3-rvc
 |-- cvqtinterface.cpp
 |-- cvqtinterface.h
 |-- files
-|   |-- bmdisparity.xml
-|   |-- calib_stereo.xml
-|   `-- sgbmdisparity.xml
+|   |-- robot
+|   |   |-- bmdisparity.xml
+|   |   |-- calib_stereo.xml
+|   |   `-- sgbmdisparity.xml
+|   `-- simulation
+|       |-- bmdisparity.xml
+|       |-- calib_stereo.xml
+|       `-- sgbmdisparity.xml
 |-- main.cpp
 |-- simulation
 |   |-- clientconnection.cpp
@@ -36,4 +41,4 @@ l3-rvc
     |-- singleimagedialog.h
     `-- singleimagedialog.ui
 
-3 directories, 32 files
+5 directories, 35 files
