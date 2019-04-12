@@ -50,11 +50,48 @@ void CustomController::process(const cv::Mat & left_img,
     Utilities::showMatrice("Depth_"+std::to_string(nb_frame), depth_map);
     Utilities::messageDebug("Depth images save.", false);
 
-    *vx = 0;
+    moveX(depth_map, vx);
+
     *vy = 0;
     *omega = 0;
 
 
+}
+
+void CustomController::moveX(const Mat& depth_map, float* vx)
+{
+    *vx = 0;
+
+    float min = START_DISTANCE + EPSILON_START;
+    int pixel_interest = 0;
+    for(int i = depth_map.rows*CUBE_START_Y1; i < depth_map.rows*CUBE_START_Y2; i++) {
+        for(int j = depth_map.cols * CUBE_START_X1; j < depth_map.cols * CUBE_START_X2; j++) {
+            float z = depth_map.at<float>(i,j);
+            if( z <= (min - EPSILON_START))
+            {
+                min = z;
+                pixel_interest = 1;
+            }
+            else if( z >= (min - EPSILON_START) && z <= (min + EPSILON_START)){
+                min+=z;
+                pixel_interest++;
+            }
+        }
+    }
+    min/=pixel_interest;
+
+    Utilities::messageDebug("Min X " + std::to_string(min), false);
+
+    float move_x = min - START_DISTANCE;
+
+    Utilities::messageDebug("Move X " + std::to_string(move_x), false);
+
+    if(DISTANCE_REFRESH > std::abs(move_x)){
+        Utilities::messageDebug("Not enough distance.", false);
+        return;
+    }
+
+    *vx = (float)((move_x > 0 ? 1: -1 )* 1 * MOVE_SPEED_MULT);
 }
 
 void CustomController::load()
@@ -67,10 +104,12 @@ void CustomController::load()
     if(!calib.load(DEFAULT_CALIB_FILE))
     {
         Utilities::messageDebug("Load calibration fail.");
+        throw "No files of calibration.";
     }
     if(!StereoMap::loadSGBMParameters(sgbm_state))
     {
         Utilities::messageDebug("Load disparity parameter fail.");
+        throw "No files of SGBM.";
     }
 
     Utilities::messageDebug("Load sucessfull.", false);
@@ -729,9 +768,6 @@ bool Calibration::StereoCamera::load(std::string file_path)
     this->file_path = file_path;
     return load();
 }
-
-
-
 
 
 }

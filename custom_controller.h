@@ -178,7 +178,6 @@ namespace StereoMap
 
 ///Default parameters in m for depth
 #define THRESHOLD_MIN 0.0f
-//120
 #define THRESHOLD_MAX 200.0f
 
 /**
@@ -341,6 +340,16 @@ public:
 
 #define MOVE_SPEED_MULT 0.2
 
+#define START_DISTANCE 100
+#define EPSILON_START 80
+
+#define DISTANCE_REFRESH (EPSILON_START/4)
+
+#define CUBE_START_X1 0.25
+#define CUBE_START_Y1 0.5
+#define CUBE_START_X2 0.75
+#define CUBE_START_Y2 1
+
 class CustomController : public Controller
 {
 public:
@@ -357,6 +366,8 @@ public:
 
 
 protected:
+
+    void moveX(const Mat& depth, float *vx);
 
     int nb_frame = 0;
 
