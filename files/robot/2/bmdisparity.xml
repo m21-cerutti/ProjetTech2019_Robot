@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<preFilterCap>63</preFilterCap>
+<preFilterSize>13</preFilterSize>
+<preFilterType>0</preFilterType>
+<textureThreshold>0</textureThreshold>
+<uniquenessRatio>9</uniquenessRatio>
+<blockSize>7</blockSize>
+<disp12MaxDiff>0</disp12MaxDiff>
+<minDisparity>29</minDisparity>
+<numDisparities>16</numDisparities>
+</opencv_storage>
