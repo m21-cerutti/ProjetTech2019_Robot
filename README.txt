@@ -1,3 +1,7 @@
+#Interface de test Qt, OpenCv
+
+Complémentaire au projet de simulation de robot sur Unity.
+
 Installation:
 
 Pour pouvoir compiler le projet il faut installer Qt 5.7.1 et OpenCv 3.2.0 minimum.
