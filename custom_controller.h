@@ -367,6 +367,7 @@ public:
 
 protected:
 
+    //Non-Fonctionnel
     void moveX(const Mat& depth, float *vx);
 
     int nb_frame = 0;

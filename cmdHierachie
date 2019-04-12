@@ -1,6 +1,8 @@
 #!/bin/sh
-echo ${PWD##*/} > rapport/hierarchie.txt
-tree --charset ascii --prune -I $(cat .gitignore .ignore_rendu .gitignore | egrep -v "^#.*$|^[[:space:]]*$" | tr "\\n" "|") >> rapport/hierarchie.txt
+echo ${PWD##*/} > hierarchie.txt
+tree --charset ascii --prune -I $(cat .gitignore .ignore_rendu .gitignore | egrep -v "^#.*$|^[[:space:]]*$" | tr "\\n" "|") >> hierarchie.txt
+
+#Copie clean
 mkdir ../rendu/
 cp --parents $(git ls-files --full-name | tr " " "\\_") ../rendu/
 cd ../rendu/

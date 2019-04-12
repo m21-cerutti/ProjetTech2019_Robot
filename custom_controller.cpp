@@ -10,7 +10,6 @@ CustomController::CustomController()
 }
 
 CustomController::~CustomController() {
-    // Do not forget to move any memory owned by your controller
 }
 
 void CustomController::process(const cv::Mat & left_img,
@@ -62,27 +61,28 @@ void CustomController::moveX(const Mat& depth_map, float* vx)
 {
     *vx = 0;
 
-    float min = START_DISTANCE + EPSILON_START;
+    float average = 0;
     int pixel_interest = 0;
     for(int i = depth_map.rows*CUBE_START_Y1; i < depth_map.rows*CUBE_START_Y2; i++) {
         for(int j = depth_map.cols * CUBE_START_X1; j < depth_map.cols * CUBE_START_X2; j++) {
             float z = depth_map.at<float>(i,j);
-            if( z <= (min - EPSILON_START))
+            /*
+            if( z >= (START_DISTANCE - EPSILON_START) && z <= (START_DISTANCE + EPSILON_START))
             {
-                min = z;
-                pixel_interest = 1;
-            }
-            else if( z >= (min - EPSILON_START) && z <= (min + EPSILON_START)){
-                min+=z;
+                average+=z;
                 pixel_interest++;
             }
+            */
+            average+=z;
+            pixel_interest++;
+
         }
     }
-    min/=pixel_interest;
+    average/=pixel_interest;
 
-    Utilities::messageDebug("Min X " + std::to_string(min), false);
+    Utilities::messageDebug("Average X " + std::to_string(average), false);
 
-    float move_x = min - START_DISTANCE;
+    float move_x =average - START_DISTANCE;
 
     Utilities::messageDebug("Move X " + std::to_string(move_x), false);
 
