@@ -13,7 +13,7 @@ BMParamDialog::BMParamDialog(const Mat &src_left, const Mat &src_right, QWidget 
 {
     ui->setupUi(this);
     setWindowTitle("Parameters of BM Disparity Map");
-    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    setWindowFlags(Qt::WindowMaximizeButtonHint);
 
     if(StereoMap::loadBMParameters(bm_state))
     {

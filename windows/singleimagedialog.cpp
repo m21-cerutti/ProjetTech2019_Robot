@@ -10,7 +10,7 @@ SingleImageDialog::SingleImageDialog(cv::Mat &src, QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Filters");
-    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    setWindowFlags(Qt::WindowMaximizeButtonHint);
     ui->BoxSrc->hide();
 
     src.copyTo(view);

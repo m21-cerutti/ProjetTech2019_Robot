@@ -339,7 +339,6 @@ public:
 ///@brief Controller section
 ///
 
-
 #define MOVE_SPEED_MULT 0.2
 
 class CustomController : public Controller

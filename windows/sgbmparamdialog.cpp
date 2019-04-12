@@ -12,7 +12,7 @@ SGBMParamDialog::SGBMParamDialog(const Mat &src_left, const Mat &src_right, QWid
 {
     ui->setupUi(this);
     setWindowTitle("Parameters of SGBM Disparity Map");
-    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    setWindowFlags(Qt::WindowMaximizeButtonHint);
 
     if(StereoMap::loadSGBMParameters(sgbm_state))
     {

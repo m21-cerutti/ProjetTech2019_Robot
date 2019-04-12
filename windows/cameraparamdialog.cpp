@@ -10,7 +10,7 @@ CameraParamDialog::CameraParamDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Camera calibration");
-    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    setWindowFlags(Qt::WindowMaximizeButtonHint);
     refreshPrintMatrix();
 }
 
